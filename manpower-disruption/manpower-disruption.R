@@ -93,5 +93,53 @@ print(paste("Total Loss (70 days):", loss_70))
 policy_rm_1 <- DIIM(q0, A_star, c_star, x, lockdown_duration = 55, total_duration = 751, risk_management = 0.95, days_in_year = 365)
 print(paste("Total Loss (RM=0.95):", policy_rm_1$total_economic_loss))
 
-# Policy comparison
-print(paste("Savings from RM=0.95:", loss_55 - policy_rm_1$total_economic_loss))
+# ... (previous code)
+
+# 6. Run Simulation Loop (varying durations)
+lockdown_duration_vals <- c(10, 20, 30, 40)
+total_duration_vals <- c(300, 400, 500, 600)
+
+nsim <- length(lockdown_duration_vals) * length(total_duration_vals)
+
+col_names <- c(
+    "lockdown_duration",
+    "total_duration",
+    "model_tot_econ_loss",
+    "model_diim_tot_econ_loss" # Excluding ML for now as we don't have ML sectors for manpower
+)
+
+sim_matrix <- matrix(data = NA, nrow = nsim, ncol = length(col_names))
+colnames(sim_matrix) <- col_names
+row_idx <- 1
+
+print("--- Starting Simulation Loop ---")
+
+for (td in total_duration_vals) {
+    for (ld in lockdown_duration_vals) {
+        # 1. Base Model
+        model <- DIIM(q0, A_star, c_star, x, lockdown_duration = ld, total_duration = td, days_in_year = 365)
+        base_loss <- model$total_economic_loss
+
+        # Identify top 5 sectors from base model for this run (or globally? usually globally or per run)
+        # Using per-run top 5
+        max_el <- apply(model$EL_evolution, 1, max)
+        top_5 <- order(max_el, decreasing = TRUE)[1:5]
+
+        # 2. Intervention Model (DIIM strategy: protect top 5)
+        # targeting key sectors to reduce q0 by 10%
+        model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration = ld, total_duration = td, key_sectors = top_5, days_in_year = 365)
+        diim_loss <- model_diim$total_economic_loss
+
+        # Store results
+        sim_matrix[row_idx, ] <- c(ld, td, base_loss, diim_loss)
+        row_idx <- row_idx + 1
+    }
+}
+
+sim_df <- as.data.frame(sim_matrix)
+print("Simulation Results:")
+print(sim_df)
+
+# Save results
+write.csv(sim_df, "manpower_simulation_results.csv", row.names = FALSE)
+print("Results saved to manpower_simulation_results.csv")
