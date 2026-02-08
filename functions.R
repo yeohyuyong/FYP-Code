@@ -27,9 +27,52 @@ download_data <- function() {
 
 
 
+
   return(list(
     x = x,
     c = c,
+    A = A,
+    q0 = q0,
+    c_star = c_star,
+    A_star = A_star
+  ))
+}
+
+download_manpower_data <- function() {
+  # Load 2022 IOT for A matrix and x vector
+  # Sheet "A" contains the technical coefficient matrix
+  # Row 1 is header, Col 1 is Sector Names, Data starts from [2, 2]
+  data_A <- read.xlsx("dataset/manpower-disruption-data/2022_Input_Output_Table.xlsx", sheet = "A", colNames = FALSE)
+  # Determine number of sectors based on rows (minus 1 for header)
+  num_sectors <- nrow(data_A) - 1
+  A <- data_A[2:(num_sectors + 1), 2:(num_sectors + 1)]
+  A <- as.matrix(sapply(A, as.numeric))
+
+  # Sheet "x" contains the total output
+  # Row 1 is header, Col 1 is Sector Names, Col 2 is x
+  data_x <- read.xlsx("dataset/manpower-disruption-data/2022_Input_Output_Table.xlsx", sheet = "x", colNames = FALSE)
+  x <- data_x[2:(num_sectors + 1), 2]
+  x <- as.numeric(x)
+
+  # Load sector initial inoperability (q0)
+  # Sheet "Sector_initial_inoperability"
+  # Row 1 is header, Col 4 is q0
+  data_q0 <- read.xlsx("dataset/manpower-disruption-data/Sector_initial_inoperability.xlsx", sheet = "Sector_initial_inoperability", colNames = FALSE)
+  q0 <- data_q0[2:(num_sectors + 1), 4]
+  q0 <- as.numeric(q0)
+
+  # Initialize c and c_star to 0 for manpower disruption scenario
+  c <- rep(0, num_sectors)
+  c_star <- rep(0, num_sectors)
+
+  # Calculate A_star
+  # A* = diag(x)^(-1) %*% A %*% diag(x)
+  # Use vector for diag to create diagonal matrix
+  A_star <- solve(diag(x)) %*% A %*% diag(x)
+
+  return(list(
+    x = as.matrix(x), # Keep consistency with download_data which returns matrices
+    c = as.matrix(c),
     A = A,
     q0 = q0,
     c_star = c_star,
@@ -92,7 +135,7 @@ download_data <- function() {
 
 
 
-DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = NULL, risk_management = 1) {
+DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = NULL, risk_management = 1, days_in_year = 366) {
   a_ii <- diag(A_star)
   T <- total_duration
 
@@ -125,7 +168,7 @@ DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_s
   # vector x is the planned YEARLY output of all sectors
   # convert to planned DAILY output of all sectors
   # note that output is in millions
-  x_daily <- x / 366 # 366 days in 2020
+  x_daily <- x / days_in_year
   EL_evolution <- t(apply(inoperability_evolution, 1, cumsum)) * as.vector(x_daily)
   EL_end <- EL_evolution[, ncol(EL_evolution)]
   total_economic_loss <- sum(EL_evolution[, ncol(EL_evolution)])
