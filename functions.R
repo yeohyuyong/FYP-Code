@@ -15,10 +15,10 @@ download_data <- function() {
   A <- as.matrix(sapply(A, as.numeric))
 
   # extract sector initial inoperability
-  q0_df <- read.xlsx("dataset/Unemployment_and_Impact_Analysis.xlsx", sheet = "sector inoperability", colNames = FALSE)
+  q0_df <- read.xlsx("dataset/covid-data/Unemployment_and_Impact_Analysis.xlsx", sheet = "sector inoperability", colNames = FALSE)
   q0 <- as.numeric(q0_df[2:16, 3])
 
-  c_star_df <- read.xlsx("dataset/Unemployment_and_Impact_Analysis.xlsx", sheet = "c_star")
+  c_star_df <- read.xlsx("dataset/covid-data/Unemployment_and_Impact_Analysis.xlsx", sheet = "c_star")
   c_star <- as.numeric(c_star_df[1:15, 7])
 
 
