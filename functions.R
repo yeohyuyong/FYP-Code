@@ -149,12 +149,12 @@ simulation_ml_vs_diim <- function(q0, A_star, c_star, x, lockdown_duration, tota
   # obtain the sectors with top economic loss
   max_econ_loss <- apply(EL_evolution, 1, max)
   sorted_indices <- order(max_econ_loss, decreasing = TRUE)
-  top_econ_loss_3 <- sorted_indices[1:5]
+  top_econ_loss_5 <- sorted_indices[1:5]
 
   # rerun the model with intervention for the top economic sectors
 
 
-  model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = top_econ_loss_3)
+  model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = top_econ_loss_5)
 
   ml_key_sectors <- c(3, 2, 5, 8, 10) # obtained from PCA
   model_ml <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = ml_key_sectors)
