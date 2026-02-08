@@ -1,0 +1,26 @@
+
+# System
+.DS_Store
+Thumbs.db
+
+# R/RStudio
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Output/Generated
+Rplots.pdf
+fyp.html
+fyp.tex
+fyp.pdf
+
+# Intermediate
+*.aux
+*.log
+*.toc
+*_files/
+*_cache/
+
+# Editors
+.vscode/
