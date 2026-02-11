@@ -33,12 +33,15 @@ sorted_inoperability <- inoperability_evolution[sorted_indices, ]
 
 # Setup colors and labels for plotting
 num_sectors <- nrow(sorted_inoperability)
+# Save Inoperability Evolution plot
+png("covid/Inoperability_Evolution.png", units = "in", width = 10, height = 7, res = 300)
 matplot(t(sorted_inoperability),
         type = "l", lty = 1, col = rainbow(num_sectors),
         xlab = "Days", ylab = "Inoperability",
         main = "Inoperability Evolution"
 )
 legend("topright", legend = paste("Sector", sorted_indices), col = rainbow(num_sectors), lty = 1, cex = 0.6)
+dev.off()
 
 
 EL_evolution <- DIIM_model$EL_evolution
@@ -48,12 +51,15 @@ sorted_econ_loss <- EL_evolution[sorted_indices, ]
 
 
 num_sectors <- nrow(sorted_econ_loss)
+# Save Economic Loss Evolution plot
+png("covid/Economic_Loss_Evolution.png", units = "in", width = 10, height = 7, res = 300)
 matplot(t(sorted_econ_loss),
         type = "l", lty = 1, col = rainbow(num_sectors),
         xlab = "Days", ylab = "Economic Loss",
         main = "Economic Loss Evolution"
 )
 legend("topright", legend = paste("Sector", sorted_indices), col = rainbow(num_sectors), lty = 1, cex = 0.6)
+dev.off()
 
 
 output_40_days <- DIIM(q0, A_star, c_star, x, lockdown_duration = 40, total_duration = 751)
