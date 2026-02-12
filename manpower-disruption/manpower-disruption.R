@@ -8,8 +8,10 @@ library(tidyverse)
 # Assuming running from project root
 if (file.exists("functions.R")) {
     source("functions.R")
+    plot_dir <- "manpower-disruption"
 } else {
     source("../functions.R") # Fallback if running from subdir
+    plot_dir <- "."
 }
 
 # 1. Load Data
@@ -44,12 +46,26 @@ sorted_inoperability <- inoperability_evolution[sorted_indices_inop, ]
 num_sectors <- nrow(sorted_inoperability)
 # Plot top 10 for clarity, or all if preferred. matching covid-main which plots all?
 # covid-main plots all: matplot(t(sorted_inoperability), ...)
+
+# Save Inoperability Evolution plot
+# Save Inoperability Evolution plot
+# First, plot to screen so user can see it
 matplot(t(sorted_inoperability),
     type = "l", lty = 1, col = rainbow(num_sectors),
     xlab = "Days", ylab = "Inoperability",
     main = "Manpower Disruption: Inoperability Evolution"
 )
 legend("topright", legend = paste("Sector", sorted_indices_inop[1:10]), col = rainbow(num_sectors)[1:10], lty = 1, cex = 0.6, title = "Top 10")
+
+# Second, save to file
+png(file.path(plot_dir, "Inoperability_Evolution.png"), units = "in", width = 10, height = 7, res = 300)
+matplot(t(sorted_inoperability),
+    type = "l", lty = 1, col = rainbow(num_sectors),
+    xlab = "Days", ylab = "Inoperability",
+    main = "Manpower Disruption: Inoperability Evolution"
+)
+legend("topright", legend = paste("Sector", sorted_indices_inop[1:10]), col = rainbow(num_sectors)[1:10], lty = 1, cex = 0.6, title = "Top 10")
+dev.off()
 
 
 # 4. Analyze Economic Loss
@@ -60,12 +76,25 @@ sorted_indices_el <- order(max_econ_loss, decreasing = TRUE)
 sorted_econ_loss <- EL_evolution[sorted_indices_el, ]
 
 # Plot Economic Loss
+# Save Economic Loss Evolution plot
+# Save Economic Loss Evolution plot
+# First, plot to screen so user can see it
 matplot(t(sorted_econ_loss),
     type = "l", lty = 1, col = rainbow(num_sectors),
     xlab = "Days", ylab = "Economic Loss (Millions)",
     main = "Manpower Disruption: Economic Loss Evolution"
 )
 legend("topright", legend = paste("Sector", sorted_indices_el[1:10]), col = rainbow(num_sectors)[1:10], lty = 1, cex = 0.6, title = "Top 10")
+
+# Second, save to file
+png(file.path(plot_dir, "Economic_Loss_Evolution.png"), units = "in", width = 10, height = 7, res = 300)
+matplot(t(sorted_econ_loss),
+    type = "l", lty = 1, col = rainbow(num_sectors),
+    xlab = "Days", ylab = "Economic Loss (Millions)",
+    main = "Manpower Disruption: Economic Loss Evolution"
+)
+legend("topright", legend = paste("Sector", sorted_indices_el[1:10]), col = rainbow(num_sectors)[1:10], lty = 1, cex = 0.6, title = "Top 10")
+dev.off()
 
 print("Top 5 Sectors by Economic Loss:")
 print(sorted_indices_el[1:5])
