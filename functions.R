@@ -25,9 +25,6 @@ download_data <- function() {
 
   A_star <- solve(diag(as.vector(x))) %*% A %*% diag(as.vector(x))
 
-
-
-
   return(list(
     x = x,
     c = c,
@@ -149,8 +146,9 @@ DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_s
   }
 
   # we assume after 2 years the economic activity return to 99% of pre lock down level
-  qT <- rep(0.0001, num_sectors) # q0 * 1/100
-
+  q0[q0 == 0] <- 1e-8
+  qT = q0 * 1/100
+  
   k <- log(q0 / qT) / (T * (1 - a_ii))
   K <- diag(as.vector(k))
 
@@ -214,3 +212,52 @@ simulation_ml_vs_diim <- function(q0, A_star, c_star, x, lockdown_duration, tota
     model_ml_tot_econ_loss = model_ml_tot_econ_loss
   ))
 }
+
+
+simulation_ml_vs_diim_manpower <- function(q0, A_star, c_star, x, lockdown_duration, total_duration) {
+  # run model to calculate the economic loss (without intervention)
+  model <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration)
+  EL_evolution <- model$EL_evolution
+  
+  # obtain the sectors with top economic loss
+  max_econ_loss <- apply(EL_evolution, 1, max)
+  sorted_indices <- order(max_econ_loss, decreasing = TRUE)
+  top_econ_loss_5 <- sorted_indices[1:5]
+  
+  # rerun the model with intervention for the top economic sectors
+  
+  
+  model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = top_econ_loss_5)
+  
+  ml_key_sectors <- c(79,107,89,11,33) # obtained from PCA
+  model_ml <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = ml_key_sectors)
+  
+  model_tot_econ_loss <- model$total_economic_loss
+  model_diim_tot_econ_loss <- model_diim$total_economic_loss
+  model_ml_tot_econ_loss <- model_ml$total_economic_loss
+  
+  return(list(
+    lockdown_duration = lockdown_duration,
+    total_duration = total_duration,
+    model_tot_econ_loss = model_tot_econ_loss,
+    model_diim_tot_econ_loss = model_diim_tot_econ_loss,
+    model_ml_tot_econ_loss = model_ml_tot_econ_loss
+  ))
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
