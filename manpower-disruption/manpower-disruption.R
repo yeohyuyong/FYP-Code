@@ -4,15 +4,8 @@ library(reshape2)
 library(gridExtra)
 library(dplyr)
 library(tidyverse)
+source("functions.R")
 
-# Assuming running from project root
-if (file.exists("functions.R")) {
-    source("functions.R")
-    plot_dir <- "manpower-disruption"
-} else {
-    source("../functions.R") # Fallback if running from subdir
-    plot_dir <- "."
-}
 
 # 1. Load Data
 data <- download_manpower_data()
@@ -20,12 +13,12 @@ A <- data$A
 x <- data$x
 c <- data$c
 q0 <- data$q0
+q0[q0 == 0] <- 1e-8
 c_star <- data$c_star
 A_star <- data$A_star
-
-# Preprocess q0 to handle zeros (since DIIM uses log(q0))
-# Replace 0 or very small values with a small epsilon
-q0[q0 < 1e-6] <- 1e-6
+a_ii <- diag(A_star)
+qT <- q0/100
+k <- log(q0 / qT) / (751 * (1 - a_ii))
 
 # 2. Main Simulation
 # Manpower disruption likely has different durations.
@@ -48,17 +41,7 @@ num_sectors <- nrow(sorted_inoperability)
 # covid-main plots all: matplot(t(sorted_inoperability), ...)
 
 # Save Inoperability Evolution plot
-# Save Inoperability Evolution plot
-# First, plot to screen so user can see it
-matplot(t(sorted_inoperability),
-    type = "l", lty = 1, col = rainbow(num_sectors),
-    xlab = "Days", ylab = "Inoperability",
-    main = "Manpower Disruption: Inoperability Evolution"
-)
-legend("topright", legend = paste("Sector", sorted_indices_inop[1:10]), col = rainbow(num_sectors)[1:10], lty = 1, cex = 0.6, title = "Top 10")
-
-# Second, save to file
-png(file.path(plot_dir, "Inoperability_Evolution.png"), units = "in", width = 10, height = 7, res = 300)
+png("manpower-disruption/Inoperability_Evolution.png", units = "in", width = 10, height = 7, res = 300)
 matplot(t(sorted_inoperability),
     type = "l", lty = 1, col = rainbow(num_sectors),
     xlab = "Days", ylab = "Inoperability",
@@ -77,17 +60,7 @@ sorted_econ_loss <- EL_evolution[sorted_indices_el, ]
 
 # Plot Economic Loss
 # Save Economic Loss Evolution plot
-# Save Economic Loss Evolution plot
-# First, plot to screen so user can see it
-matplot(t(sorted_econ_loss),
-    type = "l", lty = 1, col = rainbow(num_sectors),
-    xlab = "Days", ylab = "Economic Loss (Millions)",
-    main = "Manpower Disruption: Economic Loss Evolution"
-)
-legend("topright", legend = paste("Sector", sorted_indices_el[1:10]), col = rainbow(num_sectors)[1:10], lty = 1, cex = 0.6, title = "Top 10")
-
-# Second, save to file
-png(file.path(plot_dir, "Economic_Loss_Evolution.png"), units = "in", width = 10, height = 7, res = 300)
+png("manpower-disruption/Economic_Loss_Evolution.png", units = "in", width = 10, height = 7, res = 300)
 matplot(t(sorted_econ_loss),
     type = "l", lty = 1, col = rainbow(num_sectors),
     xlab = "Days", ylab = "Economic Loss (Millions)",
@@ -172,3 +145,37 @@ print(sim_df)
 # Save results
 write.csv(sim_df, "manpower_simulation_results.csv", row.names = FALSE)
 print("Results saved to manpower_simulation_results.csv")
+
+
+lockdown_duration_vals = c(10,20,30,40)
+total_duration_vals = c(300,400,500,600)
+
+nsim = length(lockdown_duration_vals) * length(total_duration_vals)
+
+col_names = c("lockdown_duration",
+              "total_duration",
+              "model_tot_econ_loss",
+              "model_diim_tot_econ_loss",
+              "model_ml_tot_econ_loss")
+
+sim_matrix = matrix(data=NA, nrow=nsim , ncol=5)
+colnames(sim_matrix) = col_names
+
+row_idx = 1
+for (l_duration in lockdown_duration_vals){
+  for (t_duration in total_duration_vals){
+    res = simulation_ml_vs_diim_manpower(q0, A_star,c_star,x,lockdown_duration=l_duration, total_duration=t_duration)
+    res = matrix(unlist(res), ncol=5)
+    sim_matrix[row_idx,] = res
+    
+    row_idx = row_idx + 1
+  }
+}
+
+
+
+
+
+
+
+
