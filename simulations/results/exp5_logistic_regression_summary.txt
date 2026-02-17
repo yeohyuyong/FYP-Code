@@ -1,0 +1,38 @@
+Logistic Regression: Predicting when PCA outperforms DIIM
+=========================================================
+
+
+Call:
+glm(formula = pca_wins_int ~ c_star_mean + c_star_sd + c_star_gini + 
+    q0_mean + q0_sd + q0_gini + cstar_q0_cor + c_star_pca_share + 
+    q0_pca_share + lockdown_duration + overlap, family = binomial, 
+    data = exp5_results)
+
+Coefficients:
+                    Estimate Std. Error z value Pr(>|z|)    
+(Intercept)       -2.301e+01  7.853e+00  -2.930 0.003392 ** 
+c_star_mean        9.903e+00  5.931e+00   1.670 0.095001 .  
+c_star_sd         -1.431e+01  9.565e+00  -1.496 0.134719    
+c_star_gini        2.664e+01  1.417e+01   1.881 0.060007 .  
+q0_mean            4.910e+02  3.658e+02   1.342 0.179521    
+q0_sd             -7.540e+02  6.093e+02  -1.237 0.215938    
+q0_gini            1.708e+01  1.320e+01   1.294 0.195761    
+cstar_q0_cor      -1.879e+00  5.017e-01  -3.745 0.000181 ***
+c_star_pca_share   5.954e-01  1.975e+00   0.302 0.763016    
+q0_pca_share       1.203e+01  2.072e+00   5.808 6.34e-09 ***
+lockdown_duration  1.470e-02  6.587e-03   2.231 0.025675 *  
+overlap            2.941e-02  2.664e-01   0.110 0.912083    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 436.34  on 499  degrees of freedom
+Residual deviance: 369.02  on 488  degrees of freedom
+AIC: 393.02
+
+Number of Fisher Scoring iterations: 5
+
+
+
+Overall PCA Win Rate: 15.8 %
