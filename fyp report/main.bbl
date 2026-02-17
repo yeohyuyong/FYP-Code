@@ -10,11 +10,11 @@ Jian Jin and Haoran Zhou.
 \newblock A demand-side inoperability input--output model for strategic risk management: Insight from the {COVID}-19 outbreak in shanghai, china.
 \newblock {\em Sustainability}, 15(5):4003, 2023.
 
-\bibitem{DataGovSgIO2019}
-{SINGSTAT (Singapore Department of Statistics)}.
-\newblock Industry by industry input-output table (supply, use and input-output tables 2019).
-\newblock \url{https://data.gov.sg/datasets/d_959da3e78690cb3136c529fbc448d178/view}.
-\newblock data.gov.sg dataset. Accessed 2026-02-17.
+\bibitem{MOM2023ForeignWorkforce}
+{Ministry of Manpower, Singapore}.
+\newblock Foreign workforce numbers.
+\newblock \url{https://www.mom.gov.sg/documents-and-publications/foreign-workforce-numbers}, 2023.
+\newblock Accessed 2026-02-17.
 
 \bibitem{MOH2020EndCircuitBreaker}
 {Ministry of Health, Singapore}.
@@ -28,14 +28,21 @@ Jian Jin and Haoran Zhou.
 \newblock \url{https://www.moh.gov.sg/newsroom/post-circuit-breaker-measures/}, 2020.
 \newblock Newsroom / Parliamentary reply page referencing circuit breaker dates. Accessed 2026-02-17.
 
+\bibitem{MINDEF2020Factsheet}
+{Ministry of Defence, Singapore}.
+\newblock Factsheet: {Singapore's} total defence.
+\newblock \url{https://www.mindef.gov.sg/web/portal/mindef/defence-matters/defence-topic/defence-topic-detail/total-defence}, 2020.
+\newblock Total Defence overview including economic, digital, and military defence pillars. Accessed 2026-02-17.
+
+\bibitem{DataGovSgIO2019}
+{SINGSTAT (Singapore Department of Statistics)}.
+\newblock Industry by industry input-output table (supply, use and input-output tables 2019).
+\newblock \url{https://data.gov.sg/datasets/d_959da3e78690cb3136c529fbc448d178/view}.
+\newblock data.gov.sg dataset. Accessed 2026-02-17.
+
 \bibitem{Haimes1975SWTChapter}
 Yacov~Y. Haimes.
 \newblock The surrogate worth trade-off method.
 \newblock {\em Developments in Water Science}, 3:34--57, 1975.
-
-\bibitem{NobelPrizeLeontiefFacts}
-Wassily leontief -- facts.
-\newblock \url{https://www.nobelprize.org/prizes/economic-sciences/1973/leontief/facts/}.
-\newblock NobelPrize.org. Accessed 2026-02-17.
 
 \end{thebibliography}
