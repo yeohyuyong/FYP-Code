@@ -1,12 +1,85 @@
 %=== CHAPTER SEVEN (7) ===
+%=== Discussion ===
 
-\chapter{Conclusion}
+\chapter{Discussion}
 
-This project applied the Dynamic Inoperability Input–Output Model (DIIM) to study how COVID-19 affected Singapore’s economy at the sector level, including how disruptions spread across industries and how recovery evolves over time. Using Singapore’s 2019 IO table aggregated to 15 sectors and an initial inoperability measure based on workforce unavailability and labour dependence, the model produced sectoral inoperability paths and cumulative economic loss estimates.
+\section{Cross-Scenario Comparison}
 
-The results show that sector vulnerability should be assessed using both inoperability and economic loss because these measures capture different aspects of impact and can rank sectors differently. The impact matrix (ranking inoperability against ranking economic loss) provides a practical way to identify sectors that are consistently high-impact and should be prioritised when resources are limited. Sensitivity analysis suggests that longer lockdown durations increase losses across the economy, but the main set of highly affected sectors remains broadly consistent.
+The two case studies reveal a clear pattern: the effectiveness of cheap key sector identification methods depends critically on the number of sectors and the structure of the IO table.
 
-The dissertation also demonstrated how DIIM outputs can be used to compare example risk management policies using a surrogate worth trade-off (SWT) approach that accounts for both cost and benefit. Finally, a PCA-based method using the integrated IO matrix was tested as a faster alternative for identifying key sectors, and simulations suggest that it can match DIIM-based prioritisation in reducing losses while requiring fewer uncertain crisis-time inputs.
+\begin{itemize}
+    \item \textbf{COVID-19 (15~sectors)}: Both output-weighted linkage (89\%) and PCA (86\%) achieve close rates above 85\%. With only 15~sectors, the top-5 represent one-third of the economy, and the structural ranking of the IO table is a reasonable approximation of which sectors will be most impacted under a wide range of disruption profiles.
+    
+    \item \textbf{Manpower (107~sectors)}: Even the best cheap method (output-weighted linkage, 55\%) matches DIIM only about half the time. With 107~sectors, the top-5 represent less than 5\% of the economy, and the probability that any fixed structural ranking captures the specific sectors most affected by a given $q_0$ is much lower.
+\end{itemize}
+
+This suggests a fundamental \emph{dimensionality effect}: as the number of sectors grows, the space of possible $q_0$ vectors expands exponentially, making it harder for a fixed ranking to remain robust.
+
+
+\section{Why Output-Weighted Linkage Outperforms PCA}
+
+Output-weighted linkage (OWL) consistently outperforms PCA across both scenarios. This can be understood through two mechanisms:
+
+\begin{enumerate}
+    \item \textbf{Economic size matters}: OWL explicitly incorporates sector output ($x_i$), ensuring that structurally important \emph{but economically small} sectors are not over-ranked. PCA, by contrast, operates on the normalised $H$ matrix and can assign high importance to sectors that are structurally central but economically minor.
+    
+    \item \textbf{Dual linkage capture}: OWL combines both backward and forward linkages, capturing both demand-pull and supply-push effects. PCA's eigenvectors blend these effects implicitly but may not weight them optimally for loss reduction.
+\end{enumerate}
+
+
+\section{The Role of $q_0$ Concentration}
+
+The logistic regression analysis reveals that the most predictive feature across methods is the \emph{alignment} between the method's fixed ranking and the disruption profile:
+
+\begin{itemize}
+    \item \textbf{Methods share} (fraction of $q_0$ in top-$k$ sectors): When the disruption is concentrated in sectors that the cheap method ranks highly, the method trivially works well.
+    
+    \item \textbf{Average rank}: When the cheap method's top-$k$ sectors have low average rank in $q_0$ (i.e., they are among the most disrupted), the method performs well.
+\end{itemize}
+
+The practical implication is that the decision rules can be evaluated rapidly: once $q_0$ is observed, computing the share and overlap features requires only a lookup against the pre-computed structural rankings.
+
+
+\section{National Security Implications}
+
+From a national security perspective, the results support a two-stage approach to economic resilience planning:
+
+\begin{enumerate}
+    \item \textbf{Peacetime (pre-event)}: Use output-weighted linkage to identify sectors that are structurally critical and economically significant. These sectors should receive priority in resilience investments (e.g., stockpiling, training local replacements, diversifying supply chains) regardless of the specific disruption scenario.
+    
+    \item \textbf{Crisis response}: Once the nature of the disruption is known (i.e., $q_0$ is observed), evaluate the decision rules. If the cheap method's conditions are met, use its recommendations immediately. If not, run the full DIIM for a more accurate assessment. This reduces response time in the critical early hours of a crisis.
+\end{enumerate}
+
+For Singapore specifically, the analysis suggests that sectors with high foreign worker concentration \emph{and} strong IO linkages (e.g., construction, certain manufacturing sub-sectors) should be priority targets for workforce resilience measures. Even crude structural analysis using only the IO table can identify these sectors with reasonable accuracy.
+
+
+\section{Limitations}
+
+Several limitations should be noted:
+
+\begin{enumerate}
+    \item \textbf{Uniform intervention}: All methods are compared using a standardised 10\% reduction in $q_0$ for top-$k$ sectors. In practice, the feasible intervention magnitude may vary across sectors.
+    
+    \item \textbf{Fixed $k$}: The analysis primarily uses $k=5$. Different values of $k$ may alter the relative performance of methods.
+    
+    \item \textbf{IO table vintage}: The COVID-19 scenario uses the 2019 IO table and the manpower scenario uses the 2022 IO table. Structural changes between these years are not controlled for.
+    
+    \item \textbf{Recovery dynamics}: The DIIM assumes exponential recovery with fixed resilience coefficients. In practice, recovery may be non-exponential, sector-specific, and dependent on policy interventions.
+    
+    \item \textbf{$q_0$ distribution}: The Monte Carlo analysis uses uniform random $q_0$ vectors. Real disruptions may have structured $q_0$ vectors (e.g., concentrated in specific industry groups).
+\end{enumerate}
+
+
+\section{Future Work}
+
+Future extensions could include:
+
+\begin{itemize}
+    \item Incorporating structured $q_0$ distributions (e.g., sector-correlated disruptions) in the Monte Carlo analysis.
+    \item Testing whether ensemble methods (combining multiple cheap method rankings) improve close rates.
+    \item Extending the framework to multi-period disruptions where $q_0$ evolves over time.
+    \item Validating the decision rules on actual disruption data from other economies.
+\end{itemize}
 
 %=== END OF CHAPTER SEVEN ===
 \newpage

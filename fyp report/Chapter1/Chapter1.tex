@@ -3,28 +3,43 @@
 
 \chapter{Introduction}
 
-When COVID-19 shut down the Singapore economy in April 2020, policymakers faced an urgent question: which sectors were suffering the most, and where should recovery resources be prioritised? While Gross domestic product (GDP) data showed that the economy contracted, they provided no insight into how disruptions rippled through interconnected sectors, what the recovery process was like, or how different policy interventions would trade off cost against benefit.
+\section{Background}
 
-Given that  modern economies are highly interdependent, when one sector stops producing, it does not only affect workers in that sector but also deprives other sectors of the critical inputs they need. A disruption to the construction sector not only harms construction workers but also manufacturers of building materials, transport companies, and equipment suppliers. Understanding these cascading effects requires a framework that captures how economic sectors depend on each other and how disruptions propagate over time.
+Singapore is a small, open, city-state economy whose prosperity depends on deep integration with global supply chains and a large foreign workforce. Approximately one-third of Singapore's labour force consists of non-resident workers, spanning construction, manufacturing, marine shipyard, and services \cite{MOM2023ForeignWorkforce}. This dependence, while a source of economic dynamism, also constitutes a structural vulnerability: any event that rapidly reduces the available workforce---whether a pandemic, a geopolitical crisis, or a grey zone conflict---can propagate through interconnected sectors and inflict cascading economic losses far beyond the initially affected industries.
 
-The Inoperability Input-Output Model (IIM) and its dynamic extension (DIIM) can provide this capability \cite{SantosHaimes2004,JinZhou2023}. The Shanghai COVID-19 study demonstrated how the DIIM could quantify which sectors experienced the highest production losses relative to its inital production level (inoperability) and which suffered the largest absolute economic damage \cite{JinZhou2023}. That research also showed how policymakers could use the model to compare alternative risk management strategies (eg, whether to invest in early prevention measures or in accelerating recovery) by calculating the return on investment for each option \cite{JinZhou2023}. This study applies the DIIM framework to Singapore's COVID-19 crisis to provide data for recovery policy decisions.
+The COVID-19 pandemic demonstrated this vividly. When Singapore imposed the ``circuit breaker'' lockdown from 7~April to 1~June~2020 \cite{MOH2020EndCircuitBreaker,MOH2020PostCircuitBreakerMeasures}, the disruption was not confined to directly affected sectors. Construction shutdowns deprived building-material manufacturers of demand, transport restrictions disrupted logistics, and hospitality closures cascaded into food supply chains. Understanding these cascading effects requires a framework that captures how sectors depend on each other and how disruptions propagate over time.
 
+Beyond pandemics, Singapore faces national security scenarios that could produce similar or even more severe manpower disruptions. Grey zone conflicts---coercive actions below the threshold of conventional warfare, such as economic coercion, cyber attacks, or hybrid threats---could trigger rapid departures of foreign workers, disrupting sectors that rely heavily on non-resident labour \cite{MINDEF2020Factsheet}. Unlike COVID-19, where the external demand shock ($c^*$) was significant, a manpower disruption scenario is characterised by high initial inoperability ($q_0$) with $c^*=0$, representing a purely structural disruption that propagates through the production network.
 
-The Leontief input-output model, developed by 1973 Nobel laureate Wassily Leontief, is the foundation for understanding sectoral interdependencies \cite{NobelPrizeLeontiefFacts}. It represents how different sectors of an economy rely on each other's outputs as inputs, capturing the relationships that define an economy in equilibrium. The basic equation is simple: total output equals intermediate consumption plus final demand.
+\section{The Dynamic Inoperability Input-Output Model}
 
-However, the Leontief model is static. It describes an economy at rest, not an economy in crisis and recovery. To analyse disruptions, researchers developed the Inoperability Input-Output Model (IIM), which measures "inoperability". This term is defined as the normalised production loss of each sector expressed on a scale from 0 (normal operation) to 1 (complete shutdown). The IIM measures how an initial shock in one sector propagates through input-output linkages to reduce production in other sectors. 
+The Inoperability Input-Output Model (IIM) and its dynamic extension (DIIM) provide a rigorous framework for modelling such disruptions \cite{SantosHaimes2004}. Built on the Leontief input-output model, the DIIM measures ``inoperability''---the normalised production loss of each sector on a scale from~0 (normal) to~1 (complete shutdown)---and simulates how initial shocks propagate through input-output linkages and how the economy recovers over time. The Shanghai COVID-19 study demonstrated the utility of this approach for quantifying sectoral vulnerability and evaluating risk management strategies \cite{JinZhou2023}.
 
-The DIIM extended this framework further by adding time. Real recoveries are not instantaneous. Sectors gradually restore production as supply-demand imbalances resolve. The DIIM models this recovery process using a resilience coefficient for each sector, showing how inoperability and economic losses evolve from the initial shock through full recovery. 
+\section{The Key Sector Identification Problem}
 
-Singapore is a city-state heavily dependent on international trade. It experienced both the direct effects of lockdown restrictions and the indirect effects of global supply chain disruptions. With major economic sectors that interact intensively, from manufacturing and financial services to construction and hospitality, we believe that Singapore has been strongly affected by the pandemic. 
+A critical application of the DIIM is identifying ``key sectors''---those where targeted intervention (e.g., reducing inoperability by allocating recovery resources) yields the greatest reduction in total economic loss. The DIIM identifies these sectors by running the full dynamic simulation and ranking sectors by cumulative economic loss. However, this approach has two limitations:
 
-The objective of this study is to (1) quantify the impact of COVID-19 on Singapore's economy across sectors using the DIIM framework, (2) identify which sectors experienced the highest inoperability and economic losses, (3) understand how disruptions cascaded through supply chains, and (4) evaluate whether alternative risk management policies would have been cost-effective.
+\begin{enumerate}
+    \item \textbf{Computational cost}: The DIIM requires running the complete simulation for every candidate intervention strategy.
+    \item \textbf{Data requirements}: The DIIM needs crisis-time data---initial inoperability $q_0$ and the demand perturbation $c^*$---which may not be available in the early stages of a disruption or during pre-event planning.
+\end{enumerate}
 
+This motivates the search for \emph{cheap structural methods} that can identify key sectors using only the input-output table, which is available in peacetime. Principal Component Analysis (PCA) applied to the integrated IO matrix $H = A(I-A)^{-1}$ is one such method, previously shown to produce sector rankings comparable to DIIM for specific scenarios. However, whether PCA's performance generalises across different disruption profiles (i.e., different $q_0$ vectors) is an open question.
 
+\section{Objectives}
 
+This study addresses the following objectives:
 
+\begin{enumerate}
+    \item Apply the DIIM framework to two disruption scenarios relevant to Singapore: the COVID-19 pandemic (15~sectors, 2019 IO table) and a manpower disruption (107~sectors, 2022 IO table).
+    \item Evaluate five cheap structural methods for key sector identification---PCA, backward linkage, forward linkage, output-weighted linkage, and network centrality---against the DIIM benchmark.
+    \item Determine the boundary conditions (in terms of the initial inoperability vector $q_0$) under which each cheap method can reliably substitute for the full DIIM simulation.
+    \item Derive practical decision rules that a policymaker can use to decide, given observable features of $q_0$, whether to use a cheap method or invest in running the full DIIM.
+\end{enumerate}
+
+\section{Report Organisation}
+
+Chapter~2 presents the methodology, including the derivation of the DIIM and the formulation of the cheap structural methods. Chapter~3 applies the DIIM to the COVID-19 scenario, presenting results and risk management analysis. Chapter~4 extends the analysis to the manpower disruption scenario. Chapter~5 compares the key sector identification methods across both scenarios. Chapter~6 develops the decision rules framework through Monte Carlo simulation and logistic regression. Chapter~7 discusses the implications, and Chapter~8 concludes.
 
 %=== END OF CHAPTER ONE ===
 \newpage
-
-

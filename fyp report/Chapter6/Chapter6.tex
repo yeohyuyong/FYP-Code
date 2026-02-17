@@ -1,85 +1,171 @@
 %=== CHAPTER SIX (6) ===
+%=== Decision Rules ===
+
+\chapter{Decision Rules: When Can Cheap Methods Substitute for DIIM?}
+
+The previous chapter showed that cheap methods can match DIIM at specific $q_0$ points but not universally. This chapter develops a systematic framework to determine \emph{when} each cheap method can be trusted, using Monte Carlo simulation and logistic regression.
+
+\section{Framework}
+
+\subsection{Motivation}
+
+All cheap methods produce a \emph{fixed} sector ranking---they depend only on the IO table structure ($A$, $x$), not on the disruption profile ($q_0$). The DIIM, by contrast, adapts its ranking to the specific $q_0$. A cheap method performs well when its fixed ranking happens to align with where $q_0$ concentrates; it fails when the disruption hits sectors that the cheap method did not prioritise.
+
+This insight suggests that the effectiveness of a cheap method is predictable from features of $q_0$. If we can identify these features, we can construct decision rules: ``Use cheap method $m$ if [condition on $q_0$]; otherwise, run the full DIIM.''
+
+\subsection{Performance Metric}
+
+For each cheap method~$m$ and a given $q_0$, we compute the performance ratio from Equation~\eqref{eq:performance-ratio}. Method~$m$ is considered ``close enough'' if $R_m \geq 0.95$.
 
 
-\chapter{Machine Learning for Key Sectors Identification}
+\section{Monte Carlo Simulation}
 
-Recent work suggests that machine learning approaches can be comparable to traditional IO-based methods for identifying key sectors. This dissertation explores whether principal component analysis (PCA) applied to an integrated IO matrix produces sector rankings similar to those derived from DIIM.
+We draw 2\,000 random $q_0$ vectors for each scenario (COVID-19, 15~sectors; Manpower, 107~sectors). For each trial:
 
-\section{Principal Component Analysis Applied to the IO Matrix}
+\begin{enumerate}
+    \item Draw $q_{0,i} \sim \text{Uniform}(10^{-6},\; 2 \max(q_0^{\text{actual}}))$ independently for each sector $i$.
+    \item Run the DIIM baseline (no intervention) and compute total economic loss.
+    \item Run the DIIM with intervention in the DIIM's top-5 sectors (10\% $q_0$ reduction) and compute $\Delta EL_{\text{DIIM}}$.
+    \item For each cheap method~$m$, run the DIIM with intervention in method~$m$'s top-5 sectors and compute $\Delta EL_m$.
+    \item Compute $R_m = \Delta EL_m / \Delta EL_{\text{DIIM}}$ and record whether $R_m \geq 0.95$ (``close'').
+\end{enumerate}
 
-Instead of using $A$ directly, this approach uses an integrated input–output coefficient matrix:
 
-\begin{equation}
-    H = A (I - A)^{-1}.
-    \label{eq:integrated-io-matrix}
-\end{equation}
+\section{COVID-19 Results}
 
-This transformation places more weight on stronger linkages and reflects both direct and indirect effects through the production network. PCA is then applied to $H$, and the first principal component (PC1) corresponds to the eigenvector with the largest eigenvalue. 
-
-Table~\ref{tab:my-table} below lists the principal component values. Note that the top three sectors identified by PCA are the same as the top three sectors identified by DIIM.
+Table~\ref{tab:covid-decision-results} summarises the Monte Carlo results for the COVID-19 scenario.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{@{}ccc@{}}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Sector\ ID} & \textbf{PC1} & \textbf{PC2} \\ \midrule
-3 & 0.772976374 & -0.158540904 \\
-2 & 0.488575487 & 0.547564001 \\
-5 & 0.230631604 & 0.602425551 \\
-8 & 0.173952844 & 0.31984955 \\
-4 & 0.16376151 & 0.197548491 \\
-10 & 0.141148665 & 0.185477914 \\
-7 & 0.107051197 & 0.232037887 \\
-11 & 0.100445788 & 0.154054165 \\
-1 & 0.082357584 & 0.203204452 \\
-9 & 0.065932369 & 0.120308858 \\
-12 & 0.02097817 & 0.033819003 \\
-6 & 0.01904942 & 0.04009044 \\
-15 & 0.010160651 & 0.015616709 \\
-14 & 0.004471868 & 0.006256627 \\
-13 & 0.002201633 & 0.00402146 \\ \bottomrule
+\textbf{Method} & \textbf{Close Rate ($\geq$95\%)} & \textbf{Win Rate} & \textbf{Mean Ratio} \\
+\midrule
+Output-Weighted Linkage & 88.9\% & 80.3\% & 1.156 \\
+PCA                     & 85.5\% & 75.2\% & 1.095 \\
+Forward Linkage         & 56.1\% & 44.2\% & 0.945 \\
+Network Centrality      & 51.4\% & 40.1\% & 0.986 \\
+Backward Linkage        &  2.3\% &  1.6\% & 0.478 \\
+\bottomrule
 \end{tabular}
-\caption{Sectors sorted by PC1}
-\label{tab:my-table}
+\caption{Monte Carlo results for COVID-19 (2\,000 trials, $k=5$).}
+\label{tab:covid-decision-results}
 \end{table}
 
+Output-weighted linkage and PCA both achieve close rates above 85\%, with mean performance ratios exceeding~1 (i.e., they \emph{outperform} DIIM on average). This occurs because these methods capture structural importance that sometimes identifies sectors the DIIM's loss-based ranking misses.
 
-\section{Simulation}
-
-This section compares whether the top sectors identified by PCA can reduce losses as effectively as the top sectors identified by DIIM. For each combination of lockdown duration (10, 20, 30, 40 days) and total simulation duration (300, 400, 500, 600 days), the DIIM is run to identify the top five sectors by impact, and then two hypothetical interventions are compared: reducing inoperability in the top five sectors selected by DIIM versus reducing inoperability in the top five sectors selected by PCA.
-
-Our calculation shows that economic loss increases as lockdown duration increases and also increases as total duration increases, which matches intuition. Our calculation also shows that lockdown duration has a stronger effect on economic loss than total duration in Figure~\ref{fig:impact-vs-total-duration}. In Figures~\ref{fig:ml-vs-diim-loss-reduction} and~\ref{fig:improvement-ml-vs-diim}, our calculation also shows that PCA-based prioritisation performs similarly to DIIM-based prioritisation, and upon closer inspection it can perform better for economic loss reduction under the stated assumptions.
-
-
-\begin{figure}[H]
+\begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.75\linewidth]{Chapter6/impact_total_duration.png}
-    \caption{Economic loss for different lockdown and total durations}
-    \label{fig:impact-vs-total-duration}
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter6/covid_close_rates.png}}
+    \caption{Close rates and win rates for each cheap method (COVID-19).}
+    \label{fig:covid-close-rates}
+\end{figure}
+
+Figure~\ref{fig:covid-ratio-dist} shows the distribution of performance ratios across the 2\,000 trials. Output-weighted linkage and PCA have distributions centred above~1, while backward linkage is centred below~0.5.
+
+\begin{figure}[tbp]
+    \centering
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter6/covid_ratio_dist.png}}
+    \caption{Performance ratio distributions (COVID-19).}
+    \label{fig:covid-ratio-dist}
 \end{figure}
 
 
-\begin{figure}[H]
+\section{Manpower Results}
+
+Table~\ref{tab:manpower-decision-results} summarises the manpower scenario results.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Method} & \textbf{Close Rate ($\geq$95\%)} & \textbf{Win Rate} & \textbf{Mean Ratio} \\
+\midrule
+Output-Weighted Linkage & 55.4\% & 24.3\% & 0.942 \\
+Forward Linkage         &  8.6\% &  0.9\% & 0.822 \\
+PCA                     &  5.3\% &  0.4\% & 0.802 \\
+Network Centrality      &  1.1\% &  0.0\% & 0.641 \\
+Backward Linkage        &  0.0\% &  0.0\% & 0.175 \\
+\bottomrule
+\end{tabular}
+\caption{Monte Carlo results for Manpower (2\,000 trials, $k=5$).}
+\label{tab:manpower-decision-results}
+\end{table}
+
+The manpower scenario is much harder for all cheap methods. PCA's close rate drops from 85.5\% (COVID-19) to 5.3\% (manpower). Even output-weighted linkage, the best performer, only matches DIIM 55\% of the time. This is fundamentally driven by the number of sectors: with 107~sectors, the top-5 represent only 4.7\% of the economy, and the probability that any fixed ranking captures the five most impactful sectors under a random $q_0$ is much lower.
+
+\begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.75\linewidth]{Chapter6/heatmap_across_model.png}
-    \caption{Economic loss heatmap across models}
-    \label{fig:heatmap-across-models}
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter6/manpower_close_rates.png}}
+    \caption{Close rates and win rates for each cheap method (Manpower).}
+    \label{fig:manpower-close-rates}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.75\linewidth]{Chapter6/econ_loss_ml_vs_diim.png}
-    \caption{Economic loss reduction for ML vs DIIM}
-    \label{fig:ml-vs-diim-loss-reduction}
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter6/manpower_ratio_dist.png}}
+    \caption{Performance ratio distributions (Manpower).}
+    \label{fig:manpower-ratio-dist}
 \end{figure}
 
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Chapter6/improvement_diim_ml.png}
-    \caption{Difference in Improvement: ML vs DIIM}
-    \label{fig:improvement-ml-vs-diim}
-\end{figure}
+\section{Decision Rules via Logistic Regression}
+
+For each method~$m$, we fit a logistic regression model:
+
+\begin{equation}
+    \log \frac{P(R_m \geq 0.95)}{1 - P(R_m \geq 0.95)} = \beta_0 + \beta_1 f_1 + \beta_2 f_2 + \cdots
+    \label{eq:logistic-regression}
+\end{equation}
+
+where the features $f_1, f_2, \ldots$ are derived from $q_0$ and the method's sector rankings:
+
+\begin{itemize}
+    \item \textbf{Method share}: the fraction of total $q_0$ captured by the method's top-5 sectors.
+    \item \textbf{Method average rank}: the mean rank of the method's top-5 sectors in the $q_0$ ranking (normalised to [0,1]).
+    \item \textbf{Overlap}: the number of the method's top-5 sectors that also appear in $q_0$'s top-5.
+    \item \textbf{General $q_0$ features}: Gini coefficient, coefficient of variation, max-to-mean ratio, and normalised entropy of $q_0$.
+\end{itemize}
+
+For each model, we identify the most significant predictor and compute the Youden's~$J$ optimal threshold---the threshold that maximises sensitivity plus specificity minus~1.
+
+Table~\ref{tab:decision-rules-summary} presents the derived decision rules.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}llcc@{}}
+\toprule
+\textbf{Scenario} & \textbf{Method} & \textbf{Decision Rule} & \textbf{$J$} \\
+\midrule
+\multirow{3}{*}{COVID-19}
+ & Output-Weighted & OWL\_avgrank $< 0.533$ & 0.411 \\
+ & PCA             & PCA\_avgrank $< 0.578$ & 0.304 \\
+ & Network Cent.   & NC\_overlap $> 0.200$  & 0.197 \\
+\midrule
+\multirow{3}{*}{Manpower}
+ & PCA             & PCA\_share $> 0.057$   & 0.559 \\
+ & Forward Linkage & FL\_avgrank $< 0.456$  & 0.503 \\
+ & Output-Weighted & OWL\_overlap $> 0$     & 0.102 \\
+\bottomrule
+\end{tabular}
+\caption{Decision rules with Youden's $J$-optimal thresholds.}
+\label{tab:decision-rules-summary}
+\end{table}
+
+The decision rules follow a common pattern: a cheap method works well when the disruption ($q_0$) is concentrated in sectors that the method has already identified as structurally important. The ``share'' and ``average rank'' features capture this alignment.
+
+
+\section{Practical Recommendations}
+
+Based on the analysis, we propose the following practical guidelines:
+
+\begin{enumerate}
+    \item \textbf{For small economies ($\leq$ 20 sectors)}: Output-weighted linkage or PCA can be used as primary screening tools. With close rates above 85\%, the risk of significant underperformance is low.
+    \item \textbf{For large economies ($>$ 50 sectors)}: Output-weighted linkage should be used as a first-pass screen. If the overlap between its top-$k$ sectors and the observed high-$q_0$ sectors is low, the full DIIM should be run.
+    \item \textbf{Pre-event planning}: Since $q_0$ is unknown before a disruption occurs, cheap methods are valuable for \emph{pre-positioning} resources. Output-weighted linkage provides the best structural estimate of which sectors are likely to be critical across a range of disruption profiles.
+    \item \textbf{During a crisis}: Once $q_0$ is observed, the decision rules in Table~\ref{tab:decision-rules-summary} can be evaluated instantly to determine whether the cheap method's recommendation is trustworthy for the specific disruption at hand.
+\end{enumerate}
 
 %=== END OF CHAPTER SIX ===
 \newpage

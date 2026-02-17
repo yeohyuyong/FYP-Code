@@ -1,0 +1,41 @@
+\begin{thebibliography}{1}
+
+\bibitem{SantosHaimes2004}
+Joost~R. Santos and Yacov~Y. Haimes.
+\newblock Modeling the demand reduction input-output (i-o) inoperability due to terrorism of interconnected infrastructures.
+\newblock {\em Risk Analysis}, 24(6):1437--1451, 2004.
+
+\bibitem{JinZhou2023}
+Jian Jin and Haoran Zhou.
+\newblock A demand-side inoperability input--output model for strategic risk management: Insight from the {COVID}-19 outbreak in shanghai, china.
+\newblock {\em Sustainability}, 15(5):4003, 2023.
+
+\bibitem{DataGovSgIO2019}
+{SINGSTAT (Singapore Department of Statistics)}.
+\newblock Industry by industry input-output table (supply, use and input-output tables 2019).
+\newblock \url{https://data.gov.sg/datasets/d_959da3e78690cb3136c529fbc448d178/view}.
+\newblock data.gov.sg dataset. Accessed 2026-02-17.
+
+\bibitem{MOH2020EndCircuitBreaker}
+{Ministry of Health, Singapore}.
+\newblock End of circuit breaker, phased approach to resuming activities safely.
+\newblock \url{https://www.moh.gov.sg/newsroom/end-of-circuit-breaker-phased-approach-to-resuming-activities-safely/}, May 2020.
+\newblock Newsroom release dated 19 May 2020. Accessed 2026-02-17.
+
+\bibitem{MOH2020PostCircuitBreakerMeasures}
+{Ministry of Health, Singapore}.
+\newblock Post circuit breaker measures.
+\newblock \url{https://www.moh.gov.sg/newsroom/post-circuit-breaker-measures/}, 2020.
+\newblock Newsroom / Parliamentary reply page referencing circuit breaker dates. Accessed 2026-02-17.
+
+\bibitem{Haimes1975SWTChapter}
+Yacov~Y. Haimes.
+\newblock The surrogate worth trade-off method.
+\newblock {\em Developments in Water Science}, 3:34--57, 1975.
+
+\bibitem{NobelPrizeLeontiefFacts}
+Wassily leontief -- facts.
+\newblock \url{https://www.nobelprize.org/prizes/economic-sciences/1973/leontief/facts/}.
+\newblock NobelPrize.org. Accessed 2026-02-17.
+
+\end{thebibliography}

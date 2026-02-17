@@ -1,37 +1,138 @@
 %=== CHAPTER THREE (3) ===
+%=== Case Study 1: COVID-19 ===
 
-\chapter{Data and Model Parameters}
+\chapter{Case Study 1: COVID-19 Pandemic}
 
-\section{Data selection}
+This chapter applies the DIIM framework to Singapore's COVID-19 pandemic, presenting the data, simulation results, and risk management analysis.
 
-\subsection{Singapore input-output table}
+\section{Data and Model Parameters}
 
-The IO transaction data for Singapore is obtained from the Department of Statistics, Singapore \cite{DataGovSgIO2019}. This project uses the 2019 IO table because it is the closest year before COVID-19 and represents the pre-pandemic baseline. The available IO table is aggregated into 20 broad sectors, and this study further aggregates them into 15 sectors to match the Ministry of Manpower dataset used to compute initial inoperability. The mapping is provided in Appendix A (Table~\ref{tab:sector-mapping}).
+\subsection{Input-Output Table}
 
-From the aggregated IO table, the technical coefficient matrix $A$ is computed. A cross-section of $A$ is provided in Appendix A (Table~\ref{tab:tech-coeff-cross-section}).
+The IO transaction data for Singapore is obtained from the Department of Statistics, Singapore \cite{DataGovSgIO2019}. This study uses the 2019 IO table because it is the closest year before COVID-19 and represents the pre-pandemic baseline. The available IO table is aggregated into 20 broad sectors, and this study further aggregates them into 15 sectors to match the Ministry of Manpower dataset used to compute initial inoperability. The mapping is provided in Appendix~A (Table~\ref{tab:sector-mapping}).
 
-\subsection{Initial inoperability data}
+From the aggregated IO table, the technical coefficient matrix $A$ is computed. A cross-section of $A$ is provided in Appendix~A (Table~\ref{tab:tech-coeff-cross-section}).
 
-Initial inoperability is calculated using:
+\subsection{Initial Inoperability}
+
+Initial inoperability is calculated using Equation~\eqref{eq:initial-inoperability}. The workforce unavailability component is obtained from Ministry of Manpower data, and the labour dependence component is derived from the IO table. The initial inoperability values for the 15 aggregated sectors are listed in Appendix~A (Table~\ref{tab:sector-inoperability}).
+
+\subsection{Model Parameters}
+
+Singapore's lockdown measures (``circuit breaker'') were implemented from 7~April to 1~June~2020, which is 55~days \cite{MOH2020EndCircuitBreaker,MOH2020PostCircuitBreakerMeasures}. This study sets the shock duration to 55~days.
+
+In late April 2022 (751~days after the start of lockdown), Singapore's DORSCON level was lowered from Orange to Yellow, and employees were allowed to return to workplaces. This study assumes a final inoperability $q_i(T_i) = 1\%$, meaning economic activity returns to 99\% of pre-lockdown levels after 751~days.
+
+
+\section{Results}
+
+\subsection{Inoperability Evolution}
+
+Figure~\ref{fig:inoperability-evolution} shows the simulated inoperability trajectories for the 15 aggregated sectors over the shock-and-recovery horizon. Inoperability rises during the shock window as disruptions propagate through input-output linkages, and it declines during recovery as sectors gradually restore production. Because sectors are interconnected, each sector experiences both direct effects from its own disruption and indirect effects transmitted from other sectors.
+
+\begin{figure}[tbp]
+    \centering
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter3/inoperability.png}}
+    \caption{Inoperability evolution over the shock-and-recovery horizon (COVID-19, 15 sectors).}
+    \label{fig:inoperability-evolution}
+\end{figure}
+
+
+\subsection{Economic Loss Evolution}
+
+Figure~\ref{fig:economic-loss-evolution} presents the corresponding economic-loss evolution. Sectors with larger baseline outputs can accumulate large absolute losses even if their relative inoperability is not the highest, while smaller sectors may show high inoperability but smaller absolute losses.
+
+\begin{figure}[tbp]
+    \centering
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter3/econ_loss.png}}
+    \caption{Economic loss evolution over the shock-and-recovery horizon (COVID-19, 15 sectors).}
+    \label{fig:economic-loss-evolution}
+\end{figure}
+
+
+\subsection{Identifying Vulnerable Sectors}
+
+This section identifies vulnerable sectors using two measures: inoperability (relative production loss) and cumulative economic loss (absolute output loss). Figure~\ref{fig:joint-impact-matrix} plots each sector using its rank in inoperability (y-axis) and its rank in economic loss (x-axis), so sectors that rank high in both measures are easy to identify.
+
+\begin{figure}[tbp]
+    \centering
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter3/ordinal.png}}
+    \caption{Joint impact matrix: inoperability rank vs.\ economic loss rank (COVID-19).}
+    \label{fig:joint-impact-matrix}
+\end{figure}
+
+To support prioritisation, we define ordinal ``zones'' (Top~5, Top~7, Top~10) as the intersection of sectors that appear in the top-$k$ rankings of both measures. For example, the Top~5 zone contains sectors that are simultaneously ranked in the top five for both inoperability and economic loss, highlighting sectors that are both heavily disrupted and economically important.
+
+Differences between the two rankings are expected. For example, a sector such as Arts, Entertainment \& Recreation may rank high in inoperability but lower in economic loss if its baseline output is smaller than that of other sectors. Overall, Figure~\ref{fig:joint-impact-matrix} provides a practical view for decision-making when policymakers want to balance restoring functionality (low inoperability) and reducing macroeconomic damage (low loss).
+
+
+\section{Sensitivity Analysis}
+
+To study the effect of lockdown duration, we simulate three lockdown lengths: 40, 55, and 70~days while keeping other parameters unchanged. Across sectors, longer lockdown durations lead to higher cumulative economic losses. The results also suggest the sector rankings of economic loss remain broadly consistent under moderate changes in lockdown duration. Figure~\ref{fig:sensitivity-lockdown-duration} shows the total economic loss for each sector under different lockdown durations.
+
+\begin{figure}[tbp]
+    \centering
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter3/sensitivity.png}}
+    \caption{Total economic loss under different lockdown durations (COVID-19).}
+    \label{fig:sensitivity-lockdown-duration}
+\end{figure}
+
+
+\section{Risk Management Analysis}
+
+This section evaluates risk management alternatives using the surrogate worth trade-off (SWT) method \cite{Haimes1975SWTChapter}, focusing on the trade-off between investment costs and benefits measured as economic losses avoided.
+
+\subsection{Net Benefit}
+
+Net benefit for policy option~$j$ is defined as:
 
 \begin{equation}
-    \label{eq:initial-inoperability-data}
-    \text{Sector Initial Inoperability} = \frac{\text{Unavailable Workforce}}{\text{Size of Workforce}} * \frac{\text{LAPI}}{\text{Sector Output}}
+    \delta_j = \Gamma_{w[0]} - \Gamma_{w[j]} - \gamma_j
+    \label{eq:net-benefit}
 \end{equation}
 
-The workforce unavailability component is obtained from Ministry of Manpower data, and the labour dependence component is derived from the IO table. The initial inoperability values for the 15 aggregated sectors are listed in Appendix A (Table~\ref{tab:sector-inoperability}).
+Here $\Gamma_{w[0]}$ is the baseline economic loss without policy, $\Gamma_{w[j]}$ is the economic loss under policy~$j$, and $\gamma_j$ is the cost of implementing policy~$j$.
 
+\subsection{Scenario 1 (Baseline): No Policy}
 
-\section{Model parameters}
+In Scenario~1, no risk management measures are taken and the model results represent the baseline outcome. The execution cost is~0, and net benefit is set to~0 to serve as the comparison baseline.
 
-\subsection{Lockdown duration}
+\begin{equation}
+    \delta_0 = \Gamma_{w[0]} - \Gamma_{w[0]} - 0 = 0
+    \label{eq:baseline-net-benefit}
+\end{equation}
 
-Singapore's lockdown measures ("circuit breaker") were implemented from 7 April to 1 June 2020, which is 55 days \cite{MOH2020EndCircuitBreaker,MOH2020PostCircuitBreakerMeasures}. This project sets the shock duration to 55 days.
+\subsection{Scenario 2: Risk Control Investment}
 
+In this scenario, the government is assumed to spend 1~billion SGD in advance on risk control to reduce the pandemic impact. The policy is assumed to reduce the inoperability impact by 5\% per day, meaning each day's inoperability is scaled to 95\% of the original level before being used in the DIIM. Under this assumption:
 
-\subsection{Final inoperability}
+\begin{equation}
+    \begin{aligned}
+        \delta_{1} &= \Gamma_{w[0]} - \Gamma_{w[1]} - \gamma_{1}
+        = 26\,967.3 - 2\,323.01 - 1\,000 = 23\,644.29 \text{ million SGD}, \\
+        \lambda_{12} &= \frac{\gamma_{1}}{\Gamma_{w[0]} - \Gamma_{w[1]}}
+        = \frac{1\,000}{26\,967.3 - 2\,323.01} = 0.0406
+    \end{aligned}
+    \label{eq:policy1-results}
+\end{equation}
 
-In late April 2022 (751 days after the start of lockdown), Singapore's DORSCON level was lowered from Orange to Yellow, and employees were allowed to return to workplaces. This dissertation assumes a final inoperability $q_i(T_i)$ = 1\%, meaning economic activity returns to 99\% of pre-lockdown levels after 751 days.
+\subsection{Scenario 3: Lockdown Reduction}
+
+In this scenario, the government is assumed to spend 2~billion SGD in total. The additional spending is assumed to reduce the lockdown period from 55~days to 30~days:
+
+\begin{equation}
+    \begin{aligned}
+        \delta_{2} &= \Gamma_{w[0]} - \Gamma_{w[2]} - \gamma_{2}
+        = 26\,967.3 - 17\,564.99 - 2\,000 = 7\,402.31 \text{ million SGD}, \\
+        \lambda_{12} &= \frac{\gamma_{2}}{\Gamma_{w[0]} - \Gamma_{w[2]}}
+        = \frac{2\,000}{26\,967.3 - 17\,564.99} = 0.2127
+    \end{aligned}
+    \label{eq:policy2-results}
+\end{equation}
+
+\subsection{Comparing Policies}
+
+Policy~1 obtains 1~SGD of benefit for each 0.041~SGD of investment cost, while Policy~2 obtains 1~SGD of benefit for each 0.21~SGD of investment cost. Under these assumptions, Policy~1 is preferred because it has a smaller cost per unit benefit. This demonstrates how the DIIM framework can support cost-benefit analysis of competing risk management strategies.
 
 %=== END OF CHAPTER THREE ===
 \newpage

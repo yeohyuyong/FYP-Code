@@ -1,62 +1,95 @@
 %=== CHAPTER FOUR (4) ===
-%=== Test and Experiments ===
+%=== Case Study 2: Manpower Disruption ===
 
-\chapter{Results}
+\chapter{Case Study 2: Manpower Disruption}
 
-\section{Inoperability and Economic Loss}
+This chapter extends the DIIM framework to a manpower disruption scenario motivated by Singapore's dependence on foreign labour and the potential for grey zone conflicts to trigger workforce departures.
 
+\section{Background: Singapore's Foreign Worker Dependence}
 
-Figure~\ref{fig:inoperability-evolution} shows the simulated inoperability trajectories for the 15 aggregated sectors over the shock-and-recovery horizon. Inoperability rises during the shock window as disruptions propagate through input–output linkages, and it declines during recovery as sectors gradually restore production. Because sectors are interconnected, each sector experiences both direct effects from its own disruption and indirect effects transmitted from other sectors.
+Singapore's economy relies on approximately 1.4~million foreign workers, who constitute roughly one-third of the total labour force \cite{MOM2023ForeignWorkforce}. These workers are concentrated in sectors such as construction, manufacturing, marine shipyard, process industries, and domestic services. While this reliance on foreign labour has been a key enabler of economic growth, it creates a structural vulnerability to events that could trigger rapid workforce departures.
 
-\begin{figure}[tbp]
-    \centering
-    \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/inoperability.png}}
-    \caption{Inoperability evolution over the shock-and-recovery horizon.}
-    \label{fig:inoperability-evolution}
-\end{figure}
+Grey zone conflicts---coercive actions that fall below the threshold of conventional warfare---represent a plausible threat scenario \cite{MINDEF2020Factsheet}. Such conflicts could include economic sanctions, cyber attacks on critical infrastructure, disinformation campaigns, or military posturing in the region. Any of these could erode confidence among foreign workers and their home governments, potentially triggering a significant and rapid outflow of non-resident workers.
 
+Unlike the COVID-19 scenario, where disruption arose from both workforce unavailability ($q_0 > 0$) and reduced demand ($c^* > 0$), a manpower disruption is characterised by:
 
-Figure~\ref{fig:economic-loss-evolution} presents the corresponding economic-loss evolution. Sectors with larger baseline outputs can accumulate large absolute losses even if their relative inoperability is not the highest, while smaller sectors may show high inoperability but smaller absolute losses.
+\begin{itemize}
+    \item \textbf{High initial inoperability} ($q_0 > 0$): Sectors lose productive capacity as workers depart.
+    \item \textbf{No external demand shock} ($c^* = 0$): The disruption is purely structural. Demand may persist but cannot be met due to workforce shortages.
+\end{itemize}
 
-\begin{figure}[tbp]
-    \centering
-    \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/econ_loss.png}}
-    \caption{Economic loss evolution over the shock-and-recovery horizon.}
-    \label{fig:economic-loss-evolution}
-\end{figure}
-
-The top 15 sectors with the highest inoperability are: [to be inserted].
+This distinction is important because the DIIM solution simplifies to $q(t) = e^{-K(I-A^*)t}\, q(0)$ when $c^* = 0$ (Equation~\eqref{eq:diim-solution-homogeneous}), meaning the disruption dynamics are governed entirely by the structure of the economy ($A^*$) and the initial shock ($q_0$).
 
 
-The top 15 sectors with the highest cumulative economic losses are: [to be inserted].
+\section{Data and Model Parameters}
+
+\subsection{Input-Output Table}
+
+This scenario uses the 2022 Singapore IO table, which provides a more granular sectoral breakdown of 107~sectors. The finer resolution is essential for capturing the heterogeneous distribution of foreign workers across sub-sectors.
+
+\subsection{Initial Inoperability}
+
+Initial inoperability is computed using the same method as Equation~\eqref{eq:initial-inoperability}, with workforce unavailability data reflecting the proportion of foreign workers in each sector. Sectors with high foreign worker concentrations (e.g., construction, process industries) have correspondingly higher initial inoperability.
+
+\subsection{Model Parameters}
+
+The shock duration is set to 55~days to enable comparison with the COVID-19 scenario, though a manpower disruption could have a different timeline. The total simulation horizon is 751~days with a final inoperability of 1\%, representing near-full recovery through workforce replacement, retraining, or automation.
 
 
-\section{Identifying vulnerable Sectors}
+\section{Results}
 
-This section identifies vulnerable sectors using two measures: inoperability (relative production loss) and cumulative economic loss (absolute output loss). Figure~\ref{fig:joint-impact-matrix} plots each sector using its rank in inoperability (y-axis) and its rank in economic loss (x-axis), so sectors that rank high in both measures are easy to identify.
+\subsection{Inoperability Evolution}
 
-\begin{figure}[tbp]
-    \centering
-    \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/ordinal.png}}
-    \caption{Joint impact matrix: inoperability rank (y-axis) vs.\ economic loss rank (x-axis).}
-    \label{fig:joint-impact-matrix}
-\end{figure}
+Figure~\ref{fig:manpower-inoperability} shows the simulated inoperability trajectories for the 107~sectors. Compared to the COVID-19 scenario, the manpower disruption exhibits:
 
-To support prioritisation, we define ordinal "zones" (Top 5, Top 7, Top 10) as the intersection of sectors that appear in the top-$k$ rankings of both measures. For example, the Top 5 zone contains sectors that are simultaneously ranked in the top five for both inoperability and economic loss, highlighting sectors that are both heavily disrupted and economically important.
-
-Differences between the two rankings are expected. For example, a sector such as Arts, Entertainment \& Recreation may rank high in inoperability but lower in economic loss if its baseline output is smaller than that of other sectors. Overall, Figure 4.3 provides a practical view for decision-making when policymakers want to balance restoring functionality (low inoperability) and reducing macroeconomic damage (low loss).
-
-\section{Sensitivity Analysis}
-
-To study the effect of lockdown duration, we simulate three lockdown lengths: 40, 55, and 70 days while keeping other parameters unchanged. Across sectors, longer lockdown durations lead to higher cumulative economic losses. The results also suggest the sector rankings of economic loss remain broadly consistent under moderate changes in lockdown duration. Figure~\ref{fig:sensitivity-lockdown-duration} shows the total economic loss for each of the sector under different lockdown durations.
+\begin{itemize}
+    \item Greater dispersion in initial inoperability across sectors, reflecting the uneven distribution of foreign workers.
+    \item Stronger cascading effects through the 107-sector production network, as disruptions in labour-intensive sectors propagate to downstream industries.
+\end{itemize}
 
 \begin{figure}[tbp]
     \centering
-    \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/sensitivity.png}}
-    \caption{Total economic loss under different lockdown durations.}
-    \label{fig:sensitivity-lockdown-duration}
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/manpower_inoperability.png}}
+    \caption{Inoperability evolution for the manpower disruption scenario (107 sectors).}
+    \label{fig:manpower-inoperability}
 \end{figure}
 
+
+\subsection{Economic Loss Evolution}
+
+Figure~\ref{fig:manpower-economic-loss} presents the cumulative economic loss evolution. The 107-sector resolution reveals that even sectors with moderate inoperability can accumulate substantial losses if their baseline output is large (e.g., manufacturing sub-sectors, financial services).
+
+\begin{figure}[tbp]
+    \centering
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/manpower_econ_loss.png}}
+    \caption{Economic loss evolution for the manpower disruption scenario (107 sectors).}
+    \label{fig:manpower-economic-loss}
+\end{figure}
+
+
+\section{Comparison with COVID-19}
+
+Table~\ref{tab:scenario-comparison} summarises the key structural differences between the two scenarios.
+
+\begin{table}[tbp]
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Parameter} & \textbf{COVID-19} & \textbf{Manpower} \\
+\midrule
+Number of sectors & 15 & 107 \\
+IO table year & 2019 & 2022 \\
+Demand shock $c^*$ & $>0$ & $= 0$ \\
+Shock type & Demand + supply & Pure supply \\
+Lockdown duration & 55 days & 55 days \\
+Total horizon & 751 days & 751 days \\
+\bottomrule
+\end{tabular}
+\caption{Comparison of COVID-19 and manpower disruption scenario parameters.}
+\label{tab:scenario-comparison}
+\end{table}
+
+The manpower scenario is structurally more complex because (1)~the 107-sector economy has a denser and more heterogeneous interdependency matrix~$A^*$, and (2)~the absence of a demand shock means the entire disruption propagation is driven by the production network. These structural differences have important implications for the effectiveness of cheap key sector identification methods, as explored in the following chapters.
 
 %=== END OF CHAPTER FOUR ===
 \newpage

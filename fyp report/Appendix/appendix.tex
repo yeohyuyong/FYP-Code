@@ -1,14 +1,9 @@
 %=== APPENDIX ===
 
-\chapter*{Appendix A}
-\addcontentsline{toc}{chapter}{Appendix A}
-
-% Cross-references (dynamic numbering):
-% - Put \label{<key>} right after the equation/table/figure caption (or inside equation env).
-% - Refer to equations with \eqref{<key>} and to tables/figures with Table~\ref{<key>}/Figure~\ref{<key>}.
+\chapter*{Appendix A: COVID-19 Scenario Data}
+\addcontentsline{toc}{chapter}{Appendix A: COVID-19 Scenario Data}
 
 
-    
 %Mapping of Sectors
 
 \begin{table}[H]
@@ -35,7 +30,7 @@
 14 & 0.004471868 & 0.006256627 \\
 13 & 0.002201633 & 0.00402146 \\ \bottomrule
 \end{tabular}
-\caption{Mapping of Sectors}
+\caption{Sector PCA loadings (COVID-19, 15 sectors)}
 \label{tab:sector-mapping}
 \end{table}
 
@@ -59,7 +54,7 @@
 {\color[HTML]{000000} Manufacturing} & {\color[HTML]{000000} 498.915600} & {\color[HTML]{000000} 59,777.284000} & {\color[HTML]{000000} 4,939.792300} \\
 {\color[HTML]{000000} Construction} & {\color[HTML]{000000} 166.973900} & {\color[HTML]{000000} 498.152500} & {\color[HTML]{000000} 23,583.027800} \\ \bottomrule
 \end{tabular}
-\caption{Cross-section of technical coefficient matrix}
+\caption{Cross-section of technical coefficient matrix (COVID-19)}
 \label{tab:tech-coeff-cross-section}
 \end{table}
 
@@ -90,15 +85,53 @@
 14 & Arts,  Entertainment  \&    Recreation & 0.004552 \\
 15 & Other  Community,    Social  \&  Personal    Services & 0.015819 \\ \bottomrule
 \end{tabular}
-\caption{Sector Initial Inoperability}
+\caption{Sector Initial Inoperability (COVID-19)}
 \label{tab:sector-inoperability}
 \end{table}
 
 
-\chapter*{Appendix B}
-\addcontentsline{toc}{chapter}{Appendix B}
-(Code to be added here)
+\chapter*{Appendix B: Manpower Scenario Data}
+\addcontentsline{toc}{chapter}{Appendix B: Manpower Scenario Data}
+
+The manpower disruption scenario uses the 2022 Singapore IO table with 107 sectors. Due to the large number of sectors, only summary statistics are presented here.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Parameter} & \textbf{COVID-19} & \textbf{Manpower} \\
+\midrule
+Number of sectors ($n$) & 15 & 107 \\
+IO table year & 2019 & 2022 \\
+Mean initial inoperability & 0.00398 & varies \\
+Max initial inoperability & 0.01582 & varies \\
+Demand shock ($c^*$) & $> 0$ & $= 0$ \\
+Lockdown duration & 55 days & 55 days \\
+Total horizon & 751 days & 751 days \\
+PCA top-5 sectors & 3, 2, 5, 8, 4 & 17, 57, 69, 54, 62 \\
+DIIM top-5 sectors & by simulation & by simulation \\
+\bottomrule
+\end{tabular}
+\caption{Summary of scenario parameters}
+\label{tab:scenario-summary}
+\end{table}
 
 
-%=== END OF CHAPTER SIX ===
+\chapter*{Appendix C: Code}
+\addcontentsline{toc}{chapter}{Appendix C: Code}
+
+The R code for all simulations and analyses is available in the project repository. Key scripts include:
+
+\begin{itemize}
+    \item \texttt{functions.R}: Core DIIM function, data loading, simulation comparison
+    \item \texttt{pca.R}: PCA analysis on the integrated IO matrix
+    \item \texttt{simulations/decision\_rules.R}: Monte Carlo framework, logistic regression, decision rules
+    \item \texttt{simulations/enhanced\_comparison.R}: Multi-PC PCA and variable top-$k$ sweep
+    \item \texttt{simulations/alternative\_methods.R}: Network centrality, sensitivity analysis, hybrid methods
+    \item \texttt{manpower-disruption/manpower-disruption.R}: Manpower scenario DIIM simulation
+\end{itemize}
+
+
+%=== END OF APPENDIX ===
 \newpage

@@ -1,17 +1,25 @@
 %=== CHAPTER TWO (2) ===
-%=== Literature Review ===
+%=== Methodology ===
 
 \chapter{Methodology}
 
-This paper uses the DIIM model to assess the impacts of COVID-19 on the inoperability and economic losses of Singapore’s sectors. The DIIM model is derived from the Leontief input-output model and is used to investigate the higher-order transmission effect of input-output linkages between sectors on inoperability. Using the DIIM model requires first introducing the concept of “inoperability”, which is defined as follows:
+This chapter presents the analytical framework. Section~\ref{sec:diim-derivation} derives the DIIM from the Leontief input-output model. Section~\ref{sec:cheap-methods} introduces the cheap structural methods for key sector identification. Section~\ref{sec:performance-metric} defines the performance metric used to compare methods.
 
-% Requires: \usepackage{amsmath}
+\section{The Dynamic Inoperability Input-Output Model}
+\label{sec:diim-derivation}
+
+\subsection{Inoperability}
+
+This paper uses the DIIM model to assess the impacts of economic disruptions on the inoperability and economic losses of Singapore's sectors. The DIIM model is derived from the Leontief input-output model and is used to investigate the higher-order transmission effect of input-output linkages between sectors on inoperability. Using the DIIM model requires first introducing the concept of ``inoperability'', which is defined as follows:
+
 \begin{equation}
     \label{eq:inoperability-definition}
     \text{Inoperability} = \frac{\text{As Planned Production} - \text{Degraded Production}}{\text{As Planned Production}}
 \end{equation}
 
-Where "As Planned Production" represents the output level of a sector under normal production, and "Degraded Production" represents the output level of a sector after being shocked in its production process. In this paper, the shock comes from the reduction in demand due to the lockdown caused by COVID-19. The difference between "As Planned Production" and "Degraded Production" describes the degree of output decline of a sector. "Inoperability" takes values between 0 and 1, with higher values indicating greater damage to production caused by the shock. A value of 1 means the shocked sector has completely lost its production capacity, while a value of 0 means the sector is producing at a normal level.
+Where ``As Planned Production'' represents the output level of a sector under normal production, and ``Degraded Production'' represents the output level of a sector after being shocked in its production process. ``Inoperability'' takes values between 0 and 1, with higher values indicating greater damage to production caused by the shock. A value of 1 means the shocked sector has completely lost its production capacity, while a value of 0 means the sector is producing at a normal level.
+
+\subsection{From Leontief to IIM}
 
 Using the concept of inoperability defined above, the IIM model can be derived from the Leontief input-output model, as shown in Equation~\eqref{eq:leontief-model}.
 
@@ -20,11 +28,10 @@ Using the concept of inoperability defined above, the IIM model can be derived f
     \label{eq:leontief-model}
 \end{equation}
 
-Where x is the total output vector; $A$ is the technical coefficient matrix; $c$ is the final demand vector. If we define the output levels and the final demand vector of some shocked sectors as $\tilde{x}$ and $\tilde{c}$ respectively, then based on equation (edit), we can construct the input-output relationship between sectors after the shock:
+Where $x$ is the total output vector; $A$ is the technical coefficient matrix; $c$ is the final demand vector. If we define the output levels and the final demand vector of some shocked sectors as $\tilde{x}$ and $\tilde{c}$ respectively, then we can construct the input-output relationship between sectors after the shock.
 
 Subtracting Equation~\eqref{eq:leontief-model} from the shocked-economy formulation:
 
-% Requires: \usepackage{amsmath}
 \begin{equation}
     x - \tilde{x} = A (x - \tilde{x}) + (c - \tilde{c})
     \label{eq:leontief-difference}
@@ -32,7 +39,6 @@ Subtracting Equation~\eqref{eq:leontief-model} from the shocked-economy formulat
 
 Defining $\hat{x}$ as a diagonalized matrix of the output vector and left multiplying $\hat{x}^{-1}$ on both sides of Equation~\eqref{eq:leontief-difference}:
 
-% Requires: \usepackage{amsmath}
 \begin{equation}
     \hat{x}^{-1}(x - \tilde{x}) = \hat{x}^{-1}A(x - \tilde{x}) + \hat{x}^{-1}(c - \tilde{c})
     \label{eq:normalized-difference}
@@ -40,7 +46,6 @@ Defining $\hat{x}$ as a diagonalized matrix of the output vector and left multip
 
 Let $q = \hat{x}^{-1}\left(x - \tilde{x}\right), \quad A^{*} = \hat{x}^{-1} A \hat{x}, \quad c^{*} = \hat{x}^{-1}\left(c - \tilde{c}\right)$; then Equation~\eqref{eq:iim-model} can be derived, which is the IIM model.
 
-% Requires: \usepackage{amsmath}
 \begin{equation}
     q = A^{*} q + c^{*}
     \label{eq:iim-model}
@@ -48,7 +53,6 @@ Let $q = \hat{x}^{-1}\left(x - \tilde{x}\right), \quad A^{*} = \hat{x}^{-1} A \h
 
 The details of each matrix in the IIM model are shown in Equations~\eqref{eq:q-definition}, \eqref{eq:astar-definition}, and~\eqref{eq:cstar-definition}:
 
-% Requires: \usepackage{amsmath}
 \begin{equation}
     \label{eq:q-definition}
     q = \hat{x}^{-1} (x - \tilde{x}) =
@@ -68,7 +72,6 @@ The details of each matrix in the IIM model are shown in Equations~\eqref{eq:q-d
     \end{bmatrix}
 \end{equation}
 
-% Requires: \usepackage{amsmath}
 \begin{equation}
     A^{*} = \hat{x}^{-1} A \hat{x} =
     \begin{bmatrix}
@@ -82,7 +85,6 @@ The details of each matrix in the IIM model are shown in Equations~\eqref{eq:q-d
 \end{equation}
 
 
-% Requires: \usepackage{amsmath}
 \begin{equation}
     \label{eq:cstar-definition}
     \mathbf{c}^{*} = \hat{\mathbf{x}}^{-1} \left( \mathbf{c} - \tilde{\mathbf{c}} \right)
@@ -103,17 +105,17 @@ The details of each matrix in the IIM model are shown in Equations~\eqref{eq:q-d
     \end{bmatrix}
 \end{equation}
 
+\subsection{The DIIM}
+
 The IIM model can be extended to the DIIM model by introducing a time variable and an elasticity coefficient matrix describing the recovery capacity of sectors. The discrete form of the DIIM model is:
 
-% Requires: \usepackage{amsmath}
 \begin{equation}
     q(t+1) = q(t) + K \big[ A^{*} q(t) + c^{*}(t) - q(t) \big]
     \label{eq:diim-discrete}
 \end{equation}
 
-Where K is the elasticity coefficient matrix describing the recovery capacity of sectors after being shocked in production. Assuming that the recovery capacity of a sector depends only on its own production, and is unrelated to the production linkages with other sectors, thus K is a diagonal matrix with diagonal elements greater than 0. The larger the diagonal elements, the stronger the recovery capacity of the corresponding sector in response to shocks. t is the discrete time variable, and q(t) represents the sectoral inoperability vector at time t. Equation~\eqref{eq:diim-discrete} states that the inoperability of a sector in a period depends on the inoperability in the previous period and the sector’s recovery adjustment capacity. Approximating Equation~\eqref{eq:diim-discrete} to differential form:
+Where $K$ is the elasticity coefficient matrix describing the recovery capacity of sectors after being shocked in production. Assuming that the recovery capacity of a sector depends only on its own production, and is unrelated to the production linkages with other sectors, thus $K$ is a diagonal matrix with diagonal elements greater than 0. The larger the diagonal elements, the stronger the recovery capacity of the corresponding sector in response to shocks. $t$ is the discrete time variable, and $q(t)$ represents the sectoral inoperability vector at time~$t$. Approximating Equation~\eqref{eq:diim-discrete} to differential form:
 
-% Requires: \usepackage{amsmath}
 \begin{equation}
     \label{eq:diim-continuous}
     \dot{q}(t) = K \bigl[ A^{*} q(t) + c^{*}(t) - q(t) \bigr]
@@ -121,7 +123,6 @@ Where K is the elasticity coefficient matrix describing the recovery capacity of
 
 Solving Equation~\eqref{eq:diim-continuous} we can get the equation describing the evolution of sectoral inoperability over time:
 
-% Requires: \usepackage{amsmath}
 \begin{equation}
     q(t) = e^{-K(I-A^{\ast})t} q(0) + \int_{0}^{t} K e^{-K(I-A^{\ast})(t-z)} c^{\ast}(z)\, dz
     \label{eq:diim-solution-general}
@@ -129,52 +130,151 @@ Solving Equation~\eqref{eq:diim-continuous} we can get the equation describing t
 
 Assuming that the demand shock $c^{*}$ remains unchanged, and $c^{*}=0$, then Equation~\eqref{eq:diim-solution-general} can be simplified to:
 
-% Requires: \usepackage{amsmath}
 \begin{equation}
     q(t) = e^{-K (I - A^{*}) t} q(0)
     \label{eq:diim-solution-homogeneous}
 \end{equation}
 
-Where $q(0)$ represents the initial inoperability vector of sectors after being shocked. As time goes by, the inoperability changes at a rate of $e^{-K(I - A^*)t}$. The initial inoperability $q(0)$ is calculated as:
+Where $q(0)$ represents the initial inoperability vector of sectors after being shocked. As time goes by, the inoperability changes at a rate of $e^{-K(I - A^*)t}$.
 
-% Requires: \usepackage{amsmath}
+\subsection{Initial Inoperability}
+
+The initial inoperability $q(0)$ is calculated as:
+
 \begin{equation}
     \label{eq:initial-inoperability}
-    \text{Sector Initial Inoperability} = \frac{\text{Unavailable Workforce}}{\text{Size of Workforce}} * \frac{\text{LAPI}}{\text{Sector Output}}
+    \text{Sector Initial Inoperability} = \frac{\text{Unavailable Workforce}}{\text{Size of Workforce}} \times \frac{\text{LAPI}}{\text{Sector Output}}
 \end{equation}
 
-where the left side of the formula is the ratio between the number of unavailable workers due to COVID-19 in each sector and the total number of workers in each sector, and the right hand side is how much each sector depends on its workforce as inputs.
+where the left factor is the proportion of unavailable workers in each sector and the right factor captures how dependent each sector is on labour as an input (Labour as a Proportion of Input, or LAPI).
 
-Finally, we calculate the elasticity coefficient matrix $K$ describing the recovery capacity of sectors. According to Equation~\eqref{eq:diim-solution-homogeneous}, the inoperability of sector $i$ at time $t$ is:
+\subsection{Elasticity Coefficient}
 
-% Requires: \usepackage{amsmath}
+According to Equation~\eqref{eq:diim-solution-homogeneous}, the inoperability of sector~$i$ at time~$t$ is:
+
 \begin{equation}
     q_i(t) = q_i(0) e^{-k_i \left( 1 - a_{ii}^\ast \right) t}
     \label{eq:qi-exponential-decay}
 \end{equation}
 
-From Equation~\eqref{eq:qi-exponential-decay}, we can derive the calculation formula for $k_i$:
+From Equation~\eqref{eq:qi-exponential-decay}, we can derive the calculation formula for~$k_i$:
 
-% Requires: \usepackage{amsmath}
 \begin{equation}
     k_i = \frac{\ln\left[q_i(0)/q_i(T)\right]}{T_i\left(1 - a_{ii}^*\right)}
     \label{eq:ki-definition}
 \end{equation}
 
-Where $q_i(0)$ is the initial inoperability of sector $i$; $q_i(T)$ is the inoperability of sector $i$ at time $T$; $a_{ii}^{*}$
-is the element on the diagonal of matrix $A^*$, representing the self-dependence of sector $i$.
+Where $q_i(0)$ is the initial inoperability of sector~$i$; $q_i(T)$ is the inoperability of sector~$i$ at time~$T$; $a_{ii}^{*}$ is the element on the diagonal of matrix~$A^*$, representing the self-dependence of sector~$i$.
 
-Under the analytical framework of the DIIM model, the economic losses caused by the shock to sector can be represented by Equation~\eqref{eq:economic-loss}:
+\subsection{Economic Loss}
 
-% Requires: \usepackage{amsmath}
+Under the analytical framework of the DIIM model, the cumulative economic loss for sector~$i$ is:
+
 \begin{equation}
     EL_i = x_i \int_{t=0}^{t=T} q_i(t) \, dt
     \label{eq:economic-loss}
 \end{equation}
 
-Where $x_i$ is the output value of sector $i$ at time $t$ under normal production, and $n$ is the number of sectors used in the input-output table of this
-study.
+Where $x_i$ is the planned output of sector~$i$ under normal production.
 
+
+\section{Key Sector Identification Methods}
+\label{sec:cheap-methods}
+
+A key sector is defined as one where targeted intervention---modelled as a 10\% reduction in initial inoperability $q_0$---produces the largest reduction in total economic loss. Below we describe the expensive benchmark and five cheap structural alternatives.
+
+\subsection{DIIM-Based Identification (Benchmark)}
+
+The DIIM identifies key sectors by running the full simulation without intervention, then ranking sectors by their cumulative economic loss $EL_i$ from Equation~\eqref{eq:economic-loss}. The top-$k$ sectors are selected for intervention. This is the ``gold standard'' but requires knowledge of $q_0$ and~$c^*$.
+
+\subsection{PCA on the Integrated IO Matrix}
+
+Instead of using $A$ directly, this approach constructs the integrated input-output coefficient matrix:
+
+\begin{equation}
+    H = A (I - A)^{-1} = A \cdot L
+    \label{eq:integrated-io-matrix}
+\end{equation}
+
+where $L = (I - A)^{-1}$ is the Leontief inverse. The matrix $H$ captures both direct and indirect effects through the production network. PCA is applied to~$H$, and sectors are ranked by their Euclidean distance from the origin in the space of the first two principal components:
+
+\begin{equation}
+    d_i^{\text{PCA}} = \sqrt{ v_{i1}^2 + v_{i2}^2 }
+    \label{eq:pca-distance}
+\end{equation}
+
+where $v_{i1}$ and $v_{i2}$ are the loadings of sector~$i$ on PC1 and PC2 respectively. Sectors with larger $d_i^{\text{PCA}}$ are ranked higher.
+
+\subsection{Backward Linkage}
+
+Backward linkages measure the extent to which a sector draws on other sectors' outputs as inputs. They are calculated as the column sums of the Leontief inverse:
+
+\begin{equation}
+    BL_j = \sum_{i=1}^{n} l_{ij}
+    \label{eq:backward-linkage}
+\end{equation}
+
+where $l_{ij}$ are elements of $L$. A high $BL_j$ indicates that sector~$j$ generates large demand for inputs from other sectors.
+
+\subsection{Forward Linkage}
+
+Forward linkages measure how much a sector's output is used as inputs by other sectors. They are calculated as the row sums of the Leontief inverse:
+
+\begin{equation}
+    FL_i = \sum_{j=1}^{n} l_{ij}
+    \label{eq:forward-linkage}
+\end{equation}
+
+A high $FL_i$ indicates that sector~$i$ is an important supplier to the rest of the economy.
+
+\subsection{Output-Weighted Linkage}
+
+This method combines structural importance with economic size. The total normalised linkage for sector~$i$ is:
+
+\begin{equation}
+    TL_i = \frac{1}{2}\left(\frac{BL_i}{\overline{BL}} + \frac{FL_i}{\overline{FL}}\right)
+    \label{eq:total-linkage}
+\end{equation}
+
+where $\overline{BL}$ and $\overline{FL}$ are the mean backward and forward linkages. The output-weighted score is:
+
+\begin{equation}
+    OWL_i = TL_i \times x_i
+    \label{eq:output-weighted-linkage}
+\end{equation}
+
+Sectors with high $OWL_i$ are both structurally important and economically large.
+
+\subsection{Network Centrality}
+
+The interdependency matrix $A^*$ is treated as the weighted adjacency matrix of a directed graph. Three centrality measures are computed and combined:
+
+\begin{enumerate}
+    \item \textbf{Eigenvector centrality}: measures influence by accounting for the centrality of a sector's neighbours.
+    \item \textbf{PageRank}: measures importance based on the structure of incoming links, with a damping factor.
+    \item \textbf{Betweenness centrality}: measures how often a sector lies on the shortest path between other pairs of sectors.
+\end{enumerate}
+
+Each measure is min-max normalised to $[0,1]$, and the composite score is:
+
+\begin{equation}
+    NC_i = \widehat{EC}_i + \widehat{PR}_i + \widehat{BC}_i
+    \label{eq:network-centrality}
+\end{equation}
+
+where $\widehat{\cdot}$ denotes normalisation. Sectors with higher $NC_i$ are ranked higher.
+
+\section{Performance Metric}
+\label{sec:performance-metric}
+
+To compare a cheap method against DIIM, we define the \emph{performance ratio}:
+
+\begin{equation}
+    R_m = \frac{\Delta EL_m}{\Delta EL_{\text{DIIM}}}
+    \label{eq:performance-ratio}
+\end{equation}
+
+where $\Delta EL_m$ is the total economic loss reduction achieved by intervening in the top-$k$ sectors identified by cheap method~$m$, and $\Delta EL_{\text{DIIM}}$ is the reduction achieved by the DIIM's top-$k$ sectors. If $R_m \geq 0.95$, the cheap method is considered ``close enough'' to substitute for DIIM.
 
 %=== END OF CHAPTER TWO ===
 \newpage

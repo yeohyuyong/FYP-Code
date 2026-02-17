@@ -1,0 +1,17 @@
+%=== CHAPTER EIGHT (8) ===
+%=== Conclusion ===
+
+\chapter{Conclusion}
+
+This project developed and applied a quantitative framework for assessing economic resilience under disruption, with direct relevance to Singapore's national security planning.
+
+Using the Dynamic Inoperability Input-Output Model (DIIM), two disruption scenarios were studied. The COVID-19 pandemic scenario (15~sectors, 2019~IO table) demonstrated how lockdown-induced workforce unavailability cascaded through input-output linkages to produce sector-level inoperability paths and cumulative economic losses. The manpower disruption scenario (107~sectors, 2022~IO table), motivated by the risk of grey zone conflicts triggering foreign worker departures, revealed stronger cascading effects in a denser production network under purely structural disruption ($c^* = 0$).
+
+A central contribution of this study is the systematic comparison of five cheap structural methods for identifying key sectors against the DIIM benchmark. Output-weighted linkage---which combines the Leontief inverse's linkage measures with sector output---emerged as the best cheap substitute, achieving close-to-DIIM performance in 89\% of randomised disruptions for the 15-sector scenario and 55\% for the 107-sector scenario. PCA performed well for the smaller economy (86\%) but dropped to 5\% for the larger one, revealing a dimensionality effect: as the number of sectors grows, fixed structural rankings become less reliable substitutes for simulation-based identification.
+
+Decision rules were derived using logistic regression on $q_0$-derived features, providing policymakers with a practical tool: given observable characteristics of the disruption, determine instantly whether a cheap method's recommendation is trustworthy or whether the full DIIM should be run. For national security planning, this enables a two-stage approach---using structural analysis for peacetime resilience investments, and the decision rules for rapid crisis-time assessment.
+
+The framework is generalisable beyond the two scenarios studied here. Any economy with an available IO table can compute the cheap structural rankings in peacetime and apply the decision rules when a disruption occurs. Future work could extend the approach to correlated disruptions, multi-period dynamics, and ensemble methods that combine multiple cheap rankings for improved robustness.
+
+%=== END OF CHAPTER EIGHT ===
+\newpage

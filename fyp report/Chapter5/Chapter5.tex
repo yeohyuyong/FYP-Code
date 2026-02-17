@@ -1,71 +1,128 @@
 %=== CHAPTER FIVE (5) ===
-%=== Discussion ===
+%=== Key Sector Identification Methods ===
 
-\chapter{Risk Management Scenario Analysis}
+\chapter{Key Sector Identification Methods}
 
-This chapter evaluates risk management alternatives using the surrogate worth trade-off (SWT) method \cite{Haimes1975SWTChapter}, focusing on the trade-off between investment costs and benefits measured as economic losses avoided.
+This chapter compares the key sector identification methods described in Chapter~2 using the actual disruption data from both case studies. Recall that the DIIM identifies key sectors by running the full simulation and ranking by economic loss (expensive, requires $q_0$ and $c^*$), while the cheap methods use only the IO table structure.
 
-\section{Net benefit}
+\section{PCA Applied to the IO Matrix}
 
-Net benefit for policy option $j$ is defined as:
+PCA is applied to the integrated IO matrix $H = A(I-A)^{-1}$. Table~\ref{tab:pca-loadings} lists the PCA loadings for the COVID-19 scenario (15~sectors), sorted by Euclidean distance in the PC1--PC2 space.
 
-% Requires: \usepackage{amsmath}
-\begin{equation}
-    \delta_j = \Gamma_{w[0]} - \Gamma_{w[j]} - \gamma_j
-    \label{eq:net-benefit}
-\end{equation}
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}cccc@{}}
+\toprule
+\textbf{Sector ID} & \textbf{PC1} & \textbf{PC2} & \textbf{$d_i^{\text{PCA}}$} \\ \midrule
+3  & 0.773 & $-$0.159 & 0.789 \\
+2  & 0.489 &    0.548 & 0.734 \\
+5  & 0.231 &    0.602 & 0.645 \\
+8  & 0.174 &    0.320 & 0.364 \\
+4  & 0.164 &    0.198 & 0.257 \\
+10 & 0.141 &    0.185 & 0.233 \\
+7  & 0.107 &    0.232 & 0.256 \\
+11 & 0.100 &    0.154 & 0.184 \\
+1  & 0.082 &    0.203 & 0.219 \\
+9  & 0.066 &    0.120 & 0.137 \\
+12 & 0.021 &    0.034 & 0.040 \\
+6  & 0.019 &    0.040 & 0.044 \\
+15 & 0.010 &    0.016 & 0.019 \\
+14 & 0.004 &    0.006 & 0.008 \\
+13 & 0.002 &    0.004 & 0.005 \\ \bottomrule
+\end{tabular}
+\caption{PCA loadings and Euclidean distance for COVID-19 sectors (15~sectors).}
+\label{tab:pca-loadings}
+\end{table}
 
-Here $\Gamma_{w[0]}$ is the baseline economic loss without policy, $\Gamma_{w[j]}$ is the economic loss under policy $j$, and $\gamma_j$ is the cost of implementing policy $j$.
+The top-5 PCA sectors for COVID-19 are sectors 3 (Construction), 2 (Manufacturing), 5 (Transportation \& Storage), 8 (Financial \& Insurance Services), and 4 (Wholesale \& Retail Trade). These sectors have the largest loadings on the principal components that capture the dominant patterns of sectoral interdependence in the IO table.
 
-
-\section{Scenario analysis}
-\texorpdfstring{$\delta_j$}{delta\_j} basically shows the potential reduction in economic losses after the implementation of a particular risk management policy
-
-\subsection{Scenario 1 (baseline): no policy, \texorpdfstring{$j$}{j}=0}
-
-In Scenario 1, no risk management measures are taken and the model results represent the baseline outcome. The execution cost is 0, and net benefit is set to 0 to serve as the comparison baseline.
-
-\begin{equation}
-    \delta_j = \Gamma_{w[0]} - \Gamma_{w[j]} - \gamma_j = 0
-    \label{eq:baseline-net-benefit}
-\end{equation}
-
-
-\subsection{Scenario 2: policy 1, \texorpdfstring{$j$}{j}=1}
-
-In this scenario, the government is assumed to spend 1 billion SGD in advance on risk control to reduce the pandemic impact. The policy is assumed to reduce the inoperability impact by 5\% per day, meaning each day’s inoperability is scaled to 95\% of the original level before being used in the DIIM. Under this assumption, our calculation reports that overall economic loss is reduced substantially compared to the baseline, and net benefit is computed accordingly:
-
-
-\begin{equation}
-    \begin{aligned}
-        \delta_{1} &= \Gamma_{w[0]} - \Gamma_{w[1]} - \gamma_{1}
-        = 26967.3 - 2323.01 - 1000 = 23644.29 \text{ million SGD}, \\
-        \lambda_{12} &= \frac{\gamma_{1}}{\Gamma_{w[0]} - \Gamma_{w[1]}}
-        = \frac{1000}{26967.3 - 2323.01} = 0.04057735
-    \end{aligned}
-    \label{eq:policy1-results}
-\end{equation}
+For the manpower scenario (107~sectors), PCA is computed on the corresponding $H$ matrix. The top-5 PCA sectors are sectors 17, 57, 69, 54, and 62. These differ substantially from the COVID-19 PCA sectors because the 107-sector IO table has a different structure and more granular interdependencies.
 
 
+\section{Cheap Method Rankings}
 
-\subsection{Scenario 3: policy 2, \texorpdfstring{$j$}{j}=2}
+Table~\ref{tab:rankings-covid} and Table~\ref{tab:rankings-manpower} show the top-5 sectors identified by each method for the two scenarios.
 
-In this scenario, the government is assumed to spend 2 billion SGD in total. The additional spending is assumed to reduce the lockdown period from 55 days to 30 days. Under this assumption, the dissertation reports a reduction in economic loss and computes net benefit and cost-benefit ratio as follows:
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Method} & \textbf{Top-5 Sectors (COVID-19)} \\
+\midrule
+PCA                    & 3, 2, 5, 8, 4 \\
+Network Centrality     & 4, 9, 8, 2, 10 \\
+Backward Linkage       & 3, 5, 1, 7, 6 \\
+Forward Linkage        & 2, 8, 3, 5, 7 \\
+Output-Weighted Linkage & 2, 4, 5, 8, 7 \\
+\bottomrule
+\end{tabular}
+\caption{Top-5 sectors by each cheap method (COVID-19, 15 sectors).}
+\label{tab:rankings-covid}
+\end{table}
 
-\begin{equation}
-    \begin{aligned}
-        \delta_{2} &= \Gamma_{w[0]} - \Gamma_{w[2]} - \gamma_{2}
-        = 26967.3 - 17564.99 - 2000 = 7402.31 \text{ million SGD}, \\
-        \lambda_{12} &= \frac{\gamma_{2}}{\Gamma_{w[0]} - \Gamma_{w[2]}}
-        = \frac{2000}{26967.3 - 17564.99} = 0.2127137
-    \end{aligned}
-    \label{eq:policy2-results}
-\end{equation}
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Method} & \textbf{Top-5 Sectors (Manpower)} \\
+\midrule
+PCA                    & 17, 57, 69, 54, 62 \\
+Network Centrality     & 54, 69, 78, 71, 70 \\
+Backward Linkage       & 51, 60, 17, 52, 62 \\
+Forward Linkage        & 54, 78, 69, 17, 57 \\
+Output-Weighted Linkage & 54, 57, 69, 26, 70 \\
+\bottomrule
+\end{tabular}
+\caption{Top-5 sectors by each cheap method (Manpower, 107 sectors).}
+\label{tab:rankings-manpower}
+\end{table}
 
-\section{Comparing Policies}
+Several observations emerge:
 
-Policy 1 is reported to obtain 1 SGD of benefit for each 0.041 SGD of investment cost, while Policy 2 obtains 1 SGD of benefit for each 0.21 SGD of investment cost. Under these assumptions and calculations, Policy 1 is preferred because it has a smaller cost per unit benefit.
+\begin{enumerate}
+    \item \textbf{Method agreement varies}: For COVID-19, sectors 2 and 5 appear in most methods' top-5 lists, suggesting strong consensus on their structural importance. For manpower, sectors 54 and 69 are identified by multiple methods.
+    \item \textbf{PCA and forward linkage have the most overlap}: Both capture supply-side importance through eigenvector-based and row-sum-based measures respectively.
+    \item \textbf{Backward linkage is the most different}: It emphasises demand-pull importance (column sums), which captures a different dimension of sectoral influence.
+\end{enumerate}
 
+
+\section{Comparison at Original Disruption Data}
+
+Using the actual $q_0$ data from each scenario, we compare each cheap method's economic loss reduction against the DIIM benchmark when intervening in the top-5 sectors.
+
+For the COVID-19 scenario, PCA and output-weighted linkage both achieve loss reductions close to the DIIM benchmark, while backward linkage performs poorly. For the manpower scenario, the gap between cheap methods and DIIM widens significantly, with even the best cheap method (output-weighted linkage) falling substantially short of DIIM's reduction.
+
+This observation motivates the Monte Carlo analysis in Chapter~6: the performance of cheap methods at a single $q_0$ point is insufficient to draw general conclusions. We need to understand how performance varies across the space of possible $q_0$ vectors.
+
+
+\section{Effect of the Number of Key Sectors}
+
+Figure~\ref{fig:impact-vs-total-duration} shows how the economic loss reduction varies as the number of key sectors~$k$ increases, for the COVID-19 scenario. Across all methods, increasing $k$ improves the loss reduction, but the rate of improvement differs. PCA-based selection shows diminishing returns at higher~$k$ because PCA's ranking is based on structural importance, which may not align with the sectors most affected by a specific $q_0$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Chapter5/impact_total_duration.png}
+    \caption{Economic loss for different lockdown and total durations (COVID-19).}
+    \label{fig:impact-vs-total-duration}
+\end{figure}
+
+Figures~\ref{fig:ml-vs-diim-loss-reduction} and~\ref{fig:improvement-ml-vs-diim} compare the PCA-based and DIIM-based approaches specifically, showing that PCA-based prioritisation can match or exceed DIIM-based prioritisation under the original COVID-19 parameters.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Chapter5/econ_loss_ml_vs_diim.png}
+    \caption{Economic loss reduction for PCA vs DIIM (COVID-19).}
+    \label{fig:ml-vs-diim-loss-reduction}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Chapter5/improvement_diim_ml.png}
+    \caption{Difference in improvement: PCA vs DIIM (COVID-19).}
+    \label{fig:improvement-ml-vs-diim}
+\end{figure}
+
+These results demonstrate that PCA can perform well at the original COVID-19 data point, but the question remains: does this hold across a wider range of disruption profiles? This is addressed in the next chapter.
 
 %=== END OF CHAPTER FIVE ===
 \newpage
