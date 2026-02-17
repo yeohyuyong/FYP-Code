@@ -1,4 +1,44 @@
 {
     "r.lsp.diagnostics": false,
-    "r.linting.enable": false
+    "r.linting.enable": false,
+    "latex-workshop.latex.tools": [
+        {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-pdf",
+                "-outdir=%OUTDIR%",
+                "%DOC%"
+            ],
+            "env": {
+                "PATH": "/Users/yeohyy/Library/TinyTeX/bin/universal-darwin:${env:PATH}"
+            }
+        },
+        {
+            "name": "pdflatex",
+            "command": "pdflatex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "%DOC%"
+            ],
+            "env": {
+                "PATH": "/Users/yeohyy/Library/TinyTeX/bin/universal-darwin:${env:PATH}"
+            }
+        },
+        {
+            "name": "bibtex",
+            "command": "bibtex",
+            "args": [
+                "%DOCFILE%"
+            ],
+            "env": {
+                "PATH": "/Users/yeohyy/Library/TinyTeX/bin/universal-darwin:${env:PATH}"
+            }
+        }
+    ]
 }
