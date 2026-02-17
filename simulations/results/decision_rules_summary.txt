@@ -1,0 +1,14 @@
+--- COVID-19 ---
+  PCA                       close=85.5% wins=75.2% ratio=1.095 | Use if PCA_avgrank < 0.578 (J=0.304)
+  Network Centrality        close=51.4% wins=40.1% ratio=0.986 | Use if NetworkCentrality_overlap > 0.200 (J=0.197)
+  Backward Linkage          close=2.3% wins=1.6% ratio=0.478 | Use if BackwardLinkage_share > 0.350 (J=0.503)
+  Forward Linkage           close=56.1% wins=44.2% ratio=0.945 | Use if q0_max_ratio > 1.649 (J=0.021)
+  Output-Weighted Linkage   close=88.9% wins=80.3% ratio=1.156 | Use if OutputWeightedLinkage_avgrank < 0.533 (J=0.411)
+
+--- Manpower ---
+  PCA                       close=5.3% wins=0.4% ratio=0.802 | Use if PCA_share > 0.057 (J=0.559)
+  Network Centrality        close=1.1% wins=0.0% ratio=0.641 | Use if q0_max_ratio > 2.014 (J=0.331)
+  Backward Linkage          close=0.0% wins=0.0% ratio=0.175 | No clear decision boundary
+  Forward Linkage           close=8.6% wins=0.9% ratio=0.822 | Use if ForwardLinkage_avgrank < 0.456 (J=0.503)
+  Output-Weighted Linkage   close=55.4% wins=24.3% ratio=0.942 | Use if OutputWeightedLinkage_overlap > 0.000 (J=0.102)
+

@@ -1,0 +1,71 @@
+%=== CHAPTER FIVE (5) ===
+%=== Discussion ===
+
+\chapter{Risk Management Scenario Analysis}
+
+This chapter evaluates risk management alternatives using the surrogate worth trade-off (SWT) method \cite{Haimes1975SWTChapter}, focusing on the trade-off between investment costs and benefits measured as economic losses avoided.
+
+\section{Net benefit}
+
+Net benefit for policy option $j$ is defined as:
+
+% Requires: \usepackage{amsmath}
+\begin{equation}
+    \delta_j = \Gamma_{w[0]} - \Gamma_{w[j]} - \gamma_j
+    \label{eq:net-benefit}
+\end{equation}
+
+Here $\Gamma_{w[0]}$ is the baseline economic loss without policy, $\Gamma_{w[j]}$ is the economic loss under policy $j$, and $\gamma_j$ is the cost of implementing policy $j$.
+
+
+\section{Scenario analysis}
+\texorpdfstring{$\delta_j$}{delta\_j} basically shows the potential reduction in economic losses after the implementation of a particular risk management policy
+
+\subsection{Scenario 1 (baseline): no policy, \texorpdfstring{$j$}{j}=0}
+
+In Scenario 1, no risk management measures are taken and the model results represent the baseline outcome. The execution cost is 0, and net benefit is set to 0 to serve as the comparison baseline.
+
+\begin{equation}
+    \delta_j = \Gamma_{w[0]} - \Gamma_{w[j]} - \gamma_j = 0
+    \label{eq:baseline-net-benefit}
+\end{equation}
+
+
+\subsection{Scenario 2: policy 1, \texorpdfstring{$j$}{j}=1}
+
+In this scenario, the government is assumed to spend 1 billion SGD in advance on risk control to reduce the pandemic impact. The policy is assumed to reduce the inoperability impact by 5\% per day, meaning each day’s inoperability is scaled to 95\% of the original level before being used in the DIIM. Under this assumption, our calculation reports that overall economic loss is reduced substantially compared to the baseline, and net benefit is computed accordingly:
+
+
+\begin{equation}
+    \begin{aligned}
+        \delta_{1} &= \Gamma_{w[0]} - \Gamma_{w[1]} - \gamma_{1}
+        = 26967.3 - 2323.01 - 1000 = 23644.29 \text{ million SGD}, \\
+        \lambda_{12} &= \frac{\gamma_{1}}{\Gamma_{w[0]} - \Gamma_{w[1]}}
+        = \frac{1000}{26967.3 - 2323.01} = 0.04057735
+    \end{aligned}
+    \label{eq:policy1-results}
+\end{equation}
+
+
+
+\subsection{Scenario 3: policy 2, \texorpdfstring{$j$}{j}=2}
+
+In this scenario, the government is assumed to spend 2 billion SGD in total. The additional spending is assumed to reduce the lockdown period from 55 days to 30 days. Under this assumption, the dissertation reports a reduction in economic loss and computes net benefit and cost-benefit ratio as follows:
+
+\begin{equation}
+    \begin{aligned}
+        \delta_{2} &= \Gamma_{w[0]} - \Gamma_{w[2]} - \gamma_{2}
+        = 26967.3 - 17564.99 - 2000 = 7402.31 \text{ million SGD}, \\
+        \lambda_{12} &= \frac{\gamma_{2}}{\Gamma_{w[0]} - \Gamma_{w[2]}}
+        = \frac{2000}{26967.3 - 17564.99} = 0.2127137
+    \end{aligned}
+    \label{eq:policy2-results}
+\end{equation}
+
+\section{Comparing Policies}
+
+Policy 1 is reported to obtain 1 SGD of benefit for each 0.041 SGD of investment cost, while Policy 2 obtains 1 SGD of benefit for each 0.21 SGD of investment cost. Under these assumptions and calculations, Policy 1 is preferred because it has a smaller cost per unit benefit.
+
+
+%=== END OF CHAPTER FIVE ===
+\newpage

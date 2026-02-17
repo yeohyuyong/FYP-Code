@@ -1,0 +1,18 @@
+%=== FRONT PART ===
+%=== ABSTRCT ===
+
+%\begin{center}
+\chapter*{Abstract}
+%\end{center}
+\addcontentsline{toc}{chapter}{Abstract}
+
+This project studies the impact of COVID-19 on Singapore’s economy using the Dynamic Inoperability Input-Output Model (DIIM) \cite{SantosHaimes2004,JinZhou2023}. The DIIM is useful because it models how disruptions in one sector spread to other sectors through input-output linkages and how the economy recovers over time. Using Singapore’s 2019 input-output (IO) table \cite{DataGovSgIO2019}, the economy is aggregated into 15 sectors to match the workforce data used to estimate initial inoperability.
+
+In this study, initial inoperability is calculated based on the share of unavailable workers in each sector due to Covid-19, adjusted by how dependent the sector is on labour as an input. The shock period is set to Singapore’s "circuit breaker" from 7 April to 1 June 2020 (55 days) \cite{MOH2020EndCircuitBreaker,MOH2020PostCircuitBreakerMeasures}, and recovery is simulated over a longer horizon, with a near-normal level assumed after 751 days. The model produces sector-level paths of inoperability and cumulative economic losses, which are used to identify vulnerable sectors and support recovery prioritisation.
+
+A sensitivity analysis tests how changes in lockdown duration affect total losses. The project also evaluates example risk management policies using a surrogate worth trade-off (SWT) approach \cite{Haimes1975SWTChapter} to compare policy costs against the economic losses avoided. Finally, the study explores a PCA-based approach for identifying key sectors using only the IO table and compares its performance with DIIM-based selection through simulation.
+
+\par
+%\textbf{Keywords:} Dissertation, keywords.
+
+%=== END OF CHAPTER ONE ===

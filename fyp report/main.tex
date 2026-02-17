@@ -1,0 +1,70 @@
+%\documentclass{article}
+\documentclass[11pt]{report}
+
+%% Useful packages
+\usepackage[a4paper,top=1in,bottom=1in,left=1in,right=1in,marginparwidth=1.75cm]{geometry}
+\usepackage{amsmath}
+\usepackage{cite}
+\usepackage{courier}
+\usepackage{caption}
+\usepackage{graphicx}
+% microtype's footnote patch may fail with some package/font combinations;
+% disable that patch to silence the warning.
+\usepackage[patch=none]{microtype}
+\usepackage{adjustbox}
+\setlength{\marginparwidth}{2cm}
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{subfigure}
+\usepackage{url}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage[utf8]{inputenc}
+\usepackage{mathptmx} %Times Font
+
+\begin{document}
+%==== FRONT PART====
+\include{Title/titlepage}
+
+%\begingroup
+%\let\cleardoublepage\clearpage
+\pagenumbering{roman}
+\tableofcontents
+%\endgroup
+
+\include{Front/Abstract}
+\include{Front/Acknowledgement}
+%\include{Front/Acronyms}
+%\include{Front/Symbols}
+
+%\listoffigures 
+%\addcontentsline{toc}{chapter}{Lists of Figures}
+%\newpage
+
+%\listoftables 
+%\addcontentsline{toc}{chapter}{Lists of Tables}
+%\newpage
+
+
+%==== MAIN PART ====
+\pagenumbering{arabic}
+\include{Chapter1/Chapter1}
+\include{Chapter2/Chapter2}
+\include{Chapter3/Chapter3}
+\include{Chapter4/Chapter4}
+\include{Chapter5/Chapter5}
+\include{Chapter6/Chapter6}
+\include{Chapter7/Chapter7}
+%==== ENDING PART ===
+
+\bibliographystyle{unsrt}
+\bibliography{Ref/References}
+
+\include{Appendix/appendix}
+%==== END OF ALL ===
+\end{document}

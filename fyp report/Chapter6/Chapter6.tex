@@ -1,0 +1,85 @@
+%=== CHAPTER SIX (6) ===
+
+
+\chapter{Machine Learning for Key Sectors Identification}
+
+Recent work suggests that machine learning approaches can be comparable to traditional IO-based methods for identifying key sectors. This dissertation explores whether principal component analysis (PCA) applied to an integrated IO matrix produces sector rankings similar to those derived from DIIM.
+
+\section{Principal Component Analysis Applied to the IO Matrix}
+
+Instead of using $A$ directly, this approach uses an integrated input–output coefficient matrix:
+
+\begin{equation}
+    H = A (I - A)^{-1}.
+    \label{eq:integrated-io-matrix}
+\end{equation}
+
+This transformation places more weight on stronger linkages and reflects both direct and indirect effects through the production network. PCA is then applied to $H$, and the first principal component (PC1) corresponds to the eigenvector with the largest eigenvalue. 
+
+Table~\ref{tab:my-table} below lists the principal component values. Note that the top three sectors identified by PCA are the same as the top three sectors identified by DIIM.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}ccc@{}}
+\toprule
+\textbf{Sector\ ID} & \textbf{PC1} & \textbf{PC2} \\ \midrule
+3 & 0.772976374 & -0.158540904 \\
+2 & 0.488575487 & 0.547564001 \\
+5 & 0.230631604 & 0.602425551 \\
+8 & 0.173952844 & 0.31984955 \\
+4 & 0.16376151 & 0.197548491 \\
+10 & 0.141148665 & 0.185477914 \\
+7 & 0.107051197 & 0.232037887 \\
+11 & 0.100445788 & 0.154054165 \\
+1 & 0.082357584 & 0.203204452 \\
+9 & 0.065932369 & 0.120308858 \\
+12 & 0.02097817 & 0.033819003 \\
+6 & 0.01904942 & 0.04009044 \\
+15 & 0.010160651 & 0.015616709 \\
+14 & 0.004471868 & 0.006256627 \\
+13 & 0.002201633 & 0.00402146 \\ \bottomrule
+\end{tabular}
+\caption{Sectors sorted by PC1}
+\label{tab:my-table}
+\end{table}
+
+
+\section{Simulation}
+
+This section compares whether the top sectors identified by PCA can reduce losses as effectively as the top sectors identified by DIIM. For each combination of lockdown duration (10, 20, 30, 40 days) and total simulation duration (300, 400, 500, 600 days), the DIIM is run to identify the top five sectors by impact, and then two hypothetical interventions are compared: reducing inoperability in the top five sectors selected by DIIM versus reducing inoperability in the top five sectors selected by PCA.
+
+Our calculation shows that economic loss increases as lockdown duration increases and also increases as total duration increases, which matches intuition. Our calculation also shows that lockdown duration has a stronger effect on economic loss than total duration in Figure~\ref{fig:impact-vs-total-duration}. In Figures~\ref{fig:ml-vs-diim-loss-reduction} and~\ref{fig:improvement-ml-vs-diim}, our calculation also shows that PCA-based prioritisation performs similarly to DIIM-based prioritisation, and upon closer inspection it can perform better for economic loss reduction under the stated assumptions.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Chapter6/impact_total_duration.png}
+    \caption{Economic loss for different lockdown and total durations}
+    \label{fig:impact-vs-total-duration}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Chapter6/heatmap_across_model.png}
+    \caption{Economic loss heatmap across models}
+    \label{fig:heatmap-across-models}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Chapter6/econ_loss_ml_vs_diim.png}
+    \caption{Economic loss reduction for ML vs DIIM}
+    \label{fig:ml-vs-diim-loss-reduction}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Chapter6/improvement_diim_ml.png}
+    \caption{Difference in Improvement: ML vs DIIM}
+    \label{fig:improvement-ml-vs-diim}
+\end{figure}
+
+%=== END OF CHAPTER SIX ===
+\newpage

@@ -1,0 +1,37 @@
+%=== CHAPTER THREE (3) ===
+
+\chapter{Data and Model Parameters}
+
+\section{Data selection}
+
+\subsection{Singapore input-output table}
+
+The IO transaction data for Singapore is obtained from the Department of Statistics, Singapore \cite{DataGovSgIO2019}. This project uses the 2019 IO table because it is the closest year before COVID-19 and represents the pre-pandemic baseline. The available IO table is aggregated into 20 broad sectors, and this study further aggregates them into 15 sectors to match the Ministry of Manpower dataset used to compute initial inoperability. The mapping is provided in Appendix A (Table~\ref{tab:sector-mapping}).
+
+From the aggregated IO table, the technical coefficient matrix $A$ is computed. A cross-section of $A$ is provided in Appendix A (Table~\ref{tab:tech-coeff-cross-section}).
+
+\subsection{Initial inoperability data}
+
+Initial inoperability is calculated using:
+
+\begin{equation}
+    \label{eq:initial-inoperability-data}
+    \text{Sector Initial Inoperability} = \frac{\text{Unavailable Workforce}}{\text{Size of Workforce}} * \frac{\text{LAPI}}{\text{Sector Output}}
+\end{equation}
+
+The workforce unavailability component is obtained from Ministry of Manpower data, and the labour dependence component is derived from the IO table. The initial inoperability values for the 15 aggregated sectors are listed in Appendix A (Table~\ref{tab:sector-inoperability}).
+
+
+\section{Model parameters}
+
+\subsection{Lockdown duration}
+
+Singapore's lockdown measures ("circuit breaker") were implemented from 7 April to 1 June 2020, which is 55 days \cite{MOH2020EndCircuitBreaker,MOH2020PostCircuitBreakerMeasures}. This project sets the shock duration to 55 days.
+
+
+\subsection{Final inoperability}
+
+In late April 2022 (751 days after the start of lockdown), Singapore's DORSCON level was lowered from Orange to Yellow, and employees were allowed to return to workplaces. This dissertation assumes a final inoperability $q_i(T_i)$ = 1\%, meaning economic activity returns to 99\% of pre-lockdown levels after 751 days.
+
+%=== END OF CHAPTER THREE ===
+\newpage

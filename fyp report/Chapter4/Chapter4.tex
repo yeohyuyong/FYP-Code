@@ -1,0 +1,62 @@
+%=== CHAPTER FOUR (4) ===
+%=== Test and Experiments ===
+
+\chapter{Results}
+
+\section{Inoperability and Economic Loss}
+
+
+Figure~\ref{fig:inoperability-evolution} shows the simulated inoperability trajectories for the 15 aggregated sectors over the shock-and-recovery horizon. Inoperability rises during the shock window as disruptions propagate through input–output linkages, and it declines during recovery as sectors gradually restore production. Because sectors are interconnected, each sector experiences both direct effects from its own disruption and indirect effects transmitted from other sectors.
+
+\begin{figure}[tbp]
+    \centering
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/inoperability.png}}
+    \caption{Inoperability evolution over the shock-and-recovery horizon.}
+    \label{fig:inoperability-evolution}
+\end{figure}
+
+
+Figure~\ref{fig:economic-loss-evolution} presents the corresponding economic-loss evolution. Sectors with larger baseline outputs can accumulate large absolute losses even if their relative inoperability is not the highest, while smaller sectors may show high inoperability but smaller absolute losses.
+
+\begin{figure}[tbp]
+    \centering
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/econ_loss.png}}
+    \caption{Economic loss evolution over the shock-and-recovery horizon.}
+    \label{fig:economic-loss-evolution}
+\end{figure}
+
+The top 15 sectors with the highest inoperability are: [to be inserted].
+
+
+The top 15 sectors with the highest cumulative economic losses are: [to be inserted].
+
+
+\section{Identifying vulnerable Sectors}
+
+This section identifies vulnerable sectors using two measures: inoperability (relative production loss) and cumulative economic loss (absolute output loss). Figure~\ref{fig:joint-impact-matrix} plots each sector using its rank in inoperability (y-axis) and its rank in economic loss (x-axis), so sectors that rank high in both measures are easy to identify.
+
+\begin{figure}[tbp]
+    \centering
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/ordinal.png}}
+    \caption{Joint impact matrix: inoperability rank (y-axis) vs.\ economic loss rank (x-axis).}
+    \label{fig:joint-impact-matrix}
+\end{figure}
+
+To support prioritisation, we define ordinal "zones" (Top 5, Top 7, Top 10) as the intersection of sectors that appear in the top-$k$ rankings of both measures. For example, the Top 5 zone contains sectors that are simultaneously ranked in the top five for both inoperability and economic loss, highlighting sectors that are both heavily disrupted and economically important.
+
+Differences between the two rankings are expected. For example, a sector such as Arts, Entertainment \& Recreation may rank high in inoperability but lower in economic loss if its baseline output is smaller than that of other sectors. Overall, Figure 4.3 provides a practical view for decision-making when policymakers want to balance restoring functionality (low inoperability) and reducing macroeconomic damage (low loss).
+
+\section{Sensitivity Analysis}
+
+To study the effect of lockdown duration, we simulate three lockdown lengths: 40, 55, and 70 days while keeping other parameters unchanged. Across sectors, longer lockdown durations lead to higher cumulative economic losses. The results also suggest the sector rankings of economic loss remain broadly consistent under moderate changes in lockdown duration. Figure~\ref{fig:sensitivity-lockdown-duration} shows the total economic loss for each of the sector under different lockdown durations.
+
+\begin{figure}[tbp]
+    \centering
+    \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/sensitivity.png}}
+    \caption{Total economic loss under different lockdown durations.}
+    \label{fig:sensitivity-lockdown-duration}
+\end{figure}
+
+
+%=== END OF CHAPTER FOUR ===
+\newpage
