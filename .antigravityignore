@@ -1,18 +1,11 @@
-# Datasets - large binary/data files
-dataset/
-covid/
-manpower-disruption/
 
 # FYP Report - LaTeX documents and PDFs
 fyp report/
 
 # Generated/Output files
 *.html
-*.pdf
 *.tex
 
-# Notebooks (large with embedded output)
-*.ipynb
 
 # Others
 Others/
@@ -29,7 +22,6 @@ Others/
 .Ruserdata
 *_files/
 *_cache/
-Rplots.pdf
 
 # LaTeX intermediates
 *.aux
