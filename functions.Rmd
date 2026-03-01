@@ -1,0 +1,280 @@
+---
+title: "DIIM Economic Loss Analysis — Functions"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+    highlight: tango
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Overview
+
+This document contains the core functions for the **Dynamic Inoperability Input–Output Model (DIIM)** analysis, including data loading utilities, the DIIM simulation engine, and comparison functions for ML-based vs. DIIM-based intervention strategies.
+
+---
+
+# 1. Load Libraries
+
+```{r libraries}
+library(openxlsx)
+```
+
+---
+
+# 2. Data Loading Functions
+
+## 2.1 `download_data` — COVID-19 Scenario (2019 IOT)
+
+Loads the 2019 Input–Output Table, extracts the technical coefficient matrix **A**, total output **x**, final demand **c**, sector initial inoperability **q₀**, perturbation vector **c\***, and computes **A\***.
+
+```{r download_data}
+download_data <- function() {
+    # download 2019 IOT and extract total output and final demand column
+    data <- read.xlsx("dataset/Input_Output_Tables_2019_2021.xlsx", sheet = "2019IOTable")
+    iot2019 <- data[2:(2 + 15 - 1), 3:(3 + 15 - 1)]
+    x <- data[2:(2 + 15 - 1), ncol(data)]
+    c <- data[2:(2 + 15 - 1), ncol(data) - 1]
+    x <- as.matrix(sapply(x, as.numeric))
+    c <- as.matrix(sapply(c, as.numeric))
+
+    # extract technical coefficient matrix
+    A <- read.xlsx("dataset/Input_Output_Tables_2019_2021.xlsx", sheet = "A")
+    A <- A[2:(2 + 15 - 1), 3:(3 + 15 - 1)]
+    A <- as.matrix(sapply(A, as.numeric))
+
+    # extract sector initial inoperability
+    q0_df <- read.xlsx("dataset/covid-data/Unemployment_and_Impact_Analysis.xlsx",
+        sheet = "sector inoperability", colNames = FALSE
+    )
+    q0 <- as.numeric(q0_df[2:16, 3])
+
+    c_star_df <- read.xlsx("dataset/covid-data/Unemployment_and_Impact_Analysis.xlsx",
+        sheet = "c_star"
+    )
+    c_star <- as.numeric(c_star_df[1:15, 7])
+
+    A_star <- solve(diag(as.vector(x))) %*% A %*% diag(as.vector(x))
+
+    return(list(
+        x = x,
+        c = c,
+        A = A,
+        q0 = q0,
+        c_star = c_star,
+        A_star = A_star
+    ))
+}
+```
+
+## 2.2 `download_manpower_data` — Manpower Disruption Scenario (2022 IOT)
+
+Loads the 2022 Input–Output Table and sector inoperability data for the manpower disruption analysis.
+
+```{r download_manpower_data}
+download_manpower_data <- function() {
+    # Load 2022 IOT for A matrix and x vector
+    data_A <- read.xlsx("dataset/manpower-disruption-data/2022_Input_Output_Table.xlsx",
+        sheet = "A", colNames = FALSE
+    )
+    num_sectors <- nrow(data_A) - 1
+    A <- data_A[2:(num_sectors + 1), 2:(num_sectors + 1)]
+    A <- as.matrix(sapply(A, as.numeric))
+
+    # Sheet "x" contains the total output
+    data_x <- read.xlsx("dataset/manpower-disruption-data/2022_Input_Output_Table.xlsx",
+        sheet = "x", colNames = FALSE
+    )
+    x <- data_x[2:(num_sectors + 1), 2]
+    x <- as.numeric(x)
+
+    # Load sector initial inoperability (q0)
+    data_q0 <- read.xlsx("dataset/manpower-disruption-data/Sector_initial_inoperability.xlsx",
+        sheet = "Sector_initial_inoperability", colNames = FALSE
+    )
+    q0 <- data_q0[2:(num_sectors + 1), 4]
+    q0 <- as.numeric(q0)
+
+    # Initialize c and c_star to 0 for manpower disruption scenario
+    c <- rep(0, num_sectors)
+    c_star <- rep(0, num_sectors)
+
+    # Calculate A_star: A* = diag(x)^(-1) %*% A %*% diag(x)
+    A_star <- solve(diag(x)) %*% A %*% diag(x)
+
+    return(list(
+        x = as.matrix(x),
+        c = as.matrix(c),
+        A = A,
+        q0 = q0,
+        c_star = c_star,
+        A_star = A_star
+    ))
+}
+```
+
+---
+
+# 3. DIIM Model
+
+## 3.1 `DIIM` — Dynamic Inoperability Input–Output Model
+
+Simulates sector inoperability evolution and cumulative economic loss over a specified time horizon. Supports optional intervention on key sectors (reducing their initial inoperability by 10%).
+
+**Parameters:**
+
+| Parameter | Description |
+|---|---|
+| `q0` | Initial inoperability vector |
+| `A_star` | Interdependency matrix A* |
+| `c_star` | External perturbation vector |
+| `x` | Total output vector (yearly, in millions) |
+| `lockdown_duration` | Number of days the external shock persists |
+| `total_duration` | Total simulation horizon (days) |
+| `key_sectors` | (Optional) Indices of sectors to reduce inoperability by 10% |
+| `risk_management` | Scaling factor for recovery dynamics (default: 1) |
+| `days_in_year` | Days in a year for daily output conversion (default: 366) |
+
+```{r DIIM}
+DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration,
+                 key_sectors = NULL, risk_management = 1, days_in_year = 366) {
+    a_ii <- diag(A_star)
+    T <- total_duration
+
+    num_sectors <- length(q0)
+    inoperability_evolution <- matrix(NA, nrow = num_sectors, ncol = total_duration)
+
+    # if key_sectors is not NULL, reduce those sectors' initial q0 by 10%
+    if (!is.null(key_sectors)) {
+        q0[key_sectors] <- q0[key_sectors] * 0.9
+    }
+
+    # we assume after T days the economic activity returns to 99% of pre-lockdown level
+    q0[q0 == 0] <- 1e-8
+    qT <- q0 * 1 / 100
+
+    k <- log(q0 / qT) / (T * (1 - a_ii))
+    K <- diag(as.vector(k))
+
+    inoperability_evolution[, 1] <- q0
+
+    for (t in 2:total_duration) {
+        if (t <= lockdown_duration) {
+            inoperability_evolution[, t] <- inoperability_evolution[, t - 1] +
+                K %*% (A_star %*% inoperability_evolution[, t - 1] + c_star -
+                    inoperability_evolution[, t - 1]) * risk_management
+        } else {
+            # after lockdown c* becomes 0 as no more external shock
+            inoperability_evolution[, t] <- inoperability_evolution[, t - 1] +
+                K %*% (A_star %*% inoperability_evolution[, t - 1] -
+                    inoperability_evolution[, t - 1]) * risk_management
+        }
+    }
+
+    # convert planned YEARLY output to DAILY output (in millions)
+    x_daily <- x / days_in_year
+    EL_evolution <- t(apply(inoperability_evolution, 1, cumsum)) * as.vector(x_daily)
+    EL_end <- EL_evolution[, ncol(EL_evolution)]
+    total_economic_loss <- sum(EL_evolution[, ncol(EL_evolution)])
+
+    return(list(
+        inoperability_evolution = inoperability_evolution,
+        EL_evolution = EL_evolution,
+        EL_end = EL_end,
+        total_economic_loss = total_economic_loss
+    ))
+}
+```
+
+---
+
+# 4. Simulation — ML vs. DIIM Comparison
+
+## 4.1 `simulation_ml_vs_diim` — COVID-19 Scenario
+
+Compares total economic loss under three strategies:
+
+1. **No intervention** (baseline)
+2. **DIIM-based intervention** — top 5 sectors by economic loss
+3. **ML-based intervention** — key sectors identified via PCA (sectors 3, 2, 5, 8, 10)
+
+```{r simulation_ml_vs_diim}
+simulation_ml_vs_diim <- function(q0, A_star, c_star, x, lockdown_duration, total_duration) {
+    # run model to calculate the economic loss (without intervention)
+    model <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration)
+    EL_evolution <- model$EL_evolution
+
+    # obtain the sectors with top economic loss
+    max_econ_loss <- apply(EL_evolution, 1, max)
+    sorted_indices <- order(max_econ_loss, decreasing = TRUE)
+    top_econ_loss_5 <- sorted_indices[1:5]
+
+    # rerun the model with intervention for the top economic sectors
+    model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration,
+        key_sectors = top_econ_loss_5
+    )
+
+    ml_key_sectors <- c(3, 2, 5, 8, 10) # obtained from PCA
+    model_ml <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration,
+        key_sectors = ml_key_sectors
+    )
+
+    model_tot_econ_loss <- model$total_economic_loss
+    model_diim_tot_econ_loss <- model_diim$total_economic_loss
+    model_ml_tot_econ_loss <- model_ml$total_economic_loss
+
+    return(list(
+        lockdown_duration = lockdown_duration,
+        total_duration = total_duration,
+        model_tot_econ_loss = model_tot_econ_loss,
+        model_diim_tot_econ_loss = model_diim_tot_econ_loss,
+        model_ml_tot_econ_loss = model_ml_tot_econ_loss
+    ))
+}
+```
+
+## 4.2 `simulation_ml_vs_diim_manpower` — Manpower Disruption Scenario
+
+Same comparison as above but with ML key sectors identified for the manpower scenario (sectors 79, 107, 89, 11, 33).
+
+```{r simulation_ml_vs_diim_manpower}
+simulation_ml_vs_diim_manpower <- function(q0, A_star, c_star, x, lockdown_duration, total_duration) {
+    # run model to calculate the economic loss (without intervention)
+    model <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration)
+    EL_evolution <- model$EL_evolution
+
+    # obtain the sectors with top economic loss
+    max_econ_loss <- apply(EL_evolution, 1, max)
+    sorted_indices <- order(max_econ_loss, decreasing = TRUE)
+    top_econ_loss_5 <- sorted_indices[1:5]
+
+    # rerun the model with intervention for the top economic sectors
+    model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration,
+        key_sectors = top_econ_loss_5
+    )
+
+    ml_key_sectors <- c(79, 107, 89, 11, 33) # obtained from PCA
+    model_ml <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration,
+        key_sectors = ml_key_sectors
+    )
+
+    model_tot_econ_loss <- model$total_economic_loss
+    model_diim_tot_econ_loss <- model_diim$total_economic_loss
+    model_ml_tot_econ_loss <- model_ml$total_economic_loss
+
+    return(list(
+        lockdown_duration = lockdown_duration,
+        total_duration = total_duration,
+        model_tot_econ_loss = model_tot_econ_loss,
+        model_diim_tot_econ_loss = model_diim_tot_econ_loss,
+        model_ml_tot_econ_loss = model_ml_tot_econ_loss
+    ))
+}
+```
