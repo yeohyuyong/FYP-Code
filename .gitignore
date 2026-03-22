@@ -3,6 +3,15 @@
 .DS_Store
 Thumbs.db
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
 # R/RStudio
 .Rproj.user
 .Rhistory
@@ -14,13 +23,28 @@ Rplots.pdf
 fyp.html
 fyp.tex
 fyp.pdf
+*.png
+*.csv
 
-# Intermediate
+# Data files
+*.xlsx
+
+# LaTeX Intermediate
 *.aux
 *.log
 *.toc
+*.out
+*.blg
+*.bbl
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.lof
+*.lot
 *_files/
 *_cache/
 
 # Editors
 .vscode/
+.antigravityignore
+.copilotignore
