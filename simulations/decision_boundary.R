@@ -16,7 +16,7 @@ A_star <- data$A_star
 q0_base <- data$q0
 
 n_sectors <- length(q0_base)
-pca_sectors <- c(3, 2, 5, 8, 10)
+pca_sectors <- c(2, 5, 4, 8, 3)
 non_pca_sectors <- setdiff(1:n_sectors, pca_sectors)
 
 cat("PCA sectors:", pca_sectors, "\n")
@@ -76,7 +76,7 @@ for (i in 1:n_mc) {
 
     # 2. Run the simulation using the randomly generated q0
     experiment_results <- compare_methods(random_q0, A_star, c_star_base, x,
-        lockdown_duration = 55, total_duration = 751)
+        lockdown_duration = 55, total_duration = 751, pca_sectors = pca_sectors)
         
     # 3. Calculate the static mathematical properties of this specific q0 vector
     q0_features <- compute_q0_features(random_q0, pca_sectors, non_pca_sectors)
@@ -256,7 +256,7 @@ for (share in target_shares) {
         actual_share <- sum(q0_test[pca_sectors]) / sum(q0_test)
 
         res <- compare_methods(q0_test, A_star, c_star_base, x,
-            lockdown_duration = 55, total_duration = 751)
+            lockdown_duration = 55, total_duration = 751, pca_sectors = pca_sectors)
 
         sweep_results <- rbind(sweep_results, data.frame(
             target_share = share, actual_share = actual_share,

@@ -90,7 +90,9 @@ Several observations emerge:
 
 Using the actual $q_0$ data from each scenario, we compare each cheap method's economic loss reduction against the DIIM benchmark when intervening in the top-5 sectors.
 
-For the COVID-19 scenario, the identical rankings of Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi achieve a loss reduction very close to the DIIM benchmark, while PCA $\times$ xi performs slightly better. For the manpower scenario, the gap between the cheap methods and DIIM widens significantly, with even the best cheap method falling substantially short of DIIM's reduction.
+For the COVID-19 scenario, the DIIM identifies sectors 2, 3, 4, 5, 12 as key sectors and achieves a loss reduction of 3.91\%. In contrast, Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi achieve 2.65\%, while PCA $\times$ xi achieves 3.38\%---a notable improvement over the purely size-based methods. The DIIM selects Construction (3) and Public Administration (12) in place of Financial Services (8) and Information \& Communications (7), reflecting its ability to capture sectors with high initial inoperability and strong structural dependencies.
+
+For the manpower scenario, PCA $\times$ xi matches the other cheap methods at 4.84\%, while the DIIM achieves 6.88\%---a substantially larger gap. This indicates that when disruptions are concentrated in structurally important sectors, the DIIM's ability to account for both $q_0$ and $c^*$ becomes more valuable.
 
 This observation motivates the Monte Carlo analysis in Chapter~6: the performance of cheap methods at a single $q_0$ point is insufficient to draw general conclusions. We need to understand how performance varies across the space of possible $q_0$ vectors.
 

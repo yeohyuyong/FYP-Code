@@ -143,10 +143,12 @@ The initial inoperability $q(0)$ is calculated as:
 
 \begin{equation}
     \label{eq:initial-inoperability}
-    \text{Sector Initial Inoperability} = \frac{\text{Unavailable Workforce}}{\text{Size of Workforce}} \times \frac{\text{LAPI}}{\text{Sector Output}}
+    q_i(0) = \underbrace{\left(1 - \text{RLI}_i\right)\left(1 - \text{ESS}_i\right)}_{\text{Workforce Unavailability}} \times \frac{\text{LAPI}_i}{\text{Sector Output}_i}
 \end{equation}
 
-where the left factor is the proportion of unavailable workers in each sector and the right factor captures how dependent each sector is on labour as an input (Local Area Personal Income).
+The first factor, workforce unavailability, is adapted from \cite{DelRioChanona2020,Pichler2022}. $\text{RLI}_i$ is the Remote Labor Index, representing the probability that a worker in sector~$i$ can work from home. $\text{ESS}_i$ is the Essential Score, representing the probability that a worker has an essential job that permits on-site work during a lockdown. The product $(1-\text{RLI}_i)(1-\text{ESS}_i)$ gives the expected fraction of workers who cannot work during the lockdown.
+
+The second factor, $\text{LAPI}_i / \text{Sector Output}_i$, captures how dependent each sector is on labour as an input, where LAPI is the Local Area Personal Income (equivalent to compensation of employees in the IO table).
 
 \subsection{Elasticity Coefficient}
 

@@ -41,18 +41,18 @@ Table~\ref{tab:covid-decision-results} summarises the Monte Carlo results for th
 \toprule
 \textbf{Method} & \textbf{Close Rate ($\geq$95\%)} & \textbf{Win Rate} & \textbf{Mean Ratio} \\
 \midrule
-Total Output           & 89.8\% & 82.2\% & 1.181 \\
-PageRank $\times$ xi   & 89.8\% & 82.2\% & 1.181 \\
-BL $\times$ xi         & 89.8\% & 82.2\% & 1.181 \\
-FL $\times$ xi         & 89.8\% & 82.2\% & 1.181 \\
-PCA $\times$ xi        & 86.6\% & 76.6\% & 1.119 \\
+Total Output           & 49.0\% & 25.4\% & 0.934 \\
+PageRank $\times$ xi   & 49.0\% & 25.4\% & 0.934 \\
+BL $\times$ xi         & 49.0\% & 25.4\% & 0.934 \\
+FL $\times$ xi         & 49.0\% & 25.4\% & 0.934 \\
+PCA $\times$ xi        & 23.3\% &  7.4\% & 0.890 \\
 \bottomrule
 \end{tabular}
 \caption{Monte Carlo results for COVID-19 (2\,000 trials, $k=5$).}
 \label{tab:covid-decision-results}
 \end{table}
 
-Remarkably, Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi all achieve an identical close rate of 89.8\% and a mean performance ratio exceeding~1 (i.e., they \emph{outperform} DIIM on average). This stems from the fact that they produce the exact same top-5 sector ranking. Weighting by economic size ($x_i$) is the dominant factor here, allowing even the simplest baseline (Total Output) to effectively prioritise intervention in this 15-sector model. PCA $\times$ xi also performs exceptionally well with an 86.6\% close rate.
+With the recalibrated $q_0$ (based on circuit breaker workforce unavailability rather than unemployment rates), the close rates are substantially lower than what would be observed with small $q_0$ values. Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi achieve a close rate of 49.0\% and a mean performance ratio of 0.934 (i.e., they achieve on average only 93.4\% of DIIM's loss reduction). PCA $\times$ xi achieves a lower close rate of 23.3\%, reflecting the fact that its fixed ranking diverges from DIIM's adaptive ranking in the majority of disruption profiles. These results confirm that when initial inoperability values are realistic in magnitude, the DIIM's simulation-based approach adds meaningful value over cheap structural methods.
 
 \begin{figure}[tbp]
     \centering
@@ -139,11 +139,11 @@ Table~\ref{tab:decision-rules-summary} presents the derived decision rules.
 \textbf{Scenario} & \textbf{Method} & \textbf{Decision Rule} & \textbf{$J$} \\
 \midrule
 \multirow{5}{*}{COVID-19}
- & Total Output          & TotalOutput\_avgrank $< 0.533$ & 0.402 \\
- & PageRank $\times$ xi  & PageRankxi\_avgrank $< 0.533$  & 0.402 \\
- & BL $\times$ xi        & BLxi\_avgrank $< 0.533$        & 0.402 \\
- & FL $\times$ xi        & FLxi\_avgrank $< 0.533$        & 0.402 \\
- & PCA $\times$ xi       & PCAxi\_avgrank $< 0.578$       & 0.307 \\
+ & Total Output          & TotalOutput\_share $> 0.324$ & 0.468 \\
+ & PageRank $\times$ xi  & PageRankxi\_share $> 0.324$  & 0.468 \\
+ & BL $\times$ xi        & BLxi\_share $> 0.324$        & 0.468 \\
+ & FL $\times$ xi        & FLxi\_share $> 0.324$        & 0.468 \\
+ & PCA $\times$ xi       & PCAxi\_share $> 0.340$       & 0.451 \\
 \midrule
 \multirow{5}{*}{Manpower}
  & Total Output          & TotalOutput\_share $> 0.315$   & 0.448 \\
@@ -165,8 +165,8 @@ The decision rules follow a common pattern: a cheap method works well when the d
 Based on the analysis, we propose the following practical guidelines:
 
 \begin{enumerate}
-    \item \textbf{For aggregated economies ($\leq$ 20 sectors)}: Simple baselines like Total Output or structurally-weighted methods (FL $\times$ xi, PCA $\times$ xi) can be used as primary screening tools. With close rates near 60--90\%, the risk of significant underperformance is manageable, though performance varies with the shock structure ($c^*$).
-    \item \textbf{Shock structure matters}: The key driver of cheap method effectiveness at the same sectoral resolution is the shock structure. When both supply and demand shocks are present ($c^* > 0$, as in COVID-19), the demand shock anchors the disruption and cheap methods achieve close rates near 90\%. Under pure supply shocks ($c^* = 0$, as in manpower disruption), close rates drop to about 60\%, as the DIIM's adaptive ranking has more room to outperform fixed rankings.
+    \item \textbf{For aggregated economies ($\leq$ 20 sectors)}: The DIIM provides meaningful value over cheap methods, with close rates of roughly 49--60\% across scenarios. Cheap methods like Total Output or structurally-weighted methods (FL $\times$ xi, PCA $\times$ xi) can be used as initial screening tools, but should be supplemented with DIIM analysis when disruption data ($q_0$) is available.
+    \item \textbf{Shock structure matters}: The key driver of cheap method effectiveness is the shock structure. Under pure supply shocks ($c^* = 0$, as in manpower disruption), close rates are about 60\%. When both supply and demand shocks are present ($c^* > 0$, as in COVID-19), close rates are about 49\%, as the larger and more heterogeneous $q_0$ values give the DIIM more room to identify non-obvious key sectors.
     \item \textbf{Pre-event planning}: Since $q_0$ is unknown before a disruption occurs, cheap methods are valuable for \emph{pre-positioning} resources. The combination of structural linkage and absolute economic size provides the best generalisable estimate of which sectors are likely to be critical across a range of disruption profiles.
     \item \textbf{During a crisis}: Once $q_0$ is observed, the decision rules in Table~\ref{tab:decision-rules-summary} can be evaluated instantly to determine whether the cheap method's recommendation is trustworthy for the specific disruption at hand.
 \end{enumerate}
