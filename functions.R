@@ -2,7 +2,7 @@ library(openxlsx)
 
 download_data <- function() {
   # download 2019 IOT and extract total output and final demand column
-  data <- read.xlsx("dataset/Input_Output_Tables_2019_2021.xlsx", sheet = "2019IOTable")
+  data <- read.xlsx("dataset/io_tables/iot_2019_2021_combined.xlsx", sheet = "2019IOTable")
   iot2019 <- data[2:(2 + 15 - 1), 3:(3 + 15 - 1)]
   x <- data[2:(2 + 15 - 1), ncol(data)]
   c <- data[2:(2 + 15 - 1), ncol(data) - 1]
@@ -10,15 +10,15 @@ download_data <- function() {
   c <- as.matrix(sapply(c, as.numeric))
 
   # extract technical coefficient matrix
-  A <- read.xlsx("dataset/Input_Output_Tables_2019_2021.xlsx", sheet = "A")
+  A <- read.xlsx("dataset/io_tables/iot_2019_2021_combined.xlsx", sheet = "A")
   A <- A[2:(2 + 15 - 1), 3:(3 + 15 - 1)]
   A <- as.matrix(sapply(A, as.numeric))
 
   # extract sector initial inoperability
-  q0_df <- read.xlsx("dataset/covid-data/Unemployment_and_Impact_Analysis.xlsx", sheet = "sector inoperability", colNames = FALSE)
+  q0_df <- read.xlsx("dataset/covid_data/unemployment_and_impact_analysis.xlsx", sheet = "sector inoperability", colNames = FALSE)
   q0 <- as.numeric(q0_df[2:16, 3])
 
-  c_star_df <- read.xlsx("dataset/covid-data/Unemployment_and_Impact_Analysis.xlsx", sheet = "c_star")
+  c_star_df <- read.xlsx("dataset/covid_data/unemployment_and_impact_analysis.xlsx", sheet = "c_star")
   c_star <- as.numeric(c_star_df[1:15, 7])
 
   A_star <- solve(diag(as.vector(x))) %*% A %*% diag(as.vector(x))
@@ -35,18 +35,18 @@ download_data <- function() {
 
 download_manpower_data <- function() {
   # Load 2022 IOT for A matrix and x vector
-  data_A <- read.xlsx("dataset/manpower-disruption-data/2022_Input_Output_Table.xlsx", sheet = "A", colNames = FALSE)
+  data_A <- read.xlsx("dataset/manpower_disruption_data/iot_2022.xlsx", sheet = "A", colNames = FALSE)
   num_sectors <- nrow(data_A) - 1
   A <- data_A[2:(num_sectors + 1), 2:(num_sectors + 1)]
   A <- as.matrix(sapply(A, as.numeric))
 
   # Sheet "x" contains the total output
-  data_x <- read.xlsx("dataset/manpower-disruption-data/2022_Input_Output_Table.xlsx", sheet = "x", colNames = FALSE)
+  data_x <- read.xlsx("dataset/manpower_disruption_data/iot_2022.xlsx", sheet = "x", colNames = FALSE)
   x <- data_x[2:(num_sectors + 1), 2]
   x <- as.numeric(x)
 
   # Load sector initial inoperability (q0)
-  data_q0 <- read.xlsx("dataset/manpower-disruption-data/Sector_initial_inoperability.xlsx", sheet = "Sector_initial_inoperability", colNames = FALSE)
+  data_q0 <- read.xlsx("dataset/manpower_disruption_data/sector_initial_inoperability.xlsx", sheet = "Sector_initial_inoperability", colNames = FALSE)
   q0 <- data_q0[2:(num_sectors + 1), 4]
   q0 <- as.numeric(q0)
 

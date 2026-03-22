@@ -8,11 +8,11 @@ library(tidyverse)
 library("corrr")
 library(ggcorrplot)
 
-data <- read.xlsx("dataset/Input_Output_Tables_2019_2021.xlsx", sheet = "2019IOTable")
+data <- read.xlsx("dataset/io_tables/iot_2019_2021_combined.xlsx", sheet = "2019IOTable")
 iot2019 <- data[2:(2 + 15 - 1), 3:(3 + 15 - 1)]
 x <- as.numeric(data[2:(2 + 15 - 1), ncol(data)])
 
-A <- read.xlsx("dataset/Input_Output_Tables_2019_2021.xlsx", sheet = "A")
+A <- read.xlsx("dataset/io_tables/iot_2019_2021_combined.xlsx", sheet = "A")
 A <- A[2:(2 + 15 - 1), 3:(3 + 15 - 1)]
 A <- as.matrix(sapply(A, as.numeric))
 n_sectors <- nrow(A)
