@@ -25,7 +25,7 @@ This distinction is important because the DIIM solution simplifies to $q(t) = e^
 
 \subsection{Input-Output Table}
 
-This scenario uses the 2022 Singapore IO table, which provides a more granular sectoral breakdown of 107~sectors. The finer resolution is essential for capturing the heterogeneous distribution of foreign workers across sub-sectors.
+This scenario uses the 2022 Singapore IO table, aggregated to 15~broad sectors matching the same sectoral classification as the COVID-19 scenario. This aggregation facilitates direct comparison between the two case studies, while still capturing the heterogeneous distribution of foreign workers across sectors.
 
 \subsection{Initial Inoperability}
 
@@ -40,29 +40,29 @@ The shock duration is set to 55~days to enable comparison with the COVID-19 scen
 
 \subsection{Inoperability Evolution}
 
-Figure~\ref{fig:manpower-inoperability} shows the simulated inoperability trajectories for the 107~sectors. Compared to the COVID-19 scenario, the manpower disruption exhibits:
+Figure~\ref{fig:manpower-inoperability} shows the simulated inoperability trajectories for the 15~sectors. Compared to the COVID-19 scenario, the manpower disruption exhibits:
 
 \begin{itemize}
     \item Greater dispersion in initial inoperability across sectors, reflecting the uneven distribution of foreign workers.
-    \item Stronger cascading effects through the 107-sector production network, as disruptions in labour-intensive sectors propagate to downstream industries.
+    \item Purely structural cascading effects through the production network, as disruptions in labour-intensive sectors propagate to downstream industries without any external demand shock.
 \end{itemize}
 
 \begin{figure}[tbp]
     \centering
     \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/manpower_inoperability.png}}
-    \caption{Inoperability evolution for the manpower disruption scenario (107 sectors).}
+    \caption{Inoperability evolution for the manpower disruption scenario (15 sectors).}
     \label{fig:manpower-inoperability}
 \end{figure}
 
 
 \subsection{Economic Loss Evolution}
 
-Figure~\ref{fig:manpower-economic-loss} presents the cumulative economic loss evolution. The 107-sector resolution reveals that even sectors with moderate inoperability can accumulate substantial losses if their baseline output is large (e.g., manufacturing sub-sectors, financial services).
+Figure~\ref{fig:manpower-economic-loss} presents the cumulative economic loss evolution. The 15-sector model reveals that even sectors with moderate inoperability can accumulate substantial losses if their baseline output is large (e.g., manufacturing, financial services).
 
 \begin{figure}[tbp]
     \centering
     \adjustbox{max width=\linewidth}{\includegraphics{Chapter4/manpower_econ_loss.png}}
-    \caption{Economic loss evolution for the manpower disruption scenario (107 sectors).}
+    \caption{Economic loss evolution for the manpower disruption scenario (15 sectors).}
     \label{fig:manpower-economic-loss}
 \end{figure}
 
@@ -77,7 +77,7 @@ Table~\ref{tab:scenario-comparison} summarises the key structural differences be
 \toprule
 \textbf{Parameter} & \textbf{COVID-19} & \textbf{Manpower} \\
 \midrule
-Number of sectors & 15 & 107 \\
+Number of sectors & 15 & 15 \\
 IO table year & 2019 & 2022 \\
 Demand shock $c^*$ & $>0$ & $= 0$ \\
 Shock type & Demand + supply & Pure supply \\
@@ -89,7 +89,7 @@ Total horizon & 751 days & 751 days \\
 \label{tab:scenario-comparison}
 \end{table}
 
-The manpower scenario is structurally more complex because (1)~the 107-sector economy has a denser and more heterogeneous interdependency matrix~$A^*$, and (2)~the absence of a demand shock means the entire disruption propagation is driven by the production network. These structural differences have important implications for the effectiveness of cheap key sector identification methods, as explored in the following chapters.
+Although both scenarios operate at the same 15-sector level, the manpower scenario is structurally distinct because the absence of a demand shock ($c^* = 0$) means the entire disruption propagation is driven by the production network alone. Furthermore, the 2022~IO table captures post-pandemic structural shifts in the economy. These structural differences have important implications for the effectiveness of cheap key sector identification methods, as explored in the following chapters.
 
 %=== END OF CHAPTER FOUR ===
 \newpage

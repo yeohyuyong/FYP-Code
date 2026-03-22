@@ -6,9 +6,9 @@
   FL x xi                   close=89.8% wins=82.2% ratio=1.181 | Use if FLxi_avgrank < 0.533 (J=0.402)
 
 --- Manpower ---
-  Total Output              close=55.4% wins=24.3% ratio=0.942 | Use if TotalOutput_overlap > 0.000 (J=0.102)
-  PCA x xi                  close=38.8% wins=6.8% ratio=0.922 | Use if PCAxi_overlap > 0.000 (J=0.077)
-  PageRank x xi             close=54.8% wins=22.1% ratio=0.947 | Use if PageRankxi_overlap > 0.000 (J=0.082)
-  BL x xi                   close=54.8% wins=22.1% ratio=0.947 | Use if BLxi_overlap > 0.000 (J=0.082)
-  FL x xi                   close=55.4% wins=24.3% ratio=0.942 | Use if FLxi_overlap > 0.000 (J=0.102)
+  Total Output              close=60.4% wins=41.4% ratio=0.953 | Use if TotalOutput_share > 0.315 (J=0.448)
+  PCA x xi                  close=60.4% wins=41.4% ratio=0.953 | Use if PCAxi_share > 0.315 (J=0.448)
+  PageRank x xi             close=60.4% wins=41.4% ratio=0.953 | Use if PageRankxi_share > 0.315 (J=0.448)
+  BL x xi                   close=60.4% wins=41.4% ratio=0.953 | Use if BLxi_share > 0.315 (J=0.448)
+  FL x xi                   close=60.4% wins=41.4% ratio=0.953 | Use if FLxi_share > 0.315 (J=0.448)
 

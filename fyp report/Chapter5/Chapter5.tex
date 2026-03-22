@@ -36,7 +36,7 @@ PCA is applied to the integrated IO matrix $H = A(I-A)^{-1}$. Table~\ref{tab:pca
 
 The top-5 PCA $\times$ xi sectors for COVID-19 are sectors 2 (Manufacturing), 5 (Transportation \& Storage), 4 (Wholesale \& Retail Trade), 8 (Financial \& Insurance Services), and 3 (Construction). While sector 3 has the largest structural distance, sector 2 becomes the highest-ranked when weighted by its massive economic size.
 
-For the manpower scenario (107~sectors), PCA is computed on the corresponding $H$ matrix. The top-5 PCA $\times$ xi sectors are sectors 57, 54, 69, 17, and 26. These differ substantially from the COVID-19 PCA sectors because the 107-sector IO table has a different structure and more granular interdependencies.
+For the manpower scenario (15~sectors), PCA is computed on the corresponding $H$ matrix from the 2022 aggregated IO table. The top-5 PCA $\times$ xi sectors are sectors 2, 5, 4, 7, and 8. These closely mirror the COVID-19 PCA sectors, reflecting the similar aggregated structure, though the different IO table vintage (2022 vs 2019) and the absence of demand shock ($c^* = 0$) produce some ranking differences.
 
 
 \section{Cheap Method Rankings}
@@ -66,14 +66,14 @@ FL $\times$ xi         & 2, 4, 5, 8, 7 \\
 \toprule
 \textbf{Method} & \textbf{Top-5 Sectors (Manpower)} \\
 \midrule
-Total Output           & 54, 57, 26, 69, 70 \\
-PCA $\times$ xi        & 57, 54, 69, 17, 26 \\
-PageRank $\times$ xi   & 54, 69, 57, 26, 98 \\
-BL $\times$ xi         & 54, 57, 69, 26, 98 \\
-FL $\times$ xi         & 54, 57, 69, 26, 70 \\
+Total Output           & 2, 4, 5, 7, 8 \\
+PCA $\times$ xi        & 2, 5, 4, 7, 8 \\
+PageRank $\times$ xi   & 4, 2, 5, 7, 8 \\
+BL $\times$ xi         & 2, 5, 4, 7, 8 \\
+FL $\times$ xi         & 2, 5, 4, 7, 8 \\
 \bottomrule
 \end{tabular}
-\caption{Top-5 sectors by each cheap method (Manpower, 107 sectors).}
+\caption{Top-5 sectors by each cheap method (Manpower, 15 sectors).}
 \label{tab:rankings-manpower}
 \end{table}
 
@@ -82,7 +82,7 @@ Several observations emerge:
 \begin{enumerate}
     \item \textbf{High method agreement}: By incorporating total output $x_i$ as a weight, the methods converge strongly. For COVID-19, Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi produce the exact same top-5 ranking (2, 4, 5, 8, 7). PCA $\times$ xi differs only slightly by including sector 3 instead of 7.
     \item \textbf{Economic size dominates}: The fact that structurally distinct measures (centrality, backward linkage, and forward linkage) yield nearly identical rankings once weighted by $x_i$ indicates that a sector's baseline economic size is the dominant driver of its overall impact in these aggregated models.
-    \item \textbf{Manpower variation}: In the 107-sector model, there is slightly more variation. While sectors 54, 57, and 69 consistently score highly across all methods, the specific rankings begin to diverge, reflecting the more granular network structure where structural differences can sometimes outweigh pure size.
+    \item \textbf{Cross-scenario consistency}: Despite using different IO tables (2019 vs 2022) and different shock structures ($c^* > 0$ vs $c^* = 0$), both scenarios produce very similar cheap method rankings. The manpower scenario rankings (2, 4/5, 5/4, 7, 8) closely mirror the COVID-19 rankings (2, 4, 5, 8, 7), confirming that economic size is the overwhelmingly dominant factor in these 15-sector models.
 \end{enumerate}
 
 

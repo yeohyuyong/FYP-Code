@@ -8,12 +8,12 @@
 The two case studies reveal a clear pattern: the effectiveness of cheap key sector identification methods depends critically on the number of sectors and the structure of the IO table.
 
 \begin{itemize}
-    \item \textbf{COVID-19 (15~sectors)}: Total Output and all its structurally-weighted equivalents (PageRank $\times$ xi, BL $\times$ xi, FL $\times$ xi) achieve an identical close rate of nearly 90\%, with PCA $\times$ xi following closely at 86.6\%. With only 15~sectors, the top-5 represent one-third of the economy, and the size-based ranking is an excellent proxy for which sectors will be most impacted under a wide range of disruption profiles.
+    \item \textbf{COVID-19 (15~sectors, $c^* > 0$)}: Total Output and all its structurally-weighted equivalents (PageRank $\times$ xi, BL $\times$ xi, FL $\times$ xi) achieve an identical close rate of nearly 90\%, with PCA $\times$ xi following closely at 86.6\%. With a demand shock present, the $c^*$ vector anchors the disruption pattern, and the size-based ranking is an excellent proxy for which sectors will be most impacted under a wide range of disruption profiles.
     
-    \item \textbf{Manpower (107~sectors)}: Even the best cheap methods (Total Output, FL $\times$ xi, 55.4\%) match DIIM only about half the time. With 107~sectors, the top-5 represent less than 5\% of the economy, and the probability that any fixed ranking captures the specific highly-disrupted sectors under a given $q_0$ is much lower.
+    \item \textbf{Manpower (15~sectors, $c^* = 0$)}: All cheap methods achieve an identical close rate of 60.4\% and mean ratio of 0.953. The close rates are notably lower than the COVID-19 scenario despite using the same number of sectors. This reveals that the shock structure---not purely the number of sectors---is the primary driver of cheap method effectiveness.
 \end{itemize}
 
-This suggests a fundamental \emph{dimensionality effect}: as the number of sectors grows, the space of possible $q_0$ vectors expands exponentially, making it harder for a fixed ranking to remain robust.
+This suggests a fundamental \emph{shock structure effect}: when both supply and demand disruptions are present ($c^* > 0$), the demand shock constrains the space of disruption outcomes, making fixed structural rankings more robust. Without $c^*$, the disruption dynamics are governed entirely by the purely endogenous cascading through $A^*$, giving the simulation-based DIIM ranking more room to diverge from any fixed ranking.
 
 
 \section{Why Economic Size Dominates Pure Structure}
@@ -50,7 +50,7 @@ From a national security perspective, the results support a two-stage approach t
     \item \textbf{Crisis response}: Once the nature of the disruption is known (i.e., $q_0$ is observed), evaluate the decision rules. If the cheap method's conditions are met (e.g., the targeted sectors align well with the observed $q_0$), use its recommendations immediately. If not, run the full DIIM for a more accurate assessment. This reduces response time in the critical early hours of a crisis.
 \end{enumerate}
 
-For Singapore specifically, the analysis suggests that sectors with high foreign worker concentration \emph{and} strong IO linkages (e.g., construction, certain manufacturing sub-sectors) should be priority targets for workforce resilience measures. Even crude structural analysis using only the IO table can identify these sectors with reasonable accuracy.
+For Singapore specifically, the analysis suggests that sectors with high foreign worker concentration \emph{and} strong IO linkages (e.g., construction, manufacturing) should be priority targets for workforce resilience measures. Even crude structural analysis using only the IO table can identify these sectors with reasonable accuracy.
 
 
 \section{Limitations}

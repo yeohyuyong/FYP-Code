@@ -153,10 +153,10 @@ covid_results <- run_scenario("COVID-19", download_data,
     lockdown_duration = 55, total_duration = 751,
     days_in_year = 366, target_k_values = c(3, 5, 7, 10, 12))
 
-# Manpower (107 sectors)
+# Manpower (15 sectors)
 manpower_results <- run_scenario("Manpower", download_manpower_data,
     lockdown_duration = 55, total_duration = 751,
-    days_in_year = 365, target_k_values = c(3, 5, 7, 10, 15, 20, 30))
+    days_in_year = 365, target_k_values = c(3, 5, 7, 10, 12))
 
 combined <- rbind(covid_results, manpower_results)
 write.csv(combined, file.path(results_dir, "enhanced_comparison.csv"), row.names = FALSE)

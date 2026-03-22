@@ -20,7 +20,7 @@ For each cheap method~$m$ and a given $q_0$, we compute the performance ratio fr
 
 \section{Monte Carlo Simulation}
 
-We draw 2\,000 random $q_0$ vectors for each scenario (COVID-19, 15~sectors; Manpower, 107~sectors). For each trial:
+We draw 2\,000 random $q_0$ vectors for each scenario (COVID-19 and Manpower, both 15~sectors). For each trial:
 
 \begin{enumerate}
     \item Draw $q_{0,i} \sim \text{Uniform}(10^{-6},\; 2 \max(q_0^{\text{actual}}))$ independently for each sector $i$.
@@ -81,18 +81,18 @@ Table~\ref{tab:manpower-decision-results} summarises the manpower scenario resul
 \toprule
 \textbf{Method} & \textbf{Close Rate ($\geq$95\%)} & \textbf{Win Rate} & \textbf{Mean Ratio} \\
 \midrule
-Total Output           & 55.4\% & 24.3\% & 0.942 \\
-FL $\times$ xi         & 55.4\% & 24.3\% & 0.942 \\
-PageRank $\times$ xi   & 54.8\% & 22.1\% & 0.947 \\
-BL $\times$ xi         & 54.8\% & 22.1\% & 0.947 \\
-PCA $\times$ xi        & 38.8\% &  6.8\% & 0.922 \\
+Total Output           & 60.4\% & 41.4\% & 0.953 \\
+PCA $\times$ xi        & 60.4\% & 41.4\% & 0.953 \\
+PageRank $\times$ xi   & 60.4\% & 41.4\% & 0.953 \\
+BL $\times$ xi         & 60.4\% & 41.4\% & 0.953 \\
+FL $\times$ xi         & 60.4\% & 41.4\% & 0.953 \\
 \bottomrule
 \end{tabular}
 \caption{Monte Carlo results for Manpower (2\,000 trials, $k=5$).}
 \label{tab:manpower-decision-results}
 \end{table}
 
-The manpower scenario is much harder for all methods. Total Output and FL $\times$ xi tie for the highest close rate at 55.4\%, closely followed by PageRank $\times$ xi and BL $\times$ xi (54.8\%). PCA $\times$ xi drops to 38.8\%. This difficulty is fundamentally driven by the number of sectors: with 107~sectors, the top-5 represent only 4.7\% of the economy, and the probability that any fixed ranking captures the five most impactful sectors under a random $q_0$ is much lower. Unlike the 15-sector model, pure size is not an absolute tiebreaker here, though it remains a powerful anchor for performance.
+The manpower scenario is harder for all methods than the COVID-19 scenario, despite both having 15~sectors. All five cheap methods achieve an identical close rate of 60.4\% and a mean performance ratio of 0.953. This identical performance stems from the near-identical top-5 sector rankings produced by all methods when weighted by economic size ($x_i$). The lower performance compared to COVID-19 (89.8\%) is driven by the absence of the demand shock ($c^* = 0$): without $c^*$ to anchor the disruption pattern, the DIIM's simulation-based ranking has more room to diverge from the structurally fixed rankings.
 
 \begin{figure}[tbp]
     \centering
@@ -146,11 +146,11 @@ Table~\ref{tab:decision-rules-summary} presents the derived decision rules.
  & PCA $\times$ xi       & PCAxi\_avgrank $< 0.578$       & 0.307 \\
 \midrule
 \multirow{5}{*}{Manpower}
- & Total Output          & TotalOutput\_overlap $> 0$     & 0.102 \\
- & FL $\times$ xi        & FLxi\_overlap $> 0$            & 0.102 \\
- & BL $\times$ xi        & BLxi\_overlap $> 0$            & 0.082 \\
- & PageRank $\times$ xi  & PageRankxi\_overlap $> 0$      & 0.082 \\
- & PCA $\times$ xi       & PCAxi\_overlap $> 0$           & 0.077 \\
+ & Total Output          & TotalOutput\_share $> 0.315$   & 0.448 \\
+ & PCA $\times$ xi       & PCAxi\_share $> 0.315$         & 0.448 \\
+ & PageRank $\times$ xi  & PageRankxi\_share $> 0.315$    & 0.448 \\
+ & BL $\times$ xi        & BLxi\_share $> 0.315$          & 0.448 \\
+ & FL $\times$ xi        & FLxi\_share $> 0.315$          & 0.448 \\
 \bottomrule
 \end{tabular}
 \caption{Decision rules with Youden's $J$-optimal thresholds.}
@@ -165,9 +165,9 @@ The decision rules follow a common pattern: a cheap method works well when the d
 Based on the analysis, we propose the following practical guidelines:
 
 \begin{enumerate}
-    \item \textbf{For small economies ($\leq$ 20 sectors)}: Simple baselines like Total Output or structurally-weighted methods (FL $\times$ xi, PCA $\times$ xi) can be used as primary screening tools. With close rates near 90\%, the risk of significant underperformance is exceedingly low.
-    \item \textbf{For large economies ($>$ 50 sectors)}: Structurally-weighted methods (or even Total Output) should be used as a first-pass screen. If the overlap between their top-$k$ sectors and the observed high-$q_0$ sectors is low (i.e., NO overlap), the full DIIM should be run. Otherwise, the cheap methods provide a reasonable approximation.
-    \item \textbf{Pre-event planning}: Since $q_0$ is unknown before a disruption occurs, cheap methods are valuable for \emph{pre-positioning} resources. The combination of structural linkage and absolute economic size provides the best  generalisable estimate of which sectors are likely to be critical across a range of disruption profiles.
+    \item \textbf{For aggregated economies ($\leq$ 20 sectors)}: Simple baselines like Total Output or structurally-weighted methods (FL $\times$ xi, PCA $\times$ xi) can be used as primary screening tools. With close rates near 60--90\%, the risk of significant underperformance is manageable, though performance varies with the shock structure ($c^*$).
+    \item \textbf{Shock structure matters}: The key driver of cheap method effectiveness at the same sectoral resolution is the shock structure. When both supply and demand shocks are present ($c^* > 0$, as in COVID-19), the demand shock anchors the disruption and cheap methods achieve close rates near 90\%. Under pure supply shocks ($c^* = 0$, as in manpower disruption), close rates drop to about 60\%, as the DIIM's adaptive ranking has more room to outperform fixed rankings.
+    \item \textbf{Pre-event planning}: Since $q_0$ is unknown before a disruption occurs, cheap methods are valuable for \emph{pre-positioning} resources. The combination of structural linkage and absolute economic size provides the best generalisable estimate of which sectors are likely to be critical across a range of disruption profiles.
     \item \textbf{During a crisis}: Once $q_0$ is observed, the decision rules in Table~\ref{tab:decision-rules-summary} can be evaluated instantly to determine whether the cheap method's recommendation is trustworthy for the specific disruption at hand.
 \end{enumerate}
 
