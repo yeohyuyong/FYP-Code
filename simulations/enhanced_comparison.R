@@ -261,7 +261,7 @@ for (scenario_name in unique(combined$scenario)) {
     scenario_data <- combined[combined$scenario == scenario_name & combined$k == 5, ]
     
     total_output_red <- scenario_data[scenario_data$method == "Total Output", "pct_reduction"]
-    structural <- scenario_data[scenario_data$method %in% c("PCA x xi", "PageRank x xi", "BL x xi", "FL x xi"), ]
+    structural <- scenario_data[scenario_data$method %in% c("PCA", "PageRank", "BL", "FL"), ]
     
     if (length(total_output_red) > 0 && nrow(structural) > 0) {
         best_struct <- structural[which.max(structural$pct_reduction), ]

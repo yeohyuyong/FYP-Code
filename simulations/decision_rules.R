@@ -97,8 +97,11 @@ run_monte_carlo <- function(scenario_name, data_loader,
     all_results <- list()
 
     for (trial in 1:n_mc) {
-        # Generate random q0 distribution
-        random_q0 <- runif(num_sectors, min = 1e-6, max = max_q0)
+        # Perturb the real q0: multiply each sector by a log-normal noise factor
+        # This preserves the relative structure of the real scenario while varying intensity
+        noise <- exp(rnorm(num_sectors, mean = 0, sd = 0.5))
+        random_q0 <- pmax(q0_base * noise, 1e-6)
+        random_q0 <- pmin(random_q0, 1)  # cap at 1 (100% inoperability)
 
         # Evaluate the DIIM baseline with no key sectors protected
         base_model <- DIIM(random_q0, A_star, c_star, x,
@@ -141,7 +144,7 @@ run_monte_carlo <- function(scenario_name, data_loader,
             trial_row[[paste0(prefix, "_reduction")]] <- method_reduction
             trial_row[[paste0(prefix, "_ratio")]]     <- method_reduction / diim_reduction
             trial_row[[paste0(prefix, "_wins")]]      <- method_reduction >= diim_reduction
-            trial_row[[paste0(prefix, "_close")]]     <- method_reduction / diim_reduction >= 0.95
+            trial_row[[paste0(prefix, "_close")]]     <- method_reduction / diim_reduction >= 0.80
         }
 
         all_results[[length(all_results) + 1]] <- trial_row
@@ -281,9 +284,9 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
     if (nrow(ratio_data) > 0) {
         p1 <- ggplot(ratio_data, aes(x = ratio, fill = method)) +
             geom_density(alpha = 0.5) +
-            geom_vline(xintercept = 0.95, linetype = "dashed", color = "red", linewidth = 0.8) +
+            geom_vline(xintercept = 0.80, linetype = "dashed", color = "red", linewidth = 0.8) +
             geom_vline(xintercept = 1.0, linetype = "dotted", color = "darkgreen", linewidth = 0.8) +
-            annotate("text", x = 0.95, y = Inf, label = "95% threshold",
+            annotate("text", x = 0.80, y = Inf, label = "80% threshold",
                      vjust = 2, hjust = 1.1, color = "red", size = 3) +
             scale_fill_brewer(palette = "Set2") +
             labs(title = sprintf("%s: Performance Ratio Distributions", scenario_name),
@@ -314,7 +317,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
         close_long <- melt(close_data, id.vars = "method",
                            variable.name = "metric", value.name = "rate")
         close_long$metric <- ifelse(close_long$metric == "close_rate",
-                                    ">=95% of DIIM", "Beats DIIM")
+                                    ">=80% of DIIM", "Beats DIIM")
 
         p2 <- ggplot(close_long, aes(x = reorder(method, rate), y = rate, fill = metric)) +
             geom_bar(stat = "identity", position = "dodge", alpha = 0.85) +
@@ -347,10 +350,10 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
             geom_point(aes_string(color = close_col), alpha = 0.3, size = 1) +
             geom_vline(xintercept = rule$threshold, linetype = "dashed",
                        color = "red", linewidth = 1) +
-            geom_hline(yintercept = 0.95, linetype = "dotted", color = "blue") +
+            geom_hline(yintercept = 0.80, linetype = "dotted", color = "blue") +
             scale_color_manual(
                 values = c("TRUE" = "#2ECC71", "FALSE" = "#E74C3C"),
-                labels = c("TRUE" = ">=95%", "FALSE" = "<95%"),
+                labels = c("TRUE" = ">=80%", "FALSE" = "<80%"),
                 name = "Close to DIIM") +
             labs(title = sprintf("%s: %s Decision Boundary", scenario_name, rule$method),
                  subtitle = sprintf("Rule: Use %s if %s %s %.3f",
@@ -365,49 +368,88 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
     }
 }
 
-covid_mc <- run_monte_carlo("COVID-19", download_data,
-    lockdown_duration = 55, total_duration = 751,
-    days_in_year = 366, n_mc = 2000, k = 5)
+k_values <- c(3, 5, 7, 10, 12)
+all_mc_results <- list()
 
-covid_rules <- build_decision_rules(covid_mc$mc_df, "COVID-19", method_names)
+for (k_val in k_values) {
+    cat(sprintf("\n========== k = %d ==========\n", k_val))
 
-cat("\nCOVID-19 Plots:\n")
-generate_plots(covid_mc$mc_df, covid_rules, "COVID-19", "covid_dr")
+    covid_mc <- run_monte_carlo("COVID-19", download_data,
+        lockdown_duration = 55, total_duration = 751,
+        days_in_year = 366, n_mc = 2000, k = k_val)
+    covid_mc$mc_df$k <- k_val
+    all_mc_results[[paste0("covid_k", k_val)]] <- covid_mc$mc_df
 
-manpower_mc <- run_monte_carlo("Manpower", download_manpower_data,
-    lockdown_duration = 55, total_duration = 751,
-    days_in_year = 365, n_mc = 2000, k = 5)
+    manpower_mc <- run_monte_carlo("Manpower", download_manpower_data,
+        lockdown_duration = 55, total_duration = 751,
+        days_in_year = 365, n_mc = 2000, k = k_val)
+    manpower_mc$mc_df$k <- k_val
+    all_mc_results[[paste0("manpower_k", k_val)]] <- manpower_mc$mc_df
+}
 
-manpower_rules <- build_decision_rules(manpower_mc$mc_df, "Manpower", method_names)
-
-cat("\nManpower Plots:\n")
-generate_plots(manpower_mc$mc_df, manpower_rules, "Manpower", "manpower_dr")
-
-# save combined MC data
-combined_mc <- bind_rows(covid_mc$mc_df, manpower_mc$mc_df)
+# Combine all results
+combined_mc <- bind_rows(all_mc_results)
 write.csv(combined_mc, file.path(results_dir, "decision_rules_mc_data.csv"), row.names = FALSE)
 cat("Saved decision_rules_mc_data.csv\n\n")
 
-# print summary
-cat("DECISION RULES SUMMARY\n\n")
+# Build summary table: mean ratio by method, scenario, and k
+cat("SUMMARY: Mean Performance Ratio (cheap / DIIM) by k\n\n")
+
+clean_methods <- c("TotalOutput", "PCAxi", "PageRankxi", "BLxi", "FLxi")
 summary_lines <- character()
 
 for (sc_name in c("COVID-19", "Manpower")) {
-    rules <- if (sc_name == "COVID-19") covid_rules else manpower_rules
     cat(sprintf("--- %s ---\n", sc_name))
     summary_lines <- c(summary_lines, sprintf("--- %s ---", sc_name))
 
-    for (m in names(rules)) {
-        r <- rules[[m]]
-        rule_str <- if (!is.na(r$threshold) && !is.null(r$best_predictor) && !is.na(r$best_predictor)) {
-            sprintf("Use if %s %s %.3f (J=%.3f)",
-                    r$best_predictor, r$direction, r$threshold, r$youden_j)
-        } else {
-            "No clear decision boundary"
+    sc_data <- combined_mc[combined_mc$scenario == sc_name, ]
+
+    # Header
+    header <- sprintf("  %-20s %s", "Method", paste(sprintf("k=%-4d", k_values), collapse = "  "))
+    cat(header, "\n")
+    summary_lines <- c(summary_lines, header)
+
+    for (i in seq_along(clean_methods)) {
+        prefix <- clean_methods[i]
+        ratio_col <- paste0(prefix, "_ratio")
+        close_col <- paste0(prefix, "_close")
+
+        ratios <- c()
+        for (k_val in k_values) {
+            k_data <- sc_data[sc_data$k == k_val, ]
+            if (ratio_col %in% names(k_data)) {
+                ratios <- c(ratios, mean(k_data[[ratio_col]], na.rm = TRUE))
+            } else {
+                ratios <- c(ratios, NA)
+            }
         }
 
-        line <- sprintf("  %-25s close=%.1f%% wins=%.1f%% ratio=%.3f | %s",
-            m, r$close_rate * 100, r$win_rate * 100, r$mean_ratio, rule_str)
+        line <- sprintf("  %-20s %s", method_labels[i],
+            paste(sprintf("%.3f ", ratios), collapse = "  "))
+        cat(line, "\n")
+        summary_lines <- c(summary_lines, line)
+    }
+
+    # Also print close rates
+    cat("\n  Close rates (>=80% of DIIM):\n")
+    summary_lines <- c(summary_lines, "  Close rates (>=80% of DIIM):")
+
+    for (i in seq_along(clean_methods)) {
+        prefix <- clean_methods[i]
+        close_col <- paste0(prefix, "_close")
+
+        close_rates <- c()
+        for (k_val in k_values) {
+            k_data <- sc_data[sc_data$k == k_val, ]
+            if (close_col %in% names(k_data)) {
+                close_rates <- c(close_rates, mean(k_data[[close_col]], na.rm = TRUE) * 100)
+            } else {
+                close_rates <- c(close_rates, NA)
+            }
+        }
+
+        line <- sprintf("  %-20s %s", method_labels[i],
+            paste(sprintf("%5.1f%%", close_rates), collapse = "  "))
         cat(line, "\n")
         summary_lines <- c(summary_lines, line)
     }
@@ -415,7 +457,7 @@ for (sc_name in c("COVID-19", "Manpower")) {
     summary_lines <- c(summary_lines, "")
 }
 
-# save summary to text file
+# save summary
 writeLines(summary_lines, file.path(results_dir, "decision_rules_summary.txt"))
 cat("Saved decision_rules_summary.txt\n")
 cat("Done!\n")

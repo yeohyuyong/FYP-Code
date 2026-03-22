@@ -293,9 +293,10 @@ pagerank_rank_sectors <- function(A_star, x_vector) {
 compute_cheap_rankings <- function(A, A_star, x) {
   n <- nrow(A)
   rankings <- list()
+  xi <- as.vector(x)
 
   # 1. Total Output: rank sectors by total output (xi)
-  rankings[["Total Output"]] <- order(as.vector(x), decreasing = TRUE)
+  rankings[["Total Output"]] <- order(xi, decreasing = TRUE)
 
   # Compute Leontief inverse (shared by PCA, BL, FL)
   I_minus_A <- diag(n) - A
@@ -306,19 +307,20 @@ compute_cheap_rankings <- function(A, A_star, x) {
   eig <- eigen(H)
   pc_loadings <- Re(eig$vectors[, 1:min(2, n)])
   pca_dist <- sqrt(rowSums(pc_loadings^2))
-  rankings[["PCA x xi"]] <- order(pca_dist * as.vector(x), decreasing = TRUE)
+  rankings[["PCA x xi"]] <- order(pca_dist * xi, decreasing = TRUE)
 
   # 3. PageRank x xi: PageRank centrality weighted by total output
-  pr_results <- pagerank_rank_sectors(A_star, x)
-  rankings[["PageRank x xi"]] <- pr_results$ranked_sectors
+  pr <- igraph::page_rank(igraph::graph_from_adjacency_matrix(
+          A_star, mode = "directed", weighted = TRUE, diag = FALSE))$vector
+  rankings[["PageRank x xi"]] <- order(pr * xi, decreasing = TRUE)
 
   # 4. BL x xi: Backward Linkage (column sums of L) weighted by total output
   BL <- colSums(L)
-  rankings[["BL x xi"]] <- order(BL * as.vector(x), decreasing = TRUE)
+  rankings[["BL x xi"]] <- order(BL * xi, decreasing = TRUE)
 
   # 5. FL x xi: Forward Linkage (row sums of L) weighted by total output
   FL <- rowSums(L)
-  rankings[["FL x xi"]] <- order(FL * as.vector(x), decreasing = TRUE)
+  rankings[["FL x xi"]] <- order(FL * xi, decreasing = TRUE)
 
   return(rankings)
 }

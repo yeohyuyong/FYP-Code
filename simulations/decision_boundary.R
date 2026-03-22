@@ -66,13 +66,14 @@ compute_q0_features <- function(q0, pca_idx, non_pca_idx) {
 
 set.seed(123)
 n_mc <- 2000
-max_q0 <- max(q0_base) * 1.5
 
 mc_results <- vector("list", n_mc)
 
 for (i in 1:n_mc) {
-    # 1. Generate a random array of initial inoperabilities
-    random_q0 <- runif(n_sectors, min = 1e-6, max = max_q0)
+    # 1. Perturb the real q0 with log-normal noise to preserve disruption structure
+    noise <- exp(rnorm(n_sectors, mean = 0, sd = 0.5))
+    random_q0 <- pmax(q0_base * noise, 1e-6)
+    random_q0 <- pmin(random_q0, 1)
 
     # 2. Run the simulation using the randomly generated q0
     experiment_results <- compare_methods(random_q0, A_star, c_star_base, x,
@@ -237,21 +238,18 @@ sweep_results <- data.frame(
 set.seed(456)
 for (share in target_shares) {
     for (rep in 1:n_reps) {
-        # create a random q0 vector where PCA sectors get exactly 'share' of the total
-        total_q0 <- runif(1, min = sum(q0_base) * 0.5, max = sum(q0_base) * 1.5)
-        pca_total     <- total_q0 * share
-        non_pca_total <- total_q0 * (1 - share)
+        # Perturb real q0, then rescale PCA/non-PCA groups to hit target share
+        noise <- exp(rnorm(n_sectors, mean = 0, sd = 0.5))
+        q0_test <- pmax(q0_base * noise, 1e-6)
 
-        # distribute randomly within PCA and non-PCA groups
-        pca_weights <- runif(length(pca_sectors))
-        pca_weights <- pca_weights / sum(pca_weights)
-        non_pca_weights <- runif(length(non_pca_sectors))
-        non_pca_weights <- non_pca_weights / sum(non_pca_weights)
+        # Rescale to achieve target share split between PCA and non-PCA sectors
+        current_pca_sum     <- sum(q0_test[pca_sectors])
+        current_non_pca_sum <- sum(q0_test[non_pca_sectors])
+        total_q0 <- current_pca_sum + current_non_pca_sum
 
-        q0_test <- numeric(n_sectors)
-        q0_test[pca_sectors]     <- pca_total * pca_weights
-        q0_test[non_pca_sectors] <- non_pca_total * non_pca_weights
-        q0_test[q0_test < 1e-6]  <- 1e-6
+        q0_test[pca_sectors]     <- q0_test[pca_sectors] * (share * total_q0 / current_pca_sum)
+        q0_test[non_pca_sectors] <- q0_test[non_pca_sectors] * ((1 - share) * total_q0 / current_non_pca_sum)
+        q0_test <- pmin(q0_test, 1)
 
         actual_share <- sum(q0_test[pca_sectors]) / sum(q0_test)
 

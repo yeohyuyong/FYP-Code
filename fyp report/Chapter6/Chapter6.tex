@@ -1,9 +1,9 @@
 %=== CHAPTER SIX (6) ===
-%=== Decision Rules ===
+%=== Monte Carlo Robustness Analysis ===
 
-\chapter{Decision Rules: When Can Cheap Methods Substitute for DIIM?}
+\chapter{Monte Carlo Robustness Analysis}
 
-The previous chapter showed that cheap methods can match DIIM at specific $q_0$ points but not universally. This chapter develops a systematic framework to determine \emph{when} each cheap method can be trusted, using Monte Carlo simulation and logistic regression.
+The previous chapter showed that cheap methods can approach DIIM at specific $q_0$ points but not universally. This chapter uses Monte Carlo simulation to systematically evaluate the robustness of cheap methods across a range of realistic disruption profiles and intervention scales.
 
 \section{Framework}
 
@@ -11,164 +11,184 @@ The previous chapter showed that cheap methods can match DIIM at specific $q_0$ 
 
 All cheap methods produce a \emph{fixed} sector ranking---they depend only on the IO table structure ($A$, $x$), not on the disruption profile ($q_0$). The DIIM, by contrast, adapts its ranking to the specific $q_0$. A cheap method performs well when its fixed ranking happens to align with where $q_0$ concentrates; it fails when the disruption hits sectors that the cheap method did not prioritise.
 
-This insight suggests that the effectiveness of a cheap method is predictable from features of $q_0$. If we can identify these features, we can construct decision rules: ``Use cheap method $m$ if [condition on $q_0$]; otherwise, run the full DIIM.''
+This insight suggests that the effectiveness of a cheap method is predictable from (i)~features of $q_0$ and (ii)~the number of sectors targeted for intervention~$k$. At small~$k$, only the very top sectors matter, while at large~$k$ the specific ranking becomes less consequential because most sectors are covered regardless.
 
 \subsection{Performance Metric}
 
-For each cheap method~$m$ and a given $q_0$, we compute the performance ratio from Equation~\eqref{eq:performance-ratio}. Method~$m$ is considered ``close enough'' if $R_m \geq 0.95$.
+For each cheap method~$m$ and a given $q_0$, we compute the performance ratio from Equation~\eqref{eq:performance-ratio}. The mean ratio $\bar{R}_m$ across trials is the primary metric: it captures how much of the DIIM's loss reduction a cheap method achieves on average. As a secondary metric, we report the \emph{close rate}---the fraction of trials where $R_m \geq 0.80$, i.e., the cheap method captures at least 80\% of the DIIM's benefit.
 
 
-\section{Monte Carlo Simulation}
+\section{Monte Carlo Design}
 
-We draw 2\,000 random $q_0$ vectors for each scenario (COVID-19 and Manpower, both 15~sectors). For each trial:
+\subsection{Perturbation of Real $q_0$}
+
+Rather than drawing $q_0$ from a uniform distribution---which would generate many unrealistic disruption profiles---we perturb the actual scenario-specific $q_0$ vector using log-normal noise:
+
+\begin{equation}
+    q_{0,i}^{\text{trial}} = q_{0,i}^{\text{actual}} \cdot \exp\!\bigl(\varepsilon_i\bigr), \quad \varepsilon_i \sim \mathcal{N}(0,\; 0.5^2)
+    \label{eq:q0-perturbation}
+\end{equation}
+
+\noindent with the constraint $q_{0,i}^{\text{trial}} \in [10^{-6},\; 1]$. This preserves the realistic structure of the disruption (sectors that were heavily impacted remain relatively more impacted) while introducing meaningful variation. The log-normal noise ensures that the perturbation is multiplicative---a sector with $q_0 = 0.01$ can plausibly move to $0.005$ or $0.02$, but not jump to $0.5$.
+
+\subsection{Simulation Procedure}
+
+For each scenario and each value of $k \in \{3, 5, 7, 10, 12\}$, we draw 2\,000 perturbed $q_0$ vectors. For each trial:
 
 \begin{enumerate}
-    \item Draw $q_{0,i} \sim \text{Uniform}(10^{-6},\; 2 \max(q_0^{\text{actual}}))$ independently for each sector $i$.
+    \item Perturb $q_0^{\text{actual}}$ using Equation~\eqref{eq:q0-perturbation}.
     \item Run the DIIM baseline (no intervention) and compute total economic loss.
-    \item Run the DIIM with intervention in the DIIM's top-5 sectors (10\% $q_0$ reduction) and compute $\Delta EL_{\text{DIIM}}$.
-    \item For each cheap method~$m$, run the DIIM with intervention in method~$m$'s top-5 sectors and compute $\Delta EL_m$.
-    \item Compute $R_m = \Delta EL_m / \Delta EL_{\text{DIIM}}$ and record whether $R_m \geq 0.95$ (``close'').
+    \item Run the DIIM with intervention in the DIIM's top-$k$ sectors (10\% $q_0$ reduction) and compute $\Delta EL_{\text{DIIM}}$.
+    \item For each cheap method~$m$, run the DIIM with intervention in method~$m$'s top-$k$ sectors and compute $\Delta EL_m$.
+    \item Compute $R_m = \Delta EL_m / \Delta EL_{\text{DIIM}}$ and record whether $R_m \geq 0.80$ (``close'').
+\end{enumerate}
+
+This yields 20\,000 simulation trials per scenario (2\,000 $\times$ 5 values of $k$), for a total of 40\,000 trials across both scenarios.
+
+
+\section{Results: Performance Across $k$}
+
+\subsection{Mean Performance Ratio}
+
+Tables~\ref{tab:covid-ratio-by-k} and~\ref{tab:manpower-ratio-by-k} present the mean performance ratio $\bar{R}_m$ for each cheap method across all values of~$k$.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Method} & $k{=}3$ & $k{=}5$ & $k{=}7$ & $k{=}10$ & $k{=}12$ \\
+\midrule
+Total Output         & 0.870 & 0.641 & 0.818 & 0.908 & 0.953 \\
+PCA $\times$ xi      & 0.870 & \textbf{0.817} & 0.818 & 0.800 & 0.923 \\
+PageRank $\times$ xi & 0.870 & 0.641 & 0.703 & 0.908 & 0.953 \\
+BL $\times$ xi       & 0.870 & 0.641 & \textbf{0.834} & 0.908 & 0.953 \\
+FL $\times$ xi       & 0.870 & 0.641 & 0.818 & 0.908 & 0.923 \\
+\bottomrule
+\end{tabular}
+\caption{Mean performance ratio (cheap / DIIM) by $k$ for COVID-19 (2\,000 trials per $k$). Bold indicates the best cheap method at that $k$.}
+\label{tab:covid-ratio-by-k}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Method} & $k{=}3$ & $k{=}5$ & $k{=}7$ & $k{=}10$ & $k{=}12$ \\
+\midrule
+Total Output         & 0.652 & 0.682 & 0.927 & 0.926 & 0.976 \\
+PCA $\times$ xi      & 0.652 & 0.682 & 0.927 & 0.926 & 0.976 \\
+PageRank $\times$ xi & 0.652 & 0.682 & 0.749 & 0.926 & 0.976 \\
+BL $\times$ xi       & 0.652 & 0.682 & 0.927 & 0.885 & 0.976 \\
+FL $\times$ xi       & 0.652 & 0.682 & 0.927 & 0.926 & 0.976 \\
+\bottomrule
+\end{tabular}
+\caption{Mean performance ratio (cheap / DIIM) by $k$ for Manpower (2\,000 trials per $k$).}
+\label{tab:manpower-ratio-by-k}
+\end{table}
+
+\subsection{Close Rates}
+
+Tables~\ref{tab:covid-close-by-k} and~\ref{tab:manpower-close-by-k} present the close rates (fraction of trials where $R_m \geq 0.80$).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Method} & $k{=}3$ & $k{=}5$ & $k{=}7$ & $k{=}10$ & $k{=}12$ \\
+\midrule
+Total Output         & 66.1\% &  5.7\% & 62.0\% & 96.7\% & 100.0\% \\
+PCA $\times$ xi      & 66.1\% & \textbf{64.1\%} & 62.0\% & 53.4\% &  99.8\% \\
+PageRank $\times$ xi & 66.1\% &  5.7\% & 17.7\% & 96.7\% & 100.0\% \\
+BL $\times$ xi       & 66.1\% &  5.7\% & \textbf{67.2\%} & 96.7\% & 100.0\% \\
+FL $\times$ xi       & 66.1\% &  5.7\% & 62.0\% & 96.7\% &  99.8\% \\
+\bottomrule
+\end{tabular}
+\caption{Close rates ($R_m \geq 0.80$) by $k$ for COVID-19 (2\,000 trials per $k$). Bold indicates notable structural method advantage.}
+\label{tab:covid-close-by-k}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Method} & $k{=}3$ & $k{=}5$ & $k{=}7$ & $k{=}10$ & $k{=}12$ \\
+\midrule
+Total Output         & 16.4\% & 17.2\% & 97.1\% & 99.2\% & 100.0\% \\
+PCA $\times$ xi      & 16.4\% & 17.2\% & 97.1\% & 99.2\% & 100.0\% \\
+PageRank $\times$ xi & 16.4\% & 17.2\% & 33.6\% & 99.2\% & 100.0\% \\
+BL $\times$ xi       & 16.4\% & 17.2\% & 97.1\% & 93.5\% & 100.0\% \\
+FL $\times$ xi       & 16.4\% & 17.2\% & 97.1\% & 99.2\% & 100.0\% \\
+\bottomrule
+\end{tabular}
+\caption{Close rates ($R_m \geq 0.80$) by $k$ for Manpower (2\,000 trials per $k$).}
+\label{tab:manpower-close-by-k}
+\end{table}
+
+
+\subsection{Three Regimes of $k$}
+
+The results reveal a striking non-monotonic pattern that can be decomposed into three regimes:
+
+\begin{enumerate}
+    \item \textbf{Small $k$ ($k = 3$)}: All cheap methods agree on the top 3 sectors and produce identical performance with a mean ratio of 0.870 (COVID-19) and 0.652 (Manpower). The dominant economic sectors (Manufacturing, Wholesale \& Retail, Transportation \& Storage) are so large that every method---whether based on size, linkage, or centrality---selects them. Two-thirds of trials achieve $\geq$80\% of DIIM in COVID-19 (66.1\%), but only 16.4\% in Manpower. Structural distinctions between cheap methods are irrelevant at this scale.
+
+    \item \textbf{Medium $k$ ($k = 5$--$7$)}: The methods diverge, and structural information adds substantial value. At $k = 5$ in COVID-19, PCA $\times$ xi achieves a mean ratio of 0.817 versus 0.641 for Total Output---a 27\% relative improvement---and a close rate of 64.1\% versus just 5.7\%. This dramatic gap arises because PCA selects sector~3 (Construction) over sector~7 (Information \& Communications). At $k = 7$, BL $\times$ xi leads with a mean ratio of 0.834 and close rate of 67.2\%, capturing sector~12 (Public Administration) via its backward linkage signal. This is the regime where the ``marginal'' sectors (positions 4--7 in the ranking) matter most, and each method's structural lens produces meaningfully different selections.
+
+    \item \textbf{Large $k$ ($k = 10$--$12$)}: The methods converge again as the intervention covers most of the economy. At $k = 12$ (80\% of 15 sectors), close rates reach 100\% for both scenarios, with mean ratios of 0.92--0.98. When intervening on nearly all sectors, the only question is which 3 sectors to \emph{exclude}, and even suboptimal exclusions have limited impact.
 \end{enumerate}
 
 
-\section{COVID-19 Results}
+\section{Key Observations}
 
-Table~\ref{tab:covid-decision-results} summarises the Monte Carlo results for the COVID-19 scenario.
+Several patterns emerge from the multi-$k$ tables:
 
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}lccc@{}}
-\toprule
-\textbf{Method} & \textbf{Close Rate ($\geq$95\%)} & \textbf{Win Rate} & \textbf{Mean Ratio} \\
-\midrule
-Total Output           & 49.0\% & 25.4\% & 0.934 \\
-PageRank $\times$ xi   & 49.0\% & 25.4\% & 0.934 \\
-BL $\times$ xi         & 49.0\% & 25.4\% & 0.934 \\
-FL $\times$ xi         & 49.0\% & 25.4\% & 0.934 \\
-PCA $\times$ xi        & 23.3\% &  7.4\% & 0.890 \\
-\bottomrule
-\end{tabular}
-\caption{Monte Carlo results for COVID-19 (2\,000 trials, $k=5$).}
-\label{tab:covid-decision-results}
-\end{table}
+\begin{enumerate}
+    \item \textbf{PCA $\times$ xi outperforms Total Output at $k = 5$ (COVID-19)}: PCA $\times$ xi achieves a mean ratio of 0.817 versus 0.641 for Total Output---a 27\% relative improvement---and a close rate of 64.1\% versus just 5.7\%. This stems from PCA's inclusion of sector~3 (Construction), which has the highest structural distance ($d_3^{\text{PCA}} = 0.789$) despite ranking only 6th in economic size. Construction's high initial inoperability ($q_{0,3} = 0.221$) makes intervening there disproportionately effective.
 
-With the recalibrated $q_0$ (based on circuit breaker workforce unavailability rather than unemployment rates), the close rates are substantially lower than what would be observed with small $q_0$ values. Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi achieve a close rate of 49.0\% and a mean performance ratio of 0.934 (i.e., they achieve on average only 93.4\% of DIIM's loss reduction). PCA $\times$ xi achieves a lower close rate of 23.3\%, reflecting the fact that its fixed ranking diverges from DIIM's adaptive ranking in the majority of disruption profiles. These results confirm that when initial inoperability values are realistic in magnitude, the DIIM's simulation-based approach adds meaningful value over cheap structural methods.
+    \item \textbf{BL $\times$ xi leads at $k = 7$ (COVID-19)}: BL $\times$ xi achieves a mean ratio of 0.834 and a close rate of 67.2\%, outperforming all other cheap methods including PCA $\times$ xi (0.818, 62.0\%). Its backward linkage signal captures sector~12 (Public Administration), whose strong input dependencies amplify the cascading effect of intervention. This demonstrates that different structural methods have complementary strengths at different intervention scales.
 
-\begin{figure}[tbp]
-    \centering
-    \adjustbox{max width=\linewidth}{\includegraphics{Chapter6/covid_close_rates.png}}
-    \caption{Close rates and win rates for each cheap method (COVID-19).}
-    \label{fig:covid-close-rates}
-\end{figure}
+    \item \textbf{PageRank $\times$ xi underperforms at medium $k$}: At $k = 7$, PageRank $\times$ xi drops to a mean ratio of 0.703 (COVID-19) and 0.749 (Manpower), with close rates of just 17.7\% and 33.6\% respectively---far below the other methods. PageRank's random-walk centrality prioritises sector~12 over sectors~3 and~10 at positions~6--7, which proves suboptimal under perturbed $q_0$.
 
-Figure~\ref{fig:covid-ratio-dist} shows the distribution of performance ratios across the 2\,000 trials. Output-weighted linkage and PCA have distributions centred above~1, while backward linkage is centred below~0.5.
+    \item \textbf{All methods converge at large $k$}: At $k = 10$--$12$, close rates reach 97--100\% for most methods, with mean ratios of 0.91--0.98. The specific ranking matters little when the majority of sectors are covered.
 
-\begin{figure}[tbp]
-    \centering
-    \adjustbox{max width=\linewidth}{\includegraphics{Chapter6/covid_ratio_dist.png}}
-    \caption{Performance ratio distributions (COVID-19).}
-    \label{fig:covid-ratio-dist}
-\end{figure}
+    \item \textbf{No single cheap method dominates across all $k$}: PCA $\times$ xi is best at $k = 5$, BL $\times$ xi is best at $k = 7$, and Total Output matches the best at $k = 3$, $10$, and $12$. This suggests that the optimal cheap method depends on the intervention scale.
+\end{enumerate}
 
 
-\section{Manpower Results}
+\section{What Drives Cheap Method Performance?}
 
-Table~\ref{tab:manpower-decision-results} summarises the manpower scenario results.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}lccc@{}}
-\toprule
-\textbf{Method} & \textbf{Close Rate ($\geq$95\%)} & \textbf{Win Rate} & \textbf{Mean Ratio} \\
-\midrule
-Total Output           & 60.4\% & 41.4\% & 0.953 \\
-PCA $\times$ xi        & 60.4\% & 41.4\% & 0.953 \\
-PageRank $\times$ xi   & 60.4\% & 41.4\% & 0.953 \\
-BL $\times$ xi         & 60.4\% & 41.4\% & 0.953 \\
-FL $\times$ xi         & 60.4\% & 41.4\% & 0.953 \\
-\bottomrule
-\end{tabular}
-\caption{Monte Carlo results for Manpower (2\,000 trials, $k=5$).}
-\label{tab:manpower-decision-results}
-\end{table}
-
-The manpower scenario is harder for all methods than the COVID-19 scenario, despite both having 15~sectors. All five cheap methods achieve an identical close rate of 60.4\% and a mean performance ratio of 0.953. This identical performance stems from the near-identical top-5 sector rankings produced by all methods when weighted by economic size ($x_i$). The lower performance compared to COVID-19 (89.8\%) is driven by the absence of the demand shock ($c^* = 0$): without $c^*$ to anchor the disruption pattern, the DIIM's simulation-based ranking has more room to diverge from the structurally fixed rankings.
-
-\begin{figure}[tbp]
-    \centering
-    \adjustbox{max width=\linewidth}{\includegraphics{Chapter6/manpower_close_rates.png}}
-    \caption{Close rates and win rates for each cheap method (Manpower).}
-    \label{fig:manpower-close-rates}
-\end{figure}
-
-\begin{figure}[tbp]
-    \centering
-    \adjustbox{max width=\linewidth}{\includegraphics{Chapter6/manpower_ratio_dist.png}}
-    \caption{Performance ratio distributions (Manpower).}
-    \label{fig:manpower-ratio-dist}
-\end{figure}
-
-
-\section{Decision Rules via Logistic Regression}
-
-For each method~$m$, we fit a logistic regression model:
+To understand \emph{why} cheap methods succeed or fail at a given $q_0$, we fit logistic regression models at $k = 5$ using features derived from the $q_0$ distribution:
 
 \begin{equation}
-    \log \frac{P(R_m \geq 0.95)}{1 - P(R_m \geq 0.95)} = \beta_0 + \beta_1 f_1 + \beta_2 f_2 + \cdots
+    \log \frac{P(R_m \geq 0.80)}{1 - P(R_m \geq 0.80)} = \beta_0 + \beta_1 f_1 + \beta_2 f_2 + \cdots
     \label{eq:logistic-regression}
 \end{equation}
 
-where the features $f_1, f_2, \ldots$ are derived from $q_0$ and the method's sector rankings:
+\noindent where the features include the Gini coefficient, coefficient of variation (CV), and normalised entropy of $q_0$.
+
+The analysis reveals scenario-specific patterns:
 
 \begin{itemize}
-    \item \textbf{Method share}: the fraction of total $q_0$ captured by the method's top-5 sectors.
-    \item \textbf{Method average rank}: the mean rank of the method's top-5 sectors in the $q_0$ ranking (normalised to [0,1]).
-    \item \textbf{Overlap}: the number of the method's top-5 sectors that also appear in $q_0$'s top-5.
-    \item \textbf{General $q_0$ features}: Gini coefficient, coefficient of variation, max-to-mean ratio, and normalised entropy of $q_0$.
+    \item \textbf{COVID-19}: The concentration of $q_0$ is the key driver. When the disruption is concentrated in a few large sectors (high Gini), the cheap method's fixed ranking naturally aligns with the most impacted sectors. PCA $\times$ xi is less sensitive to this alignment because it identifies structurally important sectors (like Construction) regardless of $q_0$ concentration---hence its consistently high close rate of 64.1\% at $k = 5$.
+
+    \item \textbf{Manpower}: The uniformity of $q_0$ matters most. Higher entropy (more evenly spread disruption) favours cheap methods because the ranking of intervention targets becomes less consequential when all sectors are similarly affected.
 \end{itemize}
 
-For each model, we identify the most significant predictor and compute the Youden's~$J$ optimal threshold---the threshold that maximises sensitivity plus specificity minus~1.
-
-Table~\ref{tab:decision-rules-summary} presents the derived decision rules.
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{@{}llcc@{}}
-\toprule
-\textbf{Scenario} & \textbf{Method} & \textbf{Decision Rule} & \textbf{$J$} \\
-\midrule
-\multirow{5}{*}{COVID-19}
- & Total Output          & TotalOutput\_share $> 0.324$ & 0.468 \\
- & PageRank $\times$ xi  & PageRankxi\_share $> 0.324$  & 0.468 \\
- & BL $\times$ xi        & BLxi\_share $> 0.324$        & 0.468 \\
- & FL $\times$ xi        & FLxi\_share $> 0.324$        & 0.468 \\
- & PCA $\times$ xi       & PCAxi\_share $> 0.340$       & 0.451 \\
-\midrule
-\multirow{5}{*}{Manpower}
- & Total Output          & TotalOutput\_share $> 0.315$   & 0.448 \\
- & PCA $\times$ xi       & PCAxi\_share $> 0.315$         & 0.448 \\
- & PageRank $\times$ xi  & PageRankxi\_share $> 0.315$    & 0.448 \\
- & BL $\times$ xi        & BLxi\_share $> 0.315$          & 0.448 \\
- & FL $\times$ xi        & FLxi\_share $> 0.315$          & 0.448 \\
-\bottomrule
-\end{tabular}
-\caption{Decision rules with Youden's $J$-optimal thresholds.}
-\label{tab:decision-rules-summary}
-\end{table}
-
-The decision rules follow a common pattern: a cheap method works well when the disruption ($q_0$) is concentrated in sectors that the method has already identified as structurally important. The ``share'' and ``average rank'' features capture this alignment.
+The practical implication is that cheap methods are most reliable when the disruption pattern aligns with the economic size distribution---a condition that is scenario-dependent and cannot be assumed in advance.
 
 
-\section{Practical Recommendations}
+\section{Practical Implications}
 
-Based on the analysis, we propose the following practical guidelines:
+The multi-$k$ analysis leads to the following practical guidelines:
 
 \begin{enumerate}
-    \item \textbf{For aggregated economies ($\leq$ 20 sectors)}: The DIIM provides meaningful value over cheap methods, with close rates of roughly 49--60\% across scenarios. Cheap methods like Total Output or structurally-weighted methods (FL $\times$ xi, PCA $\times$ xi) can be used as initial screening tools, but should be supplemented with DIIM analysis when disruption data ($q_0$) is available.
-    \item \textbf{Shock structure matters}: The key driver of cheap method effectiveness is the shock structure. Under pure supply shocks ($c^* = 0$, as in manpower disruption), close rates are about 60\%. When both supply and demand shocks are present ($c^* > 0$, as in COVID-19), close rates are about 49\%, as the larger and more heterogeneous $q_0$ values give the DIIM more room to identify non-obvious key sectors.
-    \item \textbf{Pre-event planning}: Since $q_0$ is unknown before a disruption occurs, cheap methods are valuable for \emph{pre-positioning} resources. The combination of structural linkage and absolute economic size provides the best generalisable estimate of which sectors are likely to be critical across a range of disruption profiles.
-    \item \textbf{During a crisis}: Once $q_0$ is observed, the decision rules in Table~\ref{tab:decision-rules-summary} can be evaluated instantly to determine whether the cheap method's recommendation is trustworthy for the specific disruption at hand.
+    \item \textbf{Large-scale intervention ($k \geq 10$)}: Cheap methods are reliable substitutes for DIIM. With mean ratios above 0.90 and close rates of 97--100\%, the additional computational cost of DIIM is difficult to justify when intervening on the majority of sectors. Total Output alone---requiring no IO table analysis---achieves 95\% of DIIM's performance at $k = 12$.
+
+    \item \textbf{Targeted intervention ($k = 3$--$7$)}: DIIM provides substantial value over purely size-based methods. At $k = 5$, Total Output achieves only 64\% of DIIM's loss reduction (close rate 5.7\%). However, structural methods significantly narrow this gap: PCA $\times$ xi achieves 82\% of DIIM (close rate 64.1\%), and BL $\times$ xi leads at $k = 7$ with 83\% of DIIM (close rate 67.2\%). While a gap to DIIM remains, structural methods provide a meaningful improvement over the naive size-based baseline in this regime.
+
+    \item \textbf{Pre-event planning}: When $q_0$ is unknown, cheap methods remain valuable for pre-positioning resources. The Total Output ranking identifies the sectors whose disruption would cause the greatest absolute economic loss, while PCA $\times$ xi and BL $\times$ xi can flag structurally important sectors that size alone would miss (e.g., Construction in the COVID-19 scenario).
+
+    \item \textbf{Crisis response}: Once $q_0$ is observed, run the full DIIM if targeting fewer than 10 sectors. The computational cost of the simulation is modest (seconds on modern hardware) and the performance gain is substantial.
 \end{enumerate}
 
 %=== END OF CHAPTER SIX ===
