@@ -34,21 +34,19 @@ download_data <- function() {
 }
 
 download_manpower_data <- function() {
-  # Load 2022 IOT for A matrix and x vector
-  data_A <- read.xlsx("dataset/manpower_disruption_data/iot_2022.xlsx", sheet = "A", colNames = FALSE)
+  # Load 15-sector aggregated 2022 IOT for A matrix and x vector
+  data_A <- read.xlsx("dataset/manpower_disruption_data/iot_2022_15_sectors.xlsx", sheet = "A", colNames = FALSE)
   num_sectors <- nrow(data_A) - 1
   A <- data_A[2:(num_sectors + 1), 2:(num_sectors + 1)]
   A <- as.matrix(sapply(A, as.numeric))
 
   # Sheet "x" contains the total output
-  data_x <- read.xlsx("dataset/manpower_disruption_data/iot_2022.xlsx", sheet = "x", colNames = FALSE)
-  x <- data_x[2:(num_sectors + 1), 2]
-  x <- as.numeric(x)
+  data_x <- read.xlsx("dataset/manpower_disruption_data/iot_2022_15_sectors.xlsx", sheet = "x")
+  x <- as.numeric(data_x$Total_Output)
 
   # Load sector initial inoperability (q0)
-  data_q0 <- read.xlsx("dataset/manpower_disruption_data/sector_initial_inoperability.xlsx", sheet = "Sector_initial_inoperability", colNames = FALSE)
-  q0 <- data_q0[2:(num_sectors + 1), 4]
-  q0 <- as.numeric(q0)
+  data_q0 <- read.xlsx("dataset/manpower_disruption_data/sector_initial_inoperability_15_sectors.xlsx", sheet = "Sector_initial_inoperability")
+  q0 <- as.numeric(data_q0$Sector_initial_inoperability)
 
   # Initialize c and c_star to 0 for manpower disruption scenario
   c <- rep(0, num_sectors)
