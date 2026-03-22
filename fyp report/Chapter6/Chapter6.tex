@@ -155,28 +155,6 @@ Several patterns emerge from the multi-$k$ tables:
 \end{enumerate}
 
 
-\section{What Drives Cheap Method Performance?}
-
-To understand \emph{why} cheap methods succeed or fail at a given $q_0$, we fit logistic regression models at $k = 5$ using features derived from the $q_0$ distribution:
-
-\begin{equation}
-    \log \frac{P(R_m \geq 0.80)}{1 - P(R_m \geq 0.80)} = \beta_0 + \beta_1 f_1 + \beta_2 f_2 + \cdots
-    \label{eq:logistic-regression}
-\end{equation}
-
-\noindent where the features include the Gini coefficient, coefficient of variation (CV), and normalised entropy of $q_0$.
-
-The analysis reveals scenario-specific patterns:
-
-\begin{itemize}
-    \item \textbf{COVID-19}: The concentration of $q_0$ is the key driver. When the disruption is concentrated in a few large sectors (high Gini), the cheap method's fixed ranking naturally aligns with the most impacted sectors. PCA $\times$ xi is less sensitive to this alignment because it identifies structurally important sectors (like Construction) regardless of $q_0$ concentration---hence its consistently high close rate of 64.1\% at $k = 5$.
-
-    \item \textbf{Manpower}: The uniformity of $q_0$ matters most. Higher entropy (more evenly spread disruption) favours cheap methods because the ranking of intervention targets becomes less consequential when all sectors are similarly affected.
-\end{itemize}
-
-The practical implication is that cheap methods are most reliable when the disruption pattern aligns with the economic size distribution---a condition that is scenario-dependent and cannot be assumed in advance.
-
-
 \section{Practical Implications}
 
 The multi-$k$ analysis leads to the following practical guidelines:
