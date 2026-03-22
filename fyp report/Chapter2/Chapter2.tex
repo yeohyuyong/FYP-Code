@@ -187,7 +187,11 @@ A key sector is defined as one where targeted intervention---modelled as a 10\% 
 
 The DIIM identifies key sectors by running the full simulation without intervention, then ranking sectors by their cumulative economic loss $EL_i$ from Equation~\eqref{eq:economic-loss}. The top-$k$ sectors are selected for intervention. This is the ``gold standard'' but requires knowledge of $q_0$ and~$c^*$.
 
-\subsection{PCA on the Integrated IO Matrix}
+\subsection{Total Output ($xi$)}
+
+This is the simplest baseline method. Sectors are ranked simply by their total planned economic output $x_i$. This method ignores the network structure entirely and assumes that intervening in the largest economic sectors will yield the greatest reduction in loss.
+
+\subsection{PCA $\times$ xi}
 
 Instead of using $A$ directly, this approach constructs the integrated input-output coefficient matrix:
 
@@ -196,16 +200,32 @@ Instead of using $A$ directly, this approach constructs the integrated input-out
     \label{eq:integrated-io-matrix}
 \end{equation}
 
-where $L = (I - A)^{-1}$ is the Leontief inverse. The matrix $H$ captures both direct and indirect effects through the production network. PCA is applied to~$H$, and sectors are ranked by their Euclidean distance from the origin in the space of the first two principal components:
+where $L = (I - A)^{-1}$ is the Leontief inverse. The matrix $H$ captures both direct and indirect effects through the production network. PCA is applied to~$H$, and a structural distance is computed for each sector based on its Euclidean distance from the origin in the space of the principal components:
 
 \begin{equation}
-    d_i^{\text{PCA}} = \sqrt{ v_{i1}^2 + v_{i2}^2 }
+    d_i^{\text{PCA}} = \sqrt{ \sum_{k=1}^{n\_pcs} v_{ik}^2 }
     \label{eq:pca-distance}
 \end{equation}
 
-where $v_{i1}$ and $v_{i2}$ are the loadings of sector~$i$ on PC1 and PC2 respectively. Sectors with larger $d_i^{\text{PCA}}$ are ranked higher.
+where $v_{ik}$ is the loading of sector~$i$ on principal component $k$. To account for economic size, this structural distance is weighted by the sector's total output $x_i$:
 
-\subsection{Backward Linkage}
+\begin{equation}
+    \text{Score}_i^{\text{PCA}} = d_i^{\text{PCA}} \times x_i
+    \label{eq:pca-xi-score}
+\end{equation}
+
+Sectors with larger $\text{Score}_i^{\text{PCA}}$ are ranked higher.
+
+\subsection{PageRank $\times$ xi}
+
+The interdependency matrix $A^*$ is treated as the weighted adjacency matrix of a directed graph. The PageRank algorithm is applied to compute a structural centrality score $PR_i$ for each sector, which measures importance based on the structure of incoming links with a damping factor. This centrality score is then weighted by the sector's total output:
+
+\begin{equation}
+    \text{Score}_i^{\text{PR}} = PR_i \times x_i
+    \label{eq:pagerank-xi}
+\end{equation}
+
+\subsection{Backward Linkage $\times$ xi (BL $\times$ xi)}
 
 Backward linkages measure the extent to which a sector draws on other sectors' outputs as inputs. They are calculated as the column sums of the Leontief inverse:
 
@@ -214,9 +234,13 @@ Backward linkages measure the extent to which a sector draws on other sectors' o
     \label{eq:backward-linkage}
 \end{equation}
 
-where $l_{ij}$ are elements of $L$. A high $BL_j$ indicates that sector~$j$ generates large demand for inputs from other sectors.
+where $l_{ij}$ are elements of $L$. A high $BL_j$ indicates that sector~$j$ generates large demand for inputs from other sectors. To identify key sectors, this structural linkage is weighted by total output:
 
-\subsection{Forward Linkage}
+\begin{equation}
+    \text{Score}_j^{\text{BL}} = BL_j \times x_j
+\end{equation}
+
+\subsection{Forward Linkage $\times$ xi (FL $\times$ xi)}
 
 Forward linkages measure how much a sector's output is used as inputs by other sectors. They are calculated as the row sums of the Leontief inverse:
 
@@ -225,44 +249,11 @@ Forward linkages measure how much a sector's output is used as inputs by other s
     \label{eq:forward-linkage}
 \end{equation}
 
-A high $FL_i$ indicates that sector~$i$ is an important supplier to the rest of the economy.
-
-\subsection{Output-Weighted Linkage}
-
-This method combines structural importance with economic size. The total normalised linkage for sector~$i$ is:
+A high $FL_i$ indicates that sector~$i$ is an important supplier to the rest of the economy. This structural linkage is weighted by total output:
 
 \begin{equation}
-    TL_i = \frac{1}{2}\left(\frac{BL_i}{\overline{BL}} + \frac{FL_i}{\overline{FL}}\right)
-    \label{eq:total-linkage}
+    \text{Score}_i^{\text{FL}} = FL_i \times x_i
 \end{equation}
-
-where $\overline{BL}$ and $\overline{FL}$ are the mean backward and forward linkages. The output-weighted score is:
-
-\begin{equation}
-    OWL_i = TL_i \times x_i
-    \label{eq:output-weighted-linkage}
-\end{equation}
-
-Sectors with high $OWL_i$ are both structurally important and economically large.
-
-\subsection{Network Centrality}
-
-The interdependency matrix $A^*$ is treated as the weighted adjacency matrix of a directed graph. Three centrality measures are computed and combined:
-
-\begin{enumerate}
-    \item \textbf{Eigenvector centrality}: measures influence by accounting for the centrality of a sector's neighbours.
-    \item \textbf{PageRank}: measures importance based on the structure of incoming links, with a damping factor.
-    \item \textbf{Betweenness centrality}: measures how often a sector lies on the shortest path between other pairs of sectors.
-\end{enumerate}
-
-Each measure is min-max normalised to $[0,1]$, and the composite score is:
-
-\begin{equation}
-    NC_i = \widehat{EC}_i + \widehat{PR}_i + \widehat{BC}_i
-    \label{eq:network-centrality}
-\end{equation}
-
-where $\widehat{\cdot}$ denotes normalisation. Sectors with higher $NC_i$ are ranked higher.
 
 \section{Performance Metric}
 \label{sec:performance-metric}

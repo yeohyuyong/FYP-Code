@@ -10,7 +10,7 @@ library(ggcorrplot)
 
 data <- read.xlsx("dataset/Input_Output_Tables_2019_2021.xlsx", sheet = "2019IOTable")
 iot2019 <- data[2:(2 + 15 - 1), 3:(3 + 15 - 1)]
-x <- data[2:(2 + 15 - 1), ncol(data)]
+x <- as.numeric(data[2:(2 + 15 - 1), ncol(data)])
 
 A <- read.xlsx("dataset/Input_Output_Tables_2019_2021.xlsx", sheet = "A")
 A <- A[2:(2 + 15 - 1), 3:(3 + 15 - 1)]

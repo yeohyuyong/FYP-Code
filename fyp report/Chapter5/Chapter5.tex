@@ -7,36 +7,36 @@ This chapter compares the key sector identification methods described in Chapter
 
 \section{PCA Applied to the IO Matrix}
 
-PCA is applied to the integrated IO matrix $H = A(I-A)^{-1}$. Table~\ref{tab:pca-loadings} lists the PCA loadings for the COVID-19 scenario (15~sectors), sorted by Euclidean distance in the PC1--PC2 space.
+PCA is applied to the integrated IO matrix $H = A(I-A)^{-1}$. Table~\ref{tab:pca-loadings} lists the PCA loadings for the COVID-19 scenario (15~sectors), sorted by Euclidean distance in the PC space, along with the final weighted score $\text{Score}_i^{\text{PCA}}$ which determines the ranking.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{@{}cccc@{}}
+\begin{tabular}{@{}ccccc@{}}
 \toprule
-\textbf{Sector ID} & \textbf{PC1} & \textbf{PC2} & \textbf{$d_i^{\text{PCA}}$} \\ \midrule
-3  & 0.773 & $-$0.159 & 0.789 \\
-2  & 0.489 &    0.548 & 0.734 \\
-5  & 0.231 &    0.602 & 0.645 \\
-8  & 0.174 &    0.320 & 0.364 \\
-4  & 0.164 &    0.198 & 0.257 \\
-10 & 0.141 &    0.185 & 0.233 \\
-7  & 0.107 &    0.232 & 0.256 \\
-11 & 0.100 &    0.154 & 0.184 \\
-1  & 0.082 &    0.203 & 0.219 \\
-9  & 0.066 &    0.120 & 0.137 \\
-12 & 0.021 &    0.034 & 0.040 \\
-6  & 0.019 &    0.040 & 0.044 \\
-15 & 0.010 &    0.016 & 0.019 \\
-14 & 0.004 &    0.006 & 0.008 \\
-13 & 0.002 &    0.004 & 0.005 \\ \bottomrule
+\textbf{Sector ID} & \textbf{PC1} & \textbf{PC2} & \textbf{$d_i^{\text{PCA}}$} & \textbf{$\text{Score}_i^{\text{PCA}}$} \\ \midrule
+2  & 0.489 &    0.548 & 0.734 & 262,791 \\
+5  & 0.231 &    0.602 & 0.645 & 110,877 \\
+4  & 0.164 &    0.198 & 0.257 &  55,084 \\
+8  & 0.174 &    0.320 & 0.364 &  49,794 \\
+3  & 0.773 & $-$0.159 & 0.789 &  49,288 \\
+7  & 0.107 &    0.232 & 0.256 &  26,141 \\
+10 & 0.141 &    0.185 & 0.233 &  14,362 \\
+9  & 0.066 &    0.120 & 0.137 &   7,513 \\
+11 & 0.100 &    0.154 & 0.184 &   5,862 \\
+1  & 0.082 &    0.203 & 0.219 &   3,986 \\
+12 & 0.021 &    0.034 & 0.040 &   2,271 \\
+6  & 0.019 &    0.040 & 0.044 &   1,028 \\
+15 & 0.010 &    0.016 & 0.019 &     179 \\
+13 & 0.002 &    0.004 & 0.005 &     106 \\
+14 & 0.004 &    0.006 & 0.008 &      77 \\ \bottomrule
 \end{tabular}
-\caption{PCA loadings and Euclidean distance for COVID-19 sectors (15~sectors).}
+\caption{PCA loadings, Euclidean distance, and weighted score $\text{Score}_i^{\text{PCA}}$ for COVID-19 sectors, sorted by weighted score.}
 \label{tab:pca-loadings}
 \end{table}
 
-The top-5 PCA sectors for COVID-19 are sectors 3 (Construction), 2 (Manufacturing), 5 (Transportation \& Storage), 8 (Financial \& Insurance Services), and 4 (Wholesale \& Retail Trade). These sectors have the largest loadings on the principal components that capture the dominant patterns of sectoral interdependence in the IO table.
+The top-5 PCA $\times$ xi sectors for COVID-19 are sectors 2 (Manufacturing), 5 (Transportation \& Storage), 4 (Wholesale \& Retail Trade), 8 (Financial \& Insurance Services), and 3 (Construction). While sector 3 has the largest structural distance, sector 2 becomes the highest-ranked when weighted by its massive economic size.
 
-For the manpower scenario (107~sectors), PCA is computed on the corresponding $H$ matrix. The top-5 PCA sectors are sectors 17, 57, 69, 54, and 62. These differ substantially from the COVID-19 PCA sectors because the 107-sector IO table has a different structure and more granular interdependencies.
+For the manpower scenario (107~sectors), PCA is computed on the corresponding $H$ matrix. The top-5 PCA $\times$ xi sectors are sectors 57, 54, 69, 17, and 26. These differ substantially from the COVID-19 PCA sectors because the 107-sector IO table has a different structure and more granular interdependencies.
 
 
 \section{Cheap Method Rankings}
@@ -49,11 +49,11 @@ Table~\ref{tab:rankings-covid} and Table~\ref{tab:rankings-manpower} show the to
 \toprule
 \textbf{Method} & \textbf{Top-5 Sectors (COVID-19)} \\
 \midrule
-PCA                    & 3, 2, 5, 8, 4 \\
-Network Centrality     & 4, 9, 8, 2, 10 \\
-Backward Linkage       & 3, 5, 1, 7, 6 \\
-Forward Linkage        & 2, 8, 3, 5, 7 \\
-Output-Weighted Linkage & 2, 4, 5, 8, 7 \\
+Total Output           & 2, 4, 5, 8, 7 \\
+PCA $\times$ xi        & 2, 5, 4, 8, 3 \\
+PageRank $\times$ xi   & 2, 4, 5, 8, 7 \\
+BL $\times$ xi         & 2, 4, 5, 8, 7 \\
+FL $\times$ xi         & 2, 4, 5, 8, 7 \\
 \bottomrule
 \end{tabular}
 \caption{Top-5 sectors by each cheap method (COVID-19, 15 sectors).}
@@ -66,11 +66,11 @@ Output-Weighted Linkage & 2, 4, 5, 8, 7 \\
 \toprule
 \textbf{Method} & \textbf{Top-5 Sectors (Manpower)} \\
 \midrule
-PCA                    & 17, 57, 69, 54, 62 \\
-Network Centrality     & 54, 69, 78, 71, 70 \\
-Backward Linkage       & 51, 60, 17, 52, 62 \\
-Forward Linkage        & 54, 78, 69, 17, 57 \\
-Output-Weighted Linkage & 54, 57, 69, 26, 70 \\
+Total Output           & 54, 57, 26, 69, 70 \\
+PCA $\times$ xi        & 57, 54, 69, 17, 26 \\
+PageRank $\times$ xi   & 54, 69, 57, 26, 98 \\
+BL $\times$ xi         & 54, 57, 69, 26, 98 \\
+FL $\times$ xi         & 54, 57, 69, 26, 70 \\
 \bottomrule
 \end{tabular}
 \caption{Top-5 sectors by each cheap method (Manpower, 107 sectors).}
@@ -80,9 +80,9 @@ Output-Weighted Linkage & 54, 57, 69, 26, 70 \\
 Several observations emerge:
 
 \begin{enumerate}
-    \item \textbf{Method agreement varies}: For COVID-19, sectors 2 and 5 appear in most methods' top-5 lists, suggesting strong consensus on their structural importance. For manpower, sectors 54 and 69 are identified by multiple methods.
-    \item \textbf{PCA and forward linkage have the most overlap}: Both capture supply-side importance through eigenvector-based and row-sum-based measures respectively.
-    \item \textbf{Backward linkage is the most different}: It emphasises demand-pull importance (column sums), which captures a different dimension of sectoral influence.
+    \item \textbf{High method agreement}: By incorporating total output $x_i$ as a weight, the methods converge strongly. For COVID-19, Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi produce the exact same top-5 ranking (2, 4, 5, 8, 7). PCA $\times$ xi differs only slightly by including sector 3 instead of 7.
+    \item \textbf{Economic size dominates}: The fact that structurally distinct measures (centrality, backward linkage, and forward linkage) yield nearly identical rankings once weighted by $x_i$ indicates that a sector's baseline economic size is the dominant driver of its overall impact in these aggregated models.
+    \item \textbf{Manpower variation}: In the 107-sector model, there is slightly more variation. While sectors 54, 57, and 69 consistently score highly across all methods, the specific rankings begin to diverge, reflecting the more granular network structure where structural differences can sometimes outweigh pure size.
 \end{enumerate}
 
 
@@ -90,23 +90,23 @@ Several observations emerge:
 
 Using the actual $q_0$ data from each scenario, we compare each cheap method's economic loss reduction against the DIIM benchmark when intervening in the top-5 sectors.
 
-For the COVID-19 scenario, PCA and output-weighted linkage both achieve loss reductions close to the DIIM benchmark, while backward linkage performs poorly. For the manpower scenario, the gap between cheap methods and DIIM widens significantly, with even the best cheap method (output-weighted linkage) falling substantially short of DIIM's reduction.
+For the COVID-19 scenario, the identical rankings of Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi achieve a loss reduction very close to the DIIM benchmark, while PCA $\times$ xi performs slightly better. For the manpower scenario, the gap between the cheap methods and DIIM widens significantly, with even the best cheap method falling substantially short of DIIM's reduction.
 
 This observation motivates the Monte Carlo analysis in Chapter~6: the performance of cheap methods at a single $q_0$ point is insufficient to draw general conclusions. We need to understand how performance varies across the space of possible $q_0$ vectors.
 
 
 \section{Effect of the Number of Key Sectors}
 
-Figure~\ref{fig:impact-vs-total-duration} shows how the economic loss reduction varies as the number of key sectors~$k$ increases, for the COVID-19 scenario. Across all methods, increasing $k$ improves the loss reduction, but the rate of improvement differs. PCA-based selection shows diminishing returns at higher~$k$ because PCA's ranking is based on structural importance, which may not align with the sectors most affected by a specific $q_0$.
+Figure~\ref{fig:impact-vs-total-duration} shows how the economic loss reduction varies across all methods as the number of key sectors~$k$ increases, for the COVID-19 scenario. Across all methods, increasing $k$ improves the loss reduction, but the rate of improvement differs. The new baseline, Total Output, tracks very closely with the other structurally-weighted methods, confirming that weighting by economic size captures the bulk of the necessary information at this scale.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\linewidth]{Chapter5/impact_total_duration.png}
-    \caption{Economic loss for different lockdown and total durations (COVID-19).}
+    \caption{Economic loss reduction for different methods across top-$k$ sectors (COVID-19).}
     \label{fig:impact-vs-total-duration}
 \end{figure}
 
-Figures~\ref{fig:ml-vs-diim-loss-reduction} and~\ref{fig:improvement-ml-vs-diim} compare the PCA-based and DIIM-based approaches specifically, showing that PCA-based prioritisation can match or exceed DIIM-based prioritisation under the original COVID-19 parameters.
+Figures~\ref{fig:ml-vs-diim-loss-reduction} and~\ref{fig:improvement-ml-vs-diim} compare the standard PCA-based and DIIM-based approaches specifically.
 
 \begin{figure}[H]
     \centering

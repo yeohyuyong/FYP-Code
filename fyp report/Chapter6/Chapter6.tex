@@ -41,18 +41,18 @@ Table~\ref{tab:covid-decision-results} summarises the Monte Carlo results for th
 \toprule
 \textbf{Method} & \textbf{Close Rate ($\geq$95\%)} & \textbf{Win Rate} & \textbf{Mean Ratio} \\
 \midrule
-Output-Weighted Linkage & 88.9\% & 80.3\% & 1.156 \\
-PCA                     & 85.5\% & 75.2\% & 1.095 \\
-Forward Linkage         & 56.1\% & 44.2\% & 0.945 \\
-Network Centrality      & 51.4\% & 40.1\% & 0.986 \\
-Backward Linkage        &  2.3\% &  1.6\% & 0.478 \\
+Total Output           & 89.8\% & 82.2\% & 1.181 \\
+PageRank $\times$ xi   & 89.8\% & 82.2\% & 1.181 \\
+BL $\times$ xi         & 89.8\% & 82.2\% & 1.181 \\
+FL $\times$ xi         & 89.8\% & 82.2\% & 1.181 \\
+PCA $\times$ xi        & 86.6\% & 76.6\% & 1.119 \\
 \bottomrule
 \end{tabular}
 \caption{Monte Carlo results for COVID-19 (2\,000 trials, $k=5$).}
 \label{tab:covid-decision-results}
 \end{table}
 
-Output-weighted linkage and PCA both achieve close rates above 85\%, with mean performance ratios exceeding~1 (i.e., they \emph{outperform} DIIM on average). This occurs because these methods capture structural importance that sometimes identifies sectors the DIIM's loss-based ranking misses.
+Remarkably, Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi all achieve an identical close rate of 89.8\% and a mean performance ratio exceeding~1 (i.e., they \emph{outperform} DIIM on average). This stems from the fact that they produce the exact same top-5 sector ranking. Weighting by economic size ($x_i$) is the dominant factor here, allowing even the simplest baseline (Total Output) to effectively prioritise intervention in this 15-sector model. PCA $\times$ xi also performs exceptionally well with an 86.6\% close rate.
 
 \begin{figure}[tbp]
     \centering
@@ -81,18 +81,18 @@ Table~\ref{tab:manpower-decision-results} summarises the manpower scenario resul
 \toprule
 \textbf{Method} & \textbf{Close Rate ($\geq$95\%)} & \textbf{Win Rate} & \textbf{Mean Ratio} \\
 \midrule
-Output-Weighted Linkage & 55.4\% & 24.3\% & 0.942 \\
-Forward Linkage         &  8.6\% &  0.9\% & 0.822 \\
-PCA                     &  5.3\% &  0.4\% & 0.802 \\
-Network Centrality      &  1.1\% &  0.0\% & 0.641 \\
-Backward Linkage        &  0.0\% &  0.0\% & 0.175 \\
+Total Output           & 55.4\% & 24.3\% & 0.942 \\
+FL $\times$ xi         & 55.4\% & 24.3\% & 0.942 \\
+PageRank $\times$ xi   & 54.8\% & 22.1\% & 0.947 \\
+BL $\times$ xi         & 54.8\% & 22.1\% & 0.947 \\
+PCA $\times$ xi        & 38.8\% &  6.8\% & 0.922 \\
 \bottomrule
 \end{tabular}
 \caption{Monte Carlo results for Manpower (2\,000 trials, $k=5$).}
 \label{tab:manpower-decision-results}
 \end{table}
 
-The manpower scenario is much harder for all cheap methods. PCA's close rate drops from 85.5\% (COVID-19) to 5.3\% (manpower). Even output-weighted linkage, the best performer, only matches DIIM 55\% of the time. This is fundamentally driven by the number of sectors: with 107~sectors, the top-5 represent only 4.7\% of the economy, and the probability that any fixed ranking captures the five most impactful sectors under a random $q_0$ is much lower.
+The manpower scenario is much harder for all methods. Total Output and FL $\times$ xi tie for the highest close rate at 55.4\%, closely followed by PageRank $\times$ xi and BL $\times$ xi (54.8\%). PCA $\times$ xi drops to 38.8\%. This difficulty is fundamentally driven by the number of sectors: with 107~sectors, the top-5 represent only 4.7\% of the economy, and the probability that any fixed ranking captures the five most impactful sectors under a random $q_0$ is much lower. Unlike the 15-sector model, pure size is not an absolute tiebreaker here, though it remains a powerful anchor for performance.
 
 \begin{figure}[tbp]
     \centering
@@ -138,15 +138,19 @@ Table~\ref{tab:decision-rules-summary} presents the derived decision rules.
 \toprule
 \textbf{Scenario} & \textbf{Method} & \textbf{Decision Rule} & \textbf{$J$} \\
 \midrule
-\multirow{3}{*}{COVID-19}
- & Output-Weighted & OWL\_avgrank $< 0.533$ & 0.411 \\
- & PCA             & PCA\_avgrank $< 0.578$ & 0.304 \\
- & Network Cent.   & NC\_overlap $> 0.200$  & 0.197 \\
+\multirow{5}{*}{COVID-19}
+ & Total Output          & TotalOutput\_avgrank $< 0.533$ & 0.402 \\
+ & PageRank $\times$ xi  & PageRankxi\_avgrank $< 0.533$  & 0.402 \\
+ & BL $\times$ xi        & BLxi\_avgrank $< 0.533$        & 0.402 \\
+ & FL $\times$ xi        & FLxi\_avgrank $< 0.533$        & 0.402 \\
+ & PCA $\times$ xi       & PCAxi\_avgrank $< 0.578$       & 0.307 \\
 \midrule
-\multirow{3}{*}{Manpower}
- & PCA             & PCA\_share $> 0.057$   & 0.559 \\
- & Forward Linkage & FL\_avgrank $< 0.456$  & 0.503 \\
- & Output-Weighted & OWL\_overlap $> 0$     & 0.102 \\
+\multirow{5}{*}{Manpower}
+ & Total Output          & TotalOutput\_overlap $> 0$     & 0.102 \\
+ & FL $\times$ xi        & FLxi\_overlap $> 0$            & 0.102 \\
+ & BL $\times$ xi        & BLxi\_overlap $> 0$            & 0.082 \\
+ & PageRank $\times$ xi  & PageRankxi\_overlap $> 0$      & 0.082 \\
+ & PCA $\times$ xi       & PCAxi\_overlap $> 0$           & 0.077 \\
 \bottomrule
 \end{tabular}
 \caption{Decision rules with Youden's $J$-optimal thresholds.}
@@ -161,9 +165,9 @@ The decision rules follow a common pattern: a cheap method works well when the d
 Based on the analysis, we propose the following practical guidelines:
 
 \begin{enumerate}
-    \item \textbf{For small economies ($\leq$ 20 sectors)}: Output-weighted linkage or PCA can be used as primary screening tools. With close rates above 85\%, the risk of significant underperformance is low.
-    \item \textbf{For large economies ($>$ 50 sectors)}: Output-weighted linkage should be used as a first-pass screen. If the overlap between its top-$k$ sectors and the observed high-$q_0$ sectors is low, the full DIIM should be run.
-    \item \textbf{Pre-event planning}: Since $q_0$ is unknown before a disruption occurs, cheap methods are valuable for \emph{pre-positioning} resources. Output-weighted linkage provides the best structural estimate of which sectors are likely to be critical across a range of disruption profiles.
+    \item \textbf{For small economies ($\leq$ 20 sectors)}: Simple baselines like Total Output or structurally-weighted methods (FL $\times$ xi, PCA $\times$ xi) can be used as primary screening tools. With close rates near 90\%, the risk of significant underperformance is exceedingly low.
+    \item \textbf{For large economies ($>$ 50 sectors)}: Structurally-weighted methods (or even Total Output) should be used as a first-pass screen. If the overlap between their top-$k$ sectors and the observed high-$q_0$ sectors is low (i.e., NO overlap), the full DIIM should be run. Otherwise, the cheap methods provide a reasonable approximation.
+    \item \textbf{Pre-event planning}: Since $q_0$ is unknown before a disruption occurs, cheap methods are valuable for \emph{pre-positioning} resources. The combination of structural linkage and absolute economic size provides the best  generalisable estimate of which sectors are likely to be critical across a range of disruption profiles.
     \item \textbf{During a crisis}: Once $q_0$ is observed, the decision rules in Table~\ref{tab:decision-rules-summary} can be evaluated instantly to determine whether the cheap method's recommendation is trustworthy for the specific disruption at hand.
 \end{enumerate}
 

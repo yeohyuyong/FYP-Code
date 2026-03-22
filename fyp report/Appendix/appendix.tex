@@ -109,7 +109,7 @@ Max initial inoperability & 0.01582 & varies \\
 Demand shock ($c^*$) & $> 0$ & $= 0$ \\
 Lockdown duration & 55 days & 55 days \\
 Total horizon & 751 days & 751 days \\
-PCA top-5 sectors & 3, 2, 5, 8, 4 & 17, 57, 69, 54, 62 \\
+PCA $\times$ xi top-5 sectors & 2, 5, 4, 8, 3 & 57, 54, 69, 17, 26 \\
 DIIM top-5 sectors & by simulation & by simulation \\
 \bottomrule
 \end{tabular}
@@ -124,12 +124,12 @@ DIIM top-5 sectors & by simulation & by simulation \\
 The R code for all simulations and analyses is available in the project repository. Key scripts include:
 
 \begin{itemize}
-    \item \texttt{functions.R}: Core DIIM function, data loading, simulation comparison
+    \item \texttt{functions.R}: Core DIIM function, data loading, and cheap method implementations (Total Output, PCA $\times$ xi, PageRank $\times$ xi, BL $\times$ xi, FL $\times$ xi)
     \item \texttt{pca.R}: PCA analysis on the integrated IO matrix
-    \item \texttt{simulations/decision\_rules.R}: Monte Carlo framework, logistic regression, decision rules
-    \item \texttt{simulations/enhanced\_comparison.R}: Multi-PC PCA and variable top-$k$ sweep
-    \item \texttt{simulations/alternative\_methods.R}: Network centrality, sensitivity analysis, hybrid methods
-    \item \texttt{manpower-disruption/manpower-disruption.R}: Manpower scenario DIIM simulation
+    \item \texttt{simulations/decision\_rules.R}: Monte Carlo framework, logistic regression, and decision boundary rules
+    \item \texttt{simulations/enhanced\_comparison.R}: Multi-PC PCA, varying top-$k$ sweep, and baseline vs structured method comparison
+    \item \texttt{simulations/run\_simulations.R}: Parameter sweeps for severity ($c^*$) and lockdown duration impacts
+    \item \texttt{manpower-disruption/manpower-disruption.R}: Manpower scenario DIIM simulation implementation
 \end{itemize}
 
 
