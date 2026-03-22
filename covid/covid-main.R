@@ -7,18 +7,8 @@ library(reshape2)
 library(gridExtra)
 library(dplyr)
 library(tidyverse)
-# Helper: source R code from a Jupyter notebook (.ipynb)
-source_notebook <- function(nb_path) {
-  nb <- jsonlite::fromJSON(nb_path, simplifyVector = FALSE)
-  code_cells <- Filter(function(cell) cell$cell_type == "code", nb$cells)
-  code_lines <- unlist(lapply(code_cells, function(cell) {
-    paste(unlist(cell$source), collapse = "")
-  }))
-  all_code <- paste(code_lines, collapse = "\n")
-  eval(parse(text = all_code), envir = globalenv())
-}
 
-source_notebook("functions.ipynb")
+source("functions.R")
 
 data <- download_data()
 A <- data$A

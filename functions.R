@@ -185,29 +185,7 @@ simulation_ml_vs_diim_manpower <- function(q0, A_star, c_star, x, lockdown_durat
   ))
 }
 
-# Test with COVID data
-data <- download_data()
-cat("COVID data loaded successfully\n")
-cat("Number of sectors:", length(data$q0), "\n")
-cat("A matrix dimensions:", dim(data$A), "\n")
-cat("Total output (x) sum:", sum(data$x), "\n")
 
-# Run a short DIIM simulation
-result <- DIIM(data$q0, data$A_star, data$c_star, data$x,
-               lockdown_duration = 56, total_duration = 730)
-cat("DIIM simulation completed\n")
-cat("Total economic loss:", result$total_economic_loss, "million\n")
-
-# source_notebook: extracts and runs all R code cells from a .ipynb file
-source_notebook <- function(nb_path) {
-  nb <- jsonlite::fromJSON(nb_path, simplifyVector = FALSE)
-  code_cells <- Filter(function(cell) cell$cell_type == "code", nb$cells)
-  code_lines <- unlist(lapply(code_cells, function(cell) {
-    paste(unlist(cell$source), collapse = "")
-  }))
-  all_code <- paste(code_lines, collapse = "\n")
-  eval(parse(text = all_code), envir = globalenv())
-}
 
 # gini: computes the Gini coefficient of a vector (measures inequality)
 # Returns 0 for perfectly equal, closer to 1 for highly unequal
