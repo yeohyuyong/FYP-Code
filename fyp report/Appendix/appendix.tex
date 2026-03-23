@@ -69,21 +69,21 @@
 \toprule
 \rowcolor[HTML]{FFFFFF} 
 \textbf{Sector ID} & \textbf{Sector} & \textbf{Initial inoperability} \\ \midrule
-1 & Agriculture, Fishing,   Quarrying, Utilities and Sewerage \& Waste Management & 0.002563 \\
-2 & Manufacturing & 0.000752 \\
-3 & Construction & 0.006890 \\
-4 & Wholesale  \&    Retail  Trade & 0.001639 \\
-5 & Transportation  \&    Storage & 0.001107 \\
-6 & Accommodation  \&    Food  Services & 0.008462 \\
-7 & Information  \&    Communications & 0.001936 \\
-8 & Financial  \&    Insurance  Services & 0.001091 \\
-9 & Real  Estate    Services & 0.000765 \\
-10 & Professional  Services & 0.003087 \\
-11 & Administrative  \&    Support  Services & 0.005325 \\
-12 & Public  Administration  \&    Education & 0.002954 \\
-13 & Health  \&    Social  Services & 0.003429 \\
-14 & Arts,  Entertainment  \&    Recreation & 0.004552 \\
-15 & Other  Community,    Social  \&  Personal    Services & 0.015819 \\ \bottomrule
+1 & Agriculture, Fishing,   Quarrying, Utilities and Sewerage \& Waste Management & 0.020592 \\
+2 & Manufacturing & 0.033293 \\
+3 & Construction & 0.155924 \\
+4 & Wholesale  \&    Retail  Trade & 0.061522 \\
+5 & Transportation  \&    Storage & 0.032185 \\
+6 & Accommodation  \&    Food  Services & 0.184162 \\
+7 & Information  \&    Communications & 0.006077 \\
+8 & Financial  \&    Insurance  Services & 0.009252 \\
+9 & Real  Estate    Services & 0.026593 \\
+10 & Professional  Services & 0.105436 \\
+11 & Administrative  \&    Support  Services & 0.123510 \\
+12 & Public  Administration  \&    Education & 0.115083 \\
+13 & Health  \&    Social  Services & 0.100575 \\
+14 & Arts,  Entertainment  \&    Recreation & 0.177582 \\
+15 & Other  Community,    Social  \&  Personal    Services & 0.439401 \\ \bottomrule
 \end{tabular}
 \caption{Sector Initial Inoperability (COVID-19)}
 \label{tab:sector-inoperability}
@@ -104,12 +104,12 @@ The manpower disruption scenario uses the 2022 Singapore IO table with 15 sector
 \midrule
 Number of sectors ($n$) & 15 & 15 \\
 IO table year & 2019 & 2022 \\
-Mean initial inoperability & 0.00398 & varies \\
-Max initial inoperability & 0.01582 & varies \\
+Mean initial inoperability & 0.10608 & varies \\
+Max initial inoperability & 0.43940 & varies \\
 Demand shock ($c^*$) & $> 0$ & $= 0$ \\
 Lockdown duration & 55 days & 55 days \\
 Total horizon & 751 days & 751 days \\
-PCA $\times$ xi top-5 sectors & 2, 5, 4, 8, 3 & 57, 54, 69, 17, 26 \\
+PCA $\times\, x_i$ top-5 sectors & 2, 5, 4, 8, 3 & 2, 5, 4, 7, 8 \\
 DIIM top-5 sectors & by simulation & by simulation \\
 \bottomrule
 \end{tabular}
@@ -124,7 +124,7 @@ DIIM top-5 sectors & by simulation & by simulation \\
 The R code for all simulations and analyses is available in the project repository. Key scripts include:
 
 \begin{itemize}
-    \item \texttt{functions.R}: Core DIIM function, data loading, and simplified method implementations (Total Output, PCA $\times$ xi, PageRank $\times$ xi, BL $\times$ xi, FL $\times$ xi)
+    \item \texttt{functions.R}: Core DIIM function, data loading, and simplified method implementations (Total Output, PCA $\times\, x_i$, PageRank $\times\, x_i$, BL $\times\, x_i$, FL $\times\, x_i$)
     \item \texttt{pca.R}: PCA analysis on the integrated IO matrix
     \item \texttt{simulations/decision\_rules.R}: Monte Carlo framework, logistic regression, and decision boundary rules
     \item \texttt{simulations/enhanced\_comparison.R}: Multi-PC PCA, varying top-$k$ sweep, and baseline vs structured method comparison
