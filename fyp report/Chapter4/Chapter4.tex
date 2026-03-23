@@ -33,7 +33,7 @@ Initial inoperability is computed using the same method as Equation~\eqref{eq:in
 
 \subsection{Model Parameters}
 
-The shock duration is set to 55~days to enable comparison with the COVID-19 scenario, though a manpower disruption could have a different timeline. The total simulation horizon is 751~days with a final inoperability of 1\%, representing near-full recovery through workforce replacement, retraining, or automation.
+The shock duration parameter is set to 55~days to maintain consistency with the COVID-19 scenario. However, because $c^* = 0$ in this scenario, the shock duration parameter has no effect on the simulation: the DIIM update equation is identical before and after the shock duration, since the $c^*$ term that would otherwise be removed after the shock period is already zero throughout. The total simulation horizon is 751~days with a final inoperability of 1\%, representing near-full recovery through workforce replacement, retraining, or automation. This horizon is adopted from the COVID-19 scenario for comparability; in practice, a manpower disruption may have a shorter or longer recovery timeline depending on the ease of workforce replacement. The COVID-19 scenario uses 366~days per year (2020 being a leap year), while the manpower scenario uses 365~days per year (2022).
 
 
 \section{Results}
@@ -81,11 +81,12 @@ Number of sectors & 15 & 15 \\
 IO table year & 2019 & 2022 \\
 Demand shock $c^*$ & $>0$ & $= 0$ \\
 Shock type & Demand + supply & Pure supply \\
-Lockdown duration & 55 days & 55 days \\
+Shock duration & 55 days & 55 days$^{\dagger}$ \\
 Total horizon & 751 days & 751 days \\
+Days per year & 366 & 365 \\
 \bottomrule
 \end{tabular}
-\caption{Comparison of COVID-19 and manpower disruption scenario parameters.}
+\caption{Comparison of COVID-19 and manpower disruption scenario parameters. $^{\dagger}$Shock duration has no effect when $c^* = 0$.}
 \label{tab:scenario-comparison}
 \end{table}
 
