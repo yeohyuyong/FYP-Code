@@ -5,7 +5,7 @@
 
 \section{The Three Regimes of Intervention Scale}
 
-The most striking finding of the Monte Carlo analysis is that the relative performance of simplified methods is not constant---it depends critically on the number of sectors targeted for intervention. This ``three regimes'' pattern holds across both scenarios:
+The main finding of the Monte Carlo analysis is that the relative performance of simplified methods is not constant---it depends critically on the number of sectors targeted for intervention. This ``three regimes'' pattern holds across both scenarios:
 
 \begin{itemize}
     \item \textbf{Small $k$}: All methods agree on the dominant sectors, so structural distinctions are irrelevant. Performance is moderate (ratios of 0.65--0.87) because even agreement on the top sectors does not guarantee alignment with the DIIM's adaptive ranking.
@@ -20,10 +20,10 @@ This pattern has a straightforward mathematical explanation. With 15 sectors and
 
 \section{Why Economic Size Dominates Structure}
 
-A defining finding is that weighting structural methods by a sector's baseline economic size ($x_i$) overwhelmingly dominates the results. This can be understood through two mechanisms:
+A related finding is that weighting structural methods by a sector's baseline economic size ($x_i$) overwhelmingly dominates the results. This can be understood through two mechanisms:
 
 \begin{enumerate}
-    \item \textbf{The anchor of scale}: Pure structural measures (like unweighted centrality or linkage) can highlight highly interconnected sectors that are economically minuscule. Multiplying by total output ensures that structurally important but economically small sectors are not over-ranked. The massive variation in sector sizes acts as a gravity well, pulling structurally distinct methods toward nearly identical rankings.
+    \item \textbf{The anchor of scale}: Pure structural measures (like unweighted centrality or linkage) can highlight highly interconnected sectors that are economically minuscule. Multiplying by total output ensures that structurally important but economically small sectors are not over-ranked. The massive variation in sector sizes acts as a strong anchor, pulling structurally distinct methods toward nearly identical rankings.
 
     \item \textbf{The Total Output baseline}: The pure Total Output baseline (ranking sectors solely by $x_i$, completely ignoring the IO network) performs identically to the best structurally-weighted methods at most values of~$k$. At $k = 3$, $k = 10$, and $k = 12$, Total Output matches or exceeds all structural methods. This suggests that for macro-level loss reduction, the initial scale of the intervention matters more than optimising for downstream cascading effects.
 \end{enumerate}
@@ -72,7 +72,7 @@ For Singapore specifically, the analysis suggests that sectors with high foreign
 
 \section{Limitations}
 
-Several limitations should be noted:
+This study has several limitations:
 
 \begin{enumerate}
     \item \textbf{Uniform intervention}: All methods are compared using a standardised 10\% reduction in $q(0)$ for top-$k$ sectors. In practice, the feasible intervention magnitude may vary across sectors.

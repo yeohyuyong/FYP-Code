@@ -5,9 +5,9 @@
 
 \section{Background}
 
-Singapore is a small, open, city-state economy whose prosperity depends on deep integration with global supply chains and a large foreign workforce. Approximately one-third of Singapore's labour force consists of non-resident workers, spanning construction, manufacturing, marine shipyard, and services \cite{MOM2023ForeignWorkforce}. This dependence, while a source of economic dynamism, also constitutes a structural vulnerability: any event that rapidly reduces the available workforce---whether a pandemic, a geopolitical crisis, or a grey zone conflict---can propagate through interconnected sectors and inflict cascading economic losses far beyond the initially affected industries.
+Singapore is a small, open, city-state economy whose prosperity depends on deep integration with global supply chains and a large foreign workforce. Approximately one-third of Singapore's labour force consists of non-resident workers, spanning construction, manufacturing, marine shipyard, and services \cite{MOM2023ForeignWorkforce}. This dependence, while a source of economic dynamism, is also a structural weakness: any event that rapidly reduces the available workforce---whether a pandemic, a geopolitical crisis, or a grey zone conflict---can propagate through interconnected sectors and inflict cascading economic losses far beyond the initially affected industries.
 
-The COVID-19 pandemic demonstrated this vividly. When Singapore imposed the ``circuit breaker'' lockdown from 7~April to 1~June~2020 \cite{MOH2020EndCircuitBreaker,MOH2020PostCircuitBreakerMeasures}, the disruption was not confined to directly affected sectors. Construction shutdowns deprived building-material manufacturers of demand, transport restrictions disrupted logistics, and hospitality closures cascaded into food supply chains. Understanding these cascading effects requires a framework that captures how sectors depend on each other and how disruptions propagate over time.
+The COVID-19 pandemic illustrated this. When Singapore imposed the ``circuit breaker'' lockdown from 7~April to 1~June~2020 \cite{MOH2020EndCircuitBreaker,MOH2020PostCircuitBreakerMeasures}, the disruption was not confined to directly affected sectors. Construction shutdowns deprived building-material manufacturers of demand, transport restrictions disrupted logistics, and hospitality closures cascaded into food supply chains. Understanding these cascading effects requires a framework that captures how sectors depend on each other and how disruptions propagate over time.
 
 Beyond pandemics, Singapore faces national security scenarios that could produce similar or even more severe manpower disruptions. Grey zone conflicts---coercive actions below the threshold of conventional warfare, such as economic coercion, cyber attacks, or hybrid threats---could trigger rapid departures of foreign workers, disrupting sectors that rely heavily on non-resident labour \cite{MINDEF2020Factsheet}. Unlike COVID-19, where the external demand shock ($c^{*}$) was significant, a manpower disruption scenario is characterised by high initial inoperability ($q(0)$) with $c^{*}=0$, representing a purely structural disruption that propagates through the production network.
 
@@ -17,14 +17,14 @@ The Inoperability Input-Output Model (IIM) and its dynamic extension (DIIM) prov
 
 \section{The Key Sector Identification Problem}
 
-A critical application of the DIIM is identifying ``key sectors''---those where targeted intervention (e.g., reducing inoperability by allocating recovery resources) yields the greatest reduction in total economic loss. The DIIM identifies these sectors by running the full dynamic simulation and ranking sectors by cumulative economic loss. However, this approach has two limitations:
+One application of the DIIM is identifying ``key sectors''---those where targeted intervention (e.g., reducing inoperability by allocating recovery resources) yields the greatest reduction in total economic loss. The DIIM identifies these sectors by running the full dynamic simulation and ranking sectors by cumulative economic loss. However, this approach has two limitations:
 
 \begin{enumerate}
     \item \textbf{Computational cost}: The DIIM requires running the complete simulation for every candidate intervention strategy.
     \item \textbf{Data requirements}: The DIIM needs crisis-time data---initial inoperability $q(0)$ and the demand perturbation $c^{*}$---which may not be available in the early stages of a disruption or during pre-event planning.
 \end{enumerate}
 
-This motivates the search for \emph{simplified structural methods} that can identify key sectors using only the input-output table, which is available in peacetime. Principal Component Analysis (PCA) applied to the integrated IO matrix $H = A(I-A)^{-1}$ is one such method, previously shown to produce sector rankings comparable to DIIM for specific scenarios. However, whether PCA's performance generalises across different disruption profiles (i.e., different $q(0)$ vectors) is an open question.
+This raises the question of whether there exist \emph{simplified structural methods} that can identify key sectors using only the input-output table, which is available in peacetime. Principal Component Analysis (PCA) applied to the integrated IO matrix $H = A(I-A)^{-1}$ is one such method, previously shown to produce sector rankings comparable to DIIM for specific scenarios. However, whether PCA's performance generalises across different disruption profiles (i.e., different $q(0)$ vectors) is an open question.
 
 \section{Objectives}
 

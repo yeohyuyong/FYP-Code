@@ -127,7 +127,7 @@ FL $\times\, x_i$       & 16.4\% & 17.2\% & 97.1\% & 99.2\% & 100.0\% \\
 
 \subsection{Three Regimes of $k$}
 
-The results reveal a striking non-monotonic pattern that can be decomposed into three regimes:
+The results show a non-monotonic pattern that can be decomposed into three regimes:
 
 \begin{enumerate}
     \item \textbf{Small $k$ ($k = 3$)}: All simplified methods agree on the top 3 sectors and produce identical performance with $\bar{R}_m = 0.870$ (COVID-19) and $0.652$ (Manpower). The dominant economic sectors (Manufacturing, Wholesale \& Retail, Transportation \& Storage) are so large that every method---whether based on size, linkage, or centrality---selects them. Two-thirds of trials achieve $\geq$80\% of DIIM in COVID-19 (66.1\%), but only 16.4\% in Manpower. Structural distinctions between simplified methods are irrelevant at this scale.
@@ -140,12 +140,12 @@ The results reveal a striking non-monotonic pattern that can be decomposed into 
 
 \section{Key Observations}
 
-Several patterns emerge from the multi-$k$ tables:
+The multi-$k$ tables show several patterns:
 
 \begin{enumerate}
     \item \textbf{PCA $\times\, x_i$ outperforms Total Output at $k = 5$ (COVID-19)}: PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output---a 27\% relative improvement---and a close rate of 64.1\% versus just 5.7\%. This stems from PCA's inclusion of sector~3 (Construction), which has the highest structural distance ($d_3^{\text{PCA}} = 0.789$) despite ranking only 6th in economic size. Construction's high initial inoperability ($q_3(0) = 0.221$) makes intervening there disproportionately effective.
 
-    \item \textbf{BL $\times\, x_i$ leads at $k = 7$ (COVID-19)}: BL $\times\, x_i$ achieves $\bar{R}_m = 0.834$ and a close rate of 67.2\%, outperforming all other simplified methods including PCA $\times\, x_i$ (0.818, 62.0\%). Its backward linkage signal captures sector~12 (Public Administration), whose strong input dependencies amplify the cascading effect of intervention. This demonstrates that different structural methods have complementary strengths at different intervention scales.
+    \item \textbf{BL $\times\, x_i$ leads at $k = 7$ (COVID-19)}: BL $\times\, x_i$ achieves $\bar{R}_m = 0.834$ and a close rate of 67.2\%, outperforming all other simplified methods including PCA $\times\, x_i$ (0.818, 62.0\%). Its backward linkage signal captures sector~12 (Public Administration), whose strong input dependencies amplify the cascading effect of intervention. This shows that different structural methods have complementary strengths at different intervention scales.
 
     \item \textbf{PageRank $\times\, x_i$ underperforms at medium $k$}: At $k = 7$, PageRank $\times\, x_i$ drops to $\bar{R}_m = 0.703$ (COVID-19) and $0.749$ (Manpower), with close rates of just 17.7\% and 33.6\% respectively---far below the other methods. PageRank's random-walk centrality prioritises sector~12 over sectors~3 and~10 at positions~6--7, which proves suboptimal under perturbed $q(0)$.
 
