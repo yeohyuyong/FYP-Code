@@ -72,10 +72,12 @@ For Singapore specifically, the analysis suggests that sectors with high foreign
 
 \section{Limitations}
 
-This study has several limitations:
+This study has several limitations, though the robustness analyses in Chapter~6 address some concerns that would otherwise be more pressing:
 
 \begin{enumerate}
-    \item \textbf{Uniform intervention}: All methods are compared using a uniform multiplicative 10\% reduction in $q(0)$ for top-$k$ sectors (i.e., $q(0) \times 0.9$). This magnitude was chosen to be small enough to preserve ranking effects without fundamentally altering the disruption structure. In practice, the feasible intervention magnitude may vary across sectors.
+    \item \textbf{Uniform intervention}: All methods are compared using a multiplicative reduction in $q(0)$ for top-$k$ sectors. While the sensitivity analysis (Section~6.7) confirms that the three-regimes finding and method rankings are robust across magnitudes of 5--30\%, the intervention is still applied uniformly across selected sectors. In practice, feasible intervention may vary by sector.
+
+    \item \textbf{PCA hyperparameter sensitivity}: The PCA robustness analysis (Section~6.8) reveals that the optimal number of principal components is scenario-dependent ($n_{\textit{pcs}} = 2$--$3$ for COVID-19, $n_{\textit{pcs}} = 1$ for Manpower). This means the PCA $\times\, x_i$ method cannot be applied as a fully automatic procedure---it requires some judgement or cross-validation to select $n_{\textit{pcs}}$.
 
     \item \textbf{Sector aggregation}: Both scenarios use 15-sector aggregations. At finer disaggregation, structural signals may become more discriminating and the advantage of structural methods over Total Output could increase.
 
@@ -96,7 +98,9 @@ Future extensions could include:
     \item Incorporating sector-correlated disruptions in the Monte Carlo analysis.
     \item Extending the framework to multi-period disruptions where $q(0)$ evolves over time.
     \item Validating the decision rules on actual disruption data from other economies.
-    \item Exploring variable intervention magnitudes across sectors, rather than a uniform 10\% reduction.
+    \item Developing an adaptive PCA procedure that automatically selects $n_{\textit{pcs}}$ based on the IO table structure, addressing the scenario-dependent sensitivity found in Section~6.8.
+    \item Extending the intervention timing analysis to model time-varying $q(0)$ trajectories, where the disruption itself evolves and intervention timing interacts with cascading dynamics.
+    \item Testing sector-specific (non-uniform) intervention magnitudes, where the reduction varies by sector based on policy feasibility constraints.
 \end{itemize}
 
 %=== END OF CHAPTER SEVEN ===

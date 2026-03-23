@@ -169,5 +169,120 @@ The multi-$k$ analysis leads to the following practical guidelines:
     \item \textbf{Crisis response}: Once $q(0)$ is observed, run the full DIIM if targeting fewer than 10 sectors. The computational cost of the simulation is modest (seconds on modern hardware) and the performance gain is substantial.
 \end{enumerate}
 
+
+\section{Scatter Plot Diagnostics}
+
+To understand the joint distribution of simplified method performance versus the DIIM benchmark, Figures~\ref{fig:scatter-covid} and~\ref{fig:scatter-manpower} plot each Monte Carlo trial as a point in the (DIIM reduction, simplified method reduction) space at $k = 5$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{Chapter6/scatter_covid_19_k5.png}
+    \caption{Scatter plot of simplified method loss reduction vs DIIM loss reduction at $k = 5$ (COVID-19). The dashed line is the $45^\circ$ reference---points below it indicate DIIM outperforms the simplified method.}
+    \label{fig:scatter-covid}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{Chapter6/scatter_manpower_k5.png}
+    \caption{Scatter plot of simplified method loss reduction vs DIIM loss reduction at $k = 5$ (Manpower).}
+    \label{fig:scatter-manpower}
+\end{figure}
+
+For COVID-19, PCA $\times\, x_i$ points cluster near the $45^\circ$ line, while the other four methods cluster well below it. This confirms that PCA's advantage at $k = 5$ is not driven by outliers but is a systematic, consistent improvement across the $q(0)$ perturbation space. For Manpower, all five simplified methods produce identical scatter patterns (as expected from the identical rankings at $k = 5$), with points concentrated below the $45^\circ$ line.
+
+
+\section{Intervention Magnitude Sensitivity}
+
+The main Monte Carlo analysis uses a uniform 10\% reduction in $q(0)$ for intervened sectors. To test whether the three-regimes finding depends on this choice, we repeat the analysis for intervention magnitudes of 5\%, 10\%, 20\%, and 30\%, each with 500 MC trials across $k \in \{3, 5, 7, 10, 12\}$ for both scenarios.
+
+Figure~\ref{fig:sensitivity-heatmap} shows the best simplified method's mean performance ratio $\bar{R}_m$ at each (magnitude, $k$) combination.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{Chapter6/sensitivity_intervention_heatmap.png}
+    \caption{Heatmap of the best simplified method's mean ratio across intervention magnitudes and $k$ values. The three-regimes structure persists across all magnitudes tested.}
+    \label{fig:sensitivity-heatmap}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{Chapter6/sensitivity_intervention_k5.png}
+    \caption{Method-level performance at $k = 5$ across intervention magnitudes, with 95\% confidence intervals.}
+    \label{fig:sensitivity-k5}
+\end{figure}
+
+The heatmap confirms that the three-regimes structure is preserved across all four magnitudes. At $k = 5$, PCA $\times\, x_i$ consistently achieves $\bar{R}_m \approx 0.82$ regardless of whether the intervention magnitude is 5\% or 30\%, while the non-PCA methods remain at $\bar{R}_m \approx 0.64$. This stability indicates that the relative ranking of methods is driven by \emph{which} sectors are selected, not by the magnitude of assistance applied to them.
+
+
+\section{PCA Robustness to Number of Principal Components}
+
+The PCA $\times\, x_i$ method uses two principal components ($n_{\textit{pcs}} = 2$) to compute structural distances. To test whether this choice is optimal, we evaluate PCA $\times\, x_i$ performance with $n_{\textit{pcs}} \in \{1, 2, 3, 4\}$ at $k = 5$ using 500 MC trials.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+\textbf{Scenario} & $n_{\textit{pcs}}$ & \textbf{Var.\ Explained} & $\bar{R}_m$ & \textbf{Close Rate} & \textbf{Top-5 Sectors} \\
+\midrule
+COVID-19 & 1 & 28.0\% & 0.813 & 61.2\% & 2, 3, 5, 4, 8 \\
+COVID-19 & 2 & 47.9\% & \textbf{0.820} & \textbf{65.8\%} & 2, 5, 4, 8, 3 \\
+COVID-19 & 3 & 61.6\% & 0.819 & 67.0\% & 2, 5, 4, 8, 3 \\
+COVID-19 & 4 & 73.3\% & 0.640 & 5.4\%  & 2, 5, 8, 4, 7 \\
+\midrule
+Manpower & 1 & 24.4\% & \textbf{0.850} & \textbf{73.8\%} & 2, 5, 4, 7, 3 \\
+Manpower & 2 & 43.8\% & 0.680 & 17.6\% & 2, 5, 4, 7, 8 \\
+Manpower & 3 & 58.6\% & 0.677 & 14.0\% & 2, 5, 7, 4, 8 \\
+Manpower & 4 & 69.8\% & 0.687 & 19.4\% & 2, 5, 7, 4, 8 \\
+\bottomrule
+\end{tabular}
+\caption{PCA $\times\, x_i$ performance at $k = 5$ for different numbers of principal components (500 MC trials per row).}
+\label{tab:pca-robustness}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Chapter6/pca_robustness_plot.png}
+    \caption{PCA $\times\, x_i$ mean performance ratio vs number of principal components at $k = 5$, with 95\% confidence intervals.}
+    \label{fig:pca-robustness}
+\end{figure}
+
+The results reveal a scenario-dependent optimal $n_{\textit{pcs}}$. For COVID-19, $n_{\textit{pcs}} = 2$ and $n_{\textit{pcs}} = 3$ perform nearly identically ($\bar{R}_m \approx 0.82$, close rate 66--67\%), while $n_{\textit{pcs}} = 4$ causes a sharp drop to $\bar{R}_m = 0.640$. This drop occurs because PC4 introduces sector~7 (Information \& Communications) into the top-5 at the expense of sector~3 (Construction)---a critical sector for COVID-19 loss reduction.
+
+For Manpower, the pattern reverses: $n_{\textit{pcs}} = 1$ achieves the best performance ($\bar{R}_m = 0.850$, close rate 73.8\%), while $n_{\textit{pcs}} \geq 2$ drops to $\bar{R}_m \approx 0.68$. The first principal component alone captures the dominant structural pattern for the manpower disruption, and additional components introduce noise that reshuffles the marginal sectors.
+
+This finding has a practical implication: the optimal number of principal components is scenario-dependent and cannot be determined \emph{a priori} without knowledge of the disruption profile. However, $n_{\textit{pcs}} = 1$ or $2$ appears to be a reasonable default across both scenarios.
+
+
+\section{Dynamic Intervention Timing}
+
+The baseline analysis assumes intervention at $t = 0$ (simultaneously with the disruption onset). In practice, there is an inevitable delay between disruption onset and implementation of targeted assistance. This section tests how delayed intervention affects the relative performance of simplified methods.
+
+We simulate intervention delays of 0, 7, 14, 30, and 60 days into the disruption at $k = 5$ using 500 MC trials for each delay.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{Chapter6/intervention_timing_plot.png}
+    \caption{Mean performance ratio by intervention delay at $k = 5$ (500 MC trials per delay). PCA $\times\, x_i$ ratio increases from 0.81 to 0.88 in the COVID-19 scenario as delay increases.}
+    \label{fig:timing-ratio}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Chapter6/intervention_timing_decay.png}
+    \caption{Mean DIIM loss reduction decreases with intervention delay, reflecting the diminishing \emph{absolute} benefit of late intervention.}
+    \label{fig:timing-decay}
+\end{figure}
+
+The results reveal a counterintuitive pattern: the \emph{relative} performance of simplified methods improves with delay. For COVID-19, PCA $\times\, x_i$ achieves $\bar{R}_m = 0.813$ at $t = 0$ but $\bar{R}_m = 0.882$ at a 60-day delay (close rate from 61\% to 89\%). However, Figure~\ref{fig:timing-decay} shows that the \emph{absolute} loss reduction achievable by any method---including DIIM---decreases with delay.
+
+This implies two key points:
+\begin{enumerate}
+    \item \textbf{Early intervention justifies running the full DIIM}: When intervention is implemented quickly, the DIIM's sector-adaptive selection produces a large absolute advantage over simplified methods. Speed of response is critical.
+    \item \textbf{Late intervention reduces the importance of sector selection}: With longer delays, the disruption has already propagated through the IO network, and the residual benefit of intervening depends less on \emph{which} sectors are targeted and more on \emph{any} intervention being applied.
+\end{enumerate}
+
+For the manpower scenario, intervention delay has minimal effect on the performance ratio (all methods remain at $\bar{R}_m \approx 0.68$--$0.71$), confirming that the pure supply-shock dynamics are more predictable and less sensitive to timing.
+
+
 %=== END OF CHAPTER SIX ===
 \newpage

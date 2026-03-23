@@ -65,16 +65,16 @@ download_manpower_data <- function() {
   ))
 }
 
-DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = NULL, risk_management = 1, days_in_year = 366) {
+DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = NULL, risk_management = 1, days_in_year = 366, intervention_magnitude = 0.10) {
   a_ii <- diag(A_star)
   T <- total_duration
 
   num_sectors <- length(q0)
   inoperability_evolution <- matrix(NA, nrow = num_sectors, ncol = total_duration)
 
-  # if key_sectors is not NULL, reduce those sectors' initial q0 by 10%
+  # if key_sectors is not NULL, reduce those sectors' initial q0 by intervention_magnitude
   if (!is.null(key_sectors)) {
-    q0[key_sectors] <- q0[key_sectors] * 0.9
+    q0[key_sectors] <- q0[key_sectors] * (1 - intervention_magnitude)
   }
 
   # we assume after 2 years the economic activity return to 99% of pre lock down level
@@ -147,41 +147,6 @@ simulation_ml_vs_diim <- function(q0, A_star, c_star, x, lockdown_duration, tota
   ))
 }
 
-simulation_ml_vs_diim_manpower <- function(q0, A_star, c_star, x, lockdown_duration, total_duration) {
-  # run model to calculate the economic loss (without intervention)
-  model <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration)
-  EL_evolution <- model$EL_evolution
-
-  # obtain the sectors with top economic loss
-  max_econ_loss <- apply(EL_evolution, 1, max)
-  sorted_indices <- order(max_econ_loss, decreasing = TRUE)
-  top_econ_loss_5 <- sorted_indices[1:5]
-
-  # rerun the model with intervention for the top economic sectors
-  model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = top_econ_loss_5)
-
-  # Compute PCA x xi key sectors dynamically
-  I_minus_A <- diag(nrow(A_star)) - A_star
-  L_local <- solve(I_minus_A)
-  H_local <- A_star %*% L_local
-  eig_local <- eigen(H_local)
-  pc_loadings_local <- Re(eig_local$vectors[, 1:min(2, nrow(A_star))])
-  pca_dist_local <- sqrt(rowSums(pc_loadings_local^2))
-  ml_key_sectors <- order(pca_dist_local * as.vector(x), decreasing = TRUE)[1:5]
-  model_ml <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = ml_key_sectors)
-
-  model_tot_econ_loss <- model$total_economic_loss
-  model_diim_tot_econ_loss <- model_diim$total_economic_loss
-  model_ml_tot_econ_loss <- model_ml$total_economic_loss
-
-  return(list(
-    lockdown_duration = lockdown_duration,
-    total_duration = total_duration,
-    model_tot_econ_loss = model_tot_econ_loss,
-    model_diim_tot_econ_loss = model_diim_tot_econ_loss,
-    model_ml_tot_econ_loss = model_ml_tot_econ_loss
-  ))
-}
 
 
 
