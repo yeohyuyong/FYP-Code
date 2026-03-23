@@ -183,7 +183,46 @@ Where $x_i$ is the planned output of sector~$i$ under normal production.
 \section{Key Sector Identification Methods}
 \label{sec:simplified-methods}
 
-A key sector is defined as one where targeted intervention---modelled as a 10\% reduction in initial inoperability $q(0)$---produces the largest reduction in total economic loss. Below we describe the expensive benchmark and five simplified structural alternatives.
+A key sector is defined as one where targeted intervention---modelled as a 10\% reduction in initial inoperability $q(0)$---produces the largest reduction in total economic loss. Below we first describe the intervention and loss reduction evaluation procedure, followed by the expensive benchmark and five simplified structural alternatives.
+
+\subsection{Intervention and Loss Reduction Evaluation}
+\label{sec:intervention-procedure}
+
+Each method produces a ranking of sectors. To evaluate a method's effectiveness, we select its top-$k$ ranked sectors and simulate a targeted intervention: the initial inoperability of each selected sector is reduced by 10\%. The DIIM is then re-run with this modified $q(0)$ to obtain the post-intervention total economic loss. The difference between the baseline loss (no intervention) and the post-intervention loss gives the economic loss reduction achieved by that method's top-$k$ selection. This procedure is applied identically to the DIIM benchmark and to every simplified method, so that all methods are compared on the same basis.
+
+The formal procedure is given in Algorithm~\ref{alg:loss-reduction}.
+
+\begin{algorithm}[H]
+\caption{Intervention and Loss Reduction Evaluation}\label{alg:loss-reduction}
+\KwIn{Initial inoperability $q(0)$, interdependency matrix $A^*$, demand perturbation $c^*$, total output vector $x$, number of key sectors $k$, sector ranking method $m$}
+\KwOut{Percentage loss reduction $\%\Delta EL_m$ for method $m$}
+\BlankLine
+\tcp{Step 1: Compute baseline economic loss (no intervention)}
+$\text{model}_{\text{base}} \leftarrow \text{\textsc{DIIM}}\bigl(q(0),\, A^*,\, c^*,\, x\bigr)$\;
+$EL_{\text{base}} \leftarrow \text{TotalEconomicLoss}\bigl(\text{model}_{\text{base}}\bigr)$\;
+\BlankLine
+\tcp{Step 2: Rank sectors using method $m$ and select top-$k$}
+$\text{ranking} \leftarrow \text{\textsc{RankSectors}}(m)$\;
+$S_k \leftarrow \text{ranking}[1:k]$ \tcp*{top-$k$ sector indices}
+\BlankLine
+\tcp{Step 3: Apply intervention (reduce $q(0)$ by 10\% for selected sectors)}
+$q'(0) \leftarrow q(0)$\;
+\For{each sector $i \in S_k$}{
+  $q'_i(0) \leftarrow 0.9 \times q_i(0)$\;
+}
+\BlankLine
+\tcp{Step 4: Re-run DIIM with the modified initial inoperability}
+$\text{model}_{\text{int}} \leftarrow \text{\textsc{DIIM}}\bigl(q'(0),\, A^*,\, c^*,\, x\bigr)$\;
+$EL_{\text{int}} \leftarrow \text{TotalEconomicLoss}\bigl(\text{model}_{\text{int}}\bigr)$\;
+\BlankLine
+\tcp{Step 5: Compute loss reduction}
+$\Delta EL_m \leftarrow EL_{\text{base}} - EL_{\text{int}}$\;
+$\%\Delta EL_m \leftarrow \dfrac{\Delta EL_m}{EL_{\text{base}}} \times 100$\;
+\BlankLine
+\Return $\%\Delta EL_m$\;
+\end{algorithm}
+
+In words, the algorithm proceeds as follows. First, the DIIM is run with the original $q(0)$ to establish the baseline total economic loss, which represents the scenario with no policy intervention. Second, a sector ranking method $m$ (either DIIM or a simplified method) produces an ordered list of sectors, and the top $k$ are selected. Third, the initial inoperability of each selected sector is reduced by 10\%, representing a targeted policy intervention that partially restores the sector's production capacity at time zero. Fourth, the DIIM is re-run with this modified initial condition $q'(0)$ to obtain the post-intervention total economic loss. Finally, the loss reduction is computed as the difference between the baseline and post-intervention losses. This procedure is repeated for every method $m$, with identical $q(0)$, $k$, and intervention magnitude, so that differences in loss reduction reflect only the quality of each method's sector ranking.
 
 \subsection{DIIM-Based Identification (Benchmark)}
 
