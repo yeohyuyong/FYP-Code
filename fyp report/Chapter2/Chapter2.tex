@@ -21,7 +21,7 @@ Where ``As Planned Production'' represents the output level of a sector under no
 
 \subsection{From Leontief to IIM}
 
-Using the concept of inoperability defined above, the IIM model can be derived from the Leontief input-output model, as shown in Equation~\eqref{eq:leontief-model}.
+Using the concept of inoperability defined above, the IIM model can be derived from the Leontief input-output model \cite{Leontief1936}, as shown in Equation~\eqref{eq:leontief-model}.
 
 \begin{equation}
     x = A x + c
@@ -107,7 +107,7 @@ The details of each matrix in the IIM model are shown in Equations~\eqref{eq:q-d
 
 \subsection{The DIIM}
 
-The IIM model can be extended to the DIIM model by introducing a time variable and an elasticity coefficient matrix describing the recovery capacity of sectors. The discrete form of the DIIM model is:
+The IIM model can be extended to the DIIM model by introducing a time variable and an elasticity coefficient matrix describing the recovery capacity of sectors \cite{SantosHaimes2004}. The discrete form of the DIIM model is:
 
 \begin{equation}
     q(t+1) = q(t) + K \big[ A^{*} q(t) + c^{*}(t) - q(t) \big]
@@ -189,11 +189,11 @@ A key sector is defined as one where targeted intervention---modelled as a 10\% 
 
 The DIIM identifies key sectors by running the full simulation without intervention, then ranking sectors by their cumulative economic loss $EL_i$ from Equation~\eqref{eq:economic-loss}. The top-$k$ sectors are selected for intervention. This is the ``gold standard'' but requires knowledge of $q(0)$ and~$c^{*}$.
 
-\subsection{Total Output ($xi$)}
+\subsection{Total Output ($x_i$)}
 
 This is the simplest baseline method. Sectors are ranked simply by their total planned economic output $x_i$. This method ignores the network structure entirely and assumes that intervening in the largest economic sectors will yield the greatest reduction in loss.
 
-\subsection{PCA $\times$ xi}
+\subsection{PCA $\times\, x_i$}
 
 Instead of using $A$ directly, this approach constructs the integrated input-output coefficient matrix:
 
@@ -218,18 +218,18 @@ where $v_{ik}$ is the loading of sector~$i$ on principal component $k$. To accou
 
 Sectors with larger $\text{Score}_i^{\text{PCA}}$ are ranked higher.
 
-\subsection{PageRank $\times$ xi}
+\subsection{PageRank $\times\, x_i$}
 
-The interdependency matrix $A^*$ is treated as the weighted adjacency matrix of a directed graph. The PageRank algorithm is applied to compute a structural centrality score $PR_i$ for each sector, which measures importance based on the structure of incoming links with a damping factor. This centrality score is then weighted by the sector's total output:
+The interdependency matrix $A^*$ is treated as the weighted adjacency matrix of a directed graph. The PageRank algorithm \cite{BrinPage1998} is applied to compute a structural centrality score $PR_i$ for each sector, which measures importance based on the structure of incoming links with a damping factor. This centrality score is then weighted by the sector's total output:
 
 \begin{equation}
     \text{Score}_i^{\text{PR}} = PR_i \times x_i
     \label{eq:pagerank-xi}
 \end{equation}
 
-\subsection{Backward Linkage $\times$ xi (BL $\times$ xi)}
+\subsection{Backward Linkage $\times\, x_i$ (BL $\times\, x_i$)}
 
-Backward linkages measure the extent to which a sector draws on other sectors' outputs as inputs. They are calculated as the column sums of the Leontief inverse:
+Backward linkages measure the extent to which a sector draws on other sectors' outputs as inputs \cite{Rasmussen1956,Chenery1958}. They are calculated as the column sums of the Leontief inverse:
 
 \begin{equation}
     BL_j = \sum_{i=1}^{n} l_{ij}
@@ -242,9 +242,9 @@ where $l_{ij}$ are elements of $L$. A high $BL_j$ indicates that sector~$j$ gene
     \text{Score}_j^{\text{BL}} = BL_j \times x_j
 \end{equation}
 
-\subsection{Forward Linkage $\times$ xi (FL $\times$ xi)}
+\subsection{Forward Linkage $\times\, x_i$ (FL $\times\, x_i$)}
 
-Forward linkages measure how much a sector's output is used as inputs by other sectors. They are calculated as the row sums of the Leontief inverse:
+Forward linkages measure how much a sector's output is used as inputs by other sectors \cite{Rasmussen1956,Dietzenbacher2002}. They are calculated as the row sums of the Leontief inverse:
 
 \begin{equation}
     FL_i = \sum_{j=1}^{n} l_{ij}
