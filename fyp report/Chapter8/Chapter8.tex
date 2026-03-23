@@ -12,7 +12,7 @@ This study's main contribution is the systematic comparison of five simplified m
 \begin{itemize}
     \item At \textbf{small $k$} ($k = 3$), all simplified methods agree on the dominant sectors and perform identically, achieving $\bar{R}_m$ of 0.65--0.87.
 
-    \item At \textbf{medium $k$} ($k = 5$--$7$), methods diverge and structural information adds substantial value. PCA $\times\, x_i$ outperforms the Total Output baseline by up to 27\% in the COVID-19 scenario (close rate 64\% vs 6\%) by identifying structurally critical sectors (e.g., Construction) that size-based rankings miss. BL $\times\, x_i$ provides complementary value at $k = 7$ (close rate 67\%). While the best simplified method still achieves only 82\% of DIIM's mean performance at $k = 5$, structural methods dramatically narrow the gap compared to the naive size-based baseline.
+    \item At \textbf{medium $k$} ($k = 5$--$7$), methods diverge and structural information adds substantial value. PCA $\times\, x_i$ outperforms the Total Output baseline by up to 27\% in the COVID-19 scenario (close rate 64\% vs 6\%) by identifying structurally critical sectors (e.g., Construction) that size-based rankings miss. BL $\times\, x_i$ provides complementary value at $k = 7$ (close rate 67\%). At $k = 5$, the best simplified method recovers only 82\% of the loss reduction that DIIM achieves on average. However, structural methods close much of the gap relative to the Total Output baseline.
 
     \item At \textbf{large $k$} ($k \geq 10$), simplified methods converge to DIIM performance, with $\bar{R}_m$ of 0.91--0.98 and close rates of 97--100\%. At this scale, even the simplest method---ranking by Total Output alone---is a reliable substitute for the full simulation.
 \end{itemize}

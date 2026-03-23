@@ -12,7 +12,7 @@ The main finding of the Monte Carlo analysis is that the relative performance of
 
     \item \textbf{Medium $k$}: Methods diverge on the marginal sectors (positions 4--7), and structural information adds value. PCA $\times\, x_i$ gains 27\% over Total Output at $k = 5$ in COVID-19; BL $\times\, x_i$ leads at $k = 7$. This is the regime where the question ``which specific sectors?'' matters most.
 
-    \item \textbf{Large $k$}: The methods converge again as the intervention covers most of the economy. At $k = 12$, close rates reach 100\% and $\bar{R}_m$ exceeds 0.95, making simplified methods reliable substitutes for DIIM.
+    \item \textbf{Large $k$}: The methods converge again as the intervention covers most of the economy. At $k = 12$, close rates reach 100\% and $\bar{R}_m$ exceeds 0.95, making simplified methods reliable substitutes for the full DIIM simulation.
 \end{itemize}
 
 This pattern has a straightforward mathematical explanation. With 15 sectors and $k = 12$, there are only $\binom{15}{12} = 455$ possible intervention sets. Most reasonable rankings will select similar sets, because the question reduces to which 3 sectors to \emph{exclude}. At $k = 5$, there are $\binom{15}{5} = 3{,}003$ possible sets, and the overlap between methods' selections is much smaller.
