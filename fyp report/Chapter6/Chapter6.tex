@@ -50,7 +50,7 @@ This yields 20\,000 simulation trials per scenario (2\,000 $\times$ 5 values of 
 
 \subsection{Mean Performance Ratio}
 
-Tables~\ref{tab:covid-ratio-by-k} and~\ref{tab:manpower-ratio-by-k} present the mean performance ratio $\bar{R}_m$ for each simplified method across all values of~$k$.
+Tables~\ref{tab:covid-ratio-by-k} and~\ref{tab:manpower-ratio-by-k} present $\bar{R}_m$ for each simplified method across all values of~$k$.
 
 \begin{table}[H]
 \centering
@@ -65,7 +65,7 @@ BL $\times\, x_i$       & 0.870 & 0.641 & \textbf{0.834} & 0.908 & 0.953 \\
 FL $\times\, x_i$       & 0.870 & 0.641 & 0.818 & 0.908 & 0.923 \\
 \bottomrule
 \end{tabular}
-\caption{Mean performance ratio (simplified / DIIM) by $k$ for COVID-19 (2\,000 trials per $k$). Bold indicates the best simplified method at that $k$.}
+\caption{$\bar{R}_m$ (simplified / DIIM) by $k$ for COVID-19 (2\,000 trials per $k$). Bold indicates the best simplified method at that $k$.}
 \label{tab:covid-ratio-by-k}
 \end{table}
 
@@ -82,7 +82,7 @@ BL $\times\, x_i$       & 0.652 & 0.682 & 0.927 & 0.885 & 0.976 \\
 FL $\times\, x_i$       & 0.652 & 0.682 & 0.927 & 0.926 & 0.976 \\
 \bottomrule
 \end{tabular}
-\caption{Mean performance ratio (simplified / DIIM) by $k$ for Manpower (2\,000 trials per $k$).}
+\caption{$\bar{R}_m$ (simplified / DIIM) by $k$ for Manpower (2\,000 trials per $k$).}
 \label{tab:manpower-ratio-by-k}
 \end{table}
 
@@ -130,11 +130,11 @@ FL $\times\, x_i$       & 16.4\% & 17.2\% & 97.1\% & 99.2\% & 100.0\% \\
 The results reveal a striking non-monotonic pattern that can be decomposed into three regimes:
 
 \begin{enumerate}
-    \item \textbf{Small $k$ ($k = 3$)}: All simplified methods agree on the top 3 sectors and produce identical performance with a mean ratio of 0.870 (COVID-19) and 0.652 (Manpower). The dominant economic sectors (Manufacturing, Wholesale \& Retail, Transportation \& Storage) are so large that every method---whether based on size, linkage, or centrality---selects them. Two-thirds of trials achieve $\geq$80\% of DIIM in COVID-19 (66.1\%), but only 16.4\% in Manpower. Structural distinctions between simplified methods are irrelevant at this scale.
+    \item \textbf{Small $k$ ($k = 3$)}: All simplified methods agree on the top 3 sectors and produce identical performance with $\bar{R}_m = 0.870$ (COVID-19) and $0.652$ (Manpower). The dominant economic sectors (Manufacturing, Wholesale \& Retail, Transportation \& Storage) are so large that every method---whether based on size, linkage, or centrality---selects them. Two-thirds of trials achieve $\geq$80\% of DIIM in COVID-19 (66.1\%), but only 16.4\% in Manpower. Structural distinctions between simplified methods are irrelevant at this scale.
 
-    \item \textbf{Medium $k$ ($k = 5$--$7$)}: The methods diverge, and structural information adds substantial value. At $k = 5$ in COVID-19, PCA $\times\, x_i$ achieves a mean ratio of 0.817 versus 0.641 for Total Output---a 27\% relative improvement---and a close rate of 64.1\% versus just 5.7\%. This dramatic gap arises because PCA selects sector~3 (Construction) over sector~7 (Information \& Communications). At $k = 7$, BL $\times\, x_i$ leads with a mean ratio of 0.834 and close rate of 67.2\%, capturing sector~12 (Public Administration) via its backward linkage signal. This is the regime where the ``marginal'' sectors (positions 4--7 in the ranking) matter most, and each method's structural lens produces meaningfully different selections.
+    \item \textbf{Medium $k$ ($k = 5$--$7$)}: The methods diverge, and structural information adds substantial value. At $k = 5$ in COVID-19, PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output---a 27\% relative improvement---and a close rate of 64.1\% versus just 5.7\%. This dramatic gap arises because PCA selects sector~3 (Construction) over sector~7 (Information \& Communications). At $k = 7$, BL $\times\, x_i$ leads with $\bar{R}_m = 0.834$ and close rate of 67.2\%, capturing sector~12 (Public Administration) via its backward linkage signal. This is the regime where the ``marginal'' sectors (positions 4--7 in the ranking) matter most, and each method's structural lens produces meaningfully different selections.
 
-    \item \textbf{Large $k$ ($k = 10$--$12$)}: The methods converge again as the intervention covers most of the economy. At $k = 12$ (80\% of 15 sectors), close rates reach 100\% for both scenarios, with mean ratios of 0.92--0.98. When intervening on nearly all sectors, the only question is which 3 sectors to \emph{exclude}, and even suboptimal exclusions have limited impact.
+    \item \textbf{Large $k$ ($k = 10$--$12$)}: The methods converge again as the intervention covers most of the economy. At $k = 12$ (80\% of 15 sectors), close rates reach 100\% for both scenarios, with $\bar{R}_m$ of 0.92--0.98. When intervening on nearly all sectors, the only question is which 3 sectors to \emph{exclude}, and even suboptimal exclusions have limited impact.
 \end{enumerate}
 
 
@@ -143,13 +143,13 @@ The results reveal a striking non-monotonic pattern that can be decomposed into 
 Several patterns emerge from the multi-$k$ tables:
 
 \begin{enumerate}
-    \item \textbf{PCA $\times\, x_i$ outperforms Total Output at $k = 5$ (COVID-19)}: PCA $\times\, x_i$ achieves a mean ratio of 0.817 versus 0.641 for Total Output---a 27\% relative improvement---and a close rate of 64.1\% versus just 5.7\%. This stems from PCA's inclusion of sector~3 (Construction), which has the highest structural distance ($d_3^{\text{PCA}} = 0.789$) despite ranking only 6th in economic size. Construction's high initial inoperability ($q_3(0) = 0.221$) makes intervening there disproportionately effective.
+    \item \textbf{PCA $\times\, x_i$ outperforms Total Output at $k = 5$ (COVID-19)}: PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output---a 27\% relative improvement---and a close rate of 64.1\% versus just 5.7\%. This stems from PCA's inclusion of sector~3 (Construction), which has the highest structural distance ($d_3^{\text{PCA}} = 0.789$) despite ranking only 6th in economic size. Construction's high initial inoperability ($q_3(0) = 0.221$) makes intervening there disproportionately effective.
 
-    \item \textbf{BL $\times\, x_i$ leads at $k = 7$ (COVID-19)}: BL $\times\, x_i$ achieves a mean ratio of 0.834 and a close rate of 67.2\%, outperforming all other simplified methods including PCA $\times\, x_i$ (0.818, 62.0\%). Its backward linkage signal captures sector~12 (Public Administration), whose strong input dependencies amplify the cascading effect of intervention. This demonstrates that different structural methods have complementary strengths at different intervention scales.
+    \item \textbf{BL $\times\, x_i$ leads at $k = 7$ (COVID-19)}: BL $\times\, x_i$ achieves $\bar{R}_m = 0.834$ and a close rate of 67.2\%, outperforming all other simplified methods including PCA $\times\, x_i$ (0.818, 62.0\%). Its backward linkage signal captures sector~12 (Public Administration), whose strong input dependencies amplify the cascading effect of intervention. This demonstrates that different structural methods have complementary strengths at different intervention scales.
 
-    \item \textbf{PageRank $\times\, x_i$ underperforms at medium $k$}: At $k = 7$, PageRank $\times\, x_i$ drops to a mean ratio of 0.703 (COVID-19) and 0.749 (Manpower), with close rates of just 17.7\% and 33.6\% respectively---far below the other methods. PageRank's random-walk centrality prioritises sector~12 over sectors~3 and~10 at positions~6--7, which proves suboptimal under perturbed $q(0)$.
+    \item \textbf{PageRank $\times\, x_i$ underperforms at medium $k$}: At $k = 7$, PageRank $\times\, x_i$ drops to $\bar{R}_m = 0.703$ (COVID-19) and $0.749$ (Manpower), with close rates of just 17.7\% and 33.6\% respectively---far below the other methods. PageRank's random-walk centrality prioritises sector~12 over sectors~3 and~10 at positions~6--7, which proves suboptimal under perturbed $q(0)$.
 
-    \item \textbf{All methods converge at large $k$}: At $k = 10$--$12$, close rates reach 97--100\% for most methods, with mean ratios of 0.91--0.98. The specific ranking matters little when the majority of sectors are covered.
+    \item \textbf{All methods converge at large $k$}: At $k = 10$--$12$, close rates reach 97--100\% for most methods, with $\bar{R}_m$ of 0.91--0.98. The specific ranking matters little when the majority of sectors are covered.
 
     \item \textbf{No single simplified method dominates across all $k$}: PCA $\times\, x_i$ is best at $k = 5$, BL $\times\, x_i$ is best at $k = 7$, and Total Output matches the best at $k = 3$, $10$, and $12$. This suggests that the optimal simplified method depends on the intervention scale.
 \end{enumerate}
@@ -160,7 +160,7 @@ Several patterns emerge from the multi-$k$ tables:
 The multi-$k$ analysis leads to the following practical guidelines:
 
 \begin{enumerate}
-    \item \textbf{Large-scale intervention ($k \geq 10$)}: Simplified methods are reliable substitutes for DIIM. With mean ratios above 0.90 and close rates of 97--100\%, the additional computational cost of DIIM is difficult to justify when intervening on the majority of sectors. Total Output alone---requiring no IO table analysis---achieves 95\% of DIIM's performance at $k = 12$.
+    \item \textbf{Large-scale intervention ($k \geq 10$)}: Simplified methods are reliable substitutes for DIIM. With $\bar{R}_m$ above 0.90 and close rates of 97--100\%, the additional computational cost of DIIM is difficult to justify when intervening on the majority of sectors. Total Output alone---requiring no IO table analysis---achieves 95\% of DIIM's performance at $k = 12$.
 
     \item \textbf{Targeted intervention ($k = 3$--$7$)}: DIIM provides substantial value over purely size-based methods. At $k = 5$, Total Output achieves only 64\% of DIIM's loss reduction (close rate 5.7\%). However, structural methods significantly narrow this gap: PCA $\times\, x_i$ achieves 82\% of DIIM (close rate 64.1\%), and BL $\times\, x_i$ leads at $k = 7$ with 83\% of DIIM (close rate 67.2\%). While a gap to DIIM remains, structural methods provide a meaningful improvement over the naive size-based baseline in this regime.
 
