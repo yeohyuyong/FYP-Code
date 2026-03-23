@@ -37,7 +37,7 @@ For each scenario and each value of $k \in \{3, 5, 7, 10, 12\}$, we draw 2\,000 
 
 \begin{enumerate}
     \item Perturb $q(0)^{\text{actual}}$ using Equation~\eqref{eq:q0-perturbation}.
-    \item Run the DIIM baseline (no intervention) and compute total economic loss.
+    \item Run the DIIM without intervention and compute total economic loss.
     \item Run the DIIM with intervention in the DIIM's top-$k$ sectors (10\% $q(0)$ reduction) and compute $\Delta EL_{\text{DIIM}}$.
     \item For each simplified method~$m$, run the DIIM with intervention in method~$m$'s top-$k$ sectors and compute $\Delta EL_m$.
     \item Compute $R_m = \Delta EL_m / \Delta EL_{\text{DIIM}}$ and record whether $R_m \geq 0.80$ (``close'').
@@ -162,7 +162,7 @@ The multi-$k$ analysis leads to the following practical guidelines:
 \begin{enumerate}
     \item \textbf{Large-scale intervention ($k \geq 10$)}: Simplified methods are reliable substitutes for DIIM. With $\bar{R}_m$ above 0.90 and close rates of 97--100\%, the additional computational cost of DIIM is difficult to justify when intervening on the majority of sectors. Total Output alone---requiring no IO table analysis---achieves 95\% of DIIM's performance at $k = 12$.
 
-    \item \textbf{Targeted intervention ($k = 3$--$7$)}: DIIM provides substantial value over purely size-based methods. At $k = 5$, Total Output achieves only 64\% of DIIM's loss reduction (close rate 5.7\%). However, structural methods significantly narrow this gap: PCA $\times\, x_i$ achieves 82\% of DIIM (close rate 64.1\%), and BL $\times\, x_i$ leads at $k = 7$ with 83\% of DIIM (close rate 67.2\%). While a gap to DIIM remains, structural methods provide a meaningful improvement over the naive size-based baseline in this regime.
+    \item \textbf{Targeted intervention ($k = 3$--$7$)}: DIIM provides substantial value over purely size-based methods. At $k = 5$, Total Output achieves only 64\% of DIIM's loss reduction (close rate 5.7\%). However, structural methods significantly narrow this gap: PCA $\times\, x_i$ achieves 82\% of DIIM (close rate 64.1\%), and BL $\times\, x_i$ leads at $k = 7$ with 83\% of DIIM (close rate 67.2\%). While a gap to DIIM remains, structural methods provide a meaningful improvement over the naive size-based benchmark in this regime.
 
     \item \textbf{Pre-event planning}: When $q(0)$ is unknown, simplified methods remain valuable for pre-positioning resources. The Total Output ranking identifies the sectors whose disruption would cause the greatest absolute economic loss, while PCA $\times\, x_i$ and BL $\times\, x_i$ can flag structurally important sectors that size alone would miss (e.g., Construction in the COVID-19 scenario).
 

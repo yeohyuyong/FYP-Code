@@ -20,12 +20,12 @@ This pattern has a straightforward mathematical explanation. With 15 sectors and
 
 \section{Why Economic Size Dominates Structure}
 
-A related finding is that weighting structural methods by a sector's baseline economic size ($x_i$) overwhelmingly dominates the results. This can be understood through two mechanisms:
+A related finding is that weighting structural methods by a sector's pre-disruption economic size ($x_i$) overwhelmingly dominates the results. This can be understood through two mechanisms:
 
 \begin{enumerate}
     \item \textbf{The anchor of scale}: Pure structural measures (like unweighted centrality or linkage) can highlight highly interconnected sectors that are economically minuscule. Multiplying by total output ensures that structurally important but economically small sectors are not over-ranked. The massive variation in sector sizes acts as a strong anchor, pulling structurally distinct methods toward nearly identical rankings.
 
-    \item \textbf{The Total Output baseline}: The pure Total Output baseline (ranking sectors solely by $x_i$, completely ignoring the IO network) performs identically to the best structurally-weighted methods at most values of~$k$. At $k = 3$, $k = 10$, and $k = 12$, Total Output matches or exceeds all structural methods. This suggests that for macro-level loss reduction, the initial scale of the intervention matters more than optimising for downstream cascading effects.
+    \item \textbf{The Total Output benchmark}: The pure Total Output benchmark (ranking sectors solely by $x_i$, completely ignoring the IO network) performs identically to the best structurally-weighted methods at most values of~$k$. At $k = 3$, $k = 10$, and $k = 12$, Total Output matches or exceeds all structural methods. This suggests that for macro-level loss reduction, the initial scale of the intervention matters more than optimising for downstream cascading effects.
 \end{enumerate}
 
 The exception is the medium-$k$ regime, where structural signals can identify ``hidden'' key sectors. Sector~3 (Construction) in the COVID-19 scenario is the clearest example: despite ranking 6th in economic size, it has the highest PCA structural distance (0.789) and high initial inoperability ($q(0) = 0.221$). PCA $\times\, x_i$ captures this; Total Output does not.
@@ -33,7 +33,7 @@ The exception is the medium-$k$ regime, where structural signals can identify ``
 
 \section{When Do Structural Methods Add Value?}
 
-The results suggest that structural methods (PCA $\times\, x_i$, BL $\times\, x_i$) add value over the Total Output baseline under specific conditions:
+The results suggest that structural methods (PCA $\times\, x_i$, BL $\times\, x_i$) add value over the Total Output benchmark under specific conditions:
 
 \begin{enumerate}
     \item \textbf{Medium intervention scale}: The marginal benefit of structural information is concentrated at $k = 5$--$7$, where the ``which specific sectors?'' question is most consequential.
