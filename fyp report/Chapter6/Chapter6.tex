@@ -3,42 +3,42 @@
 
 \chapter{Monte Carlo Robustness Analysis}
 
-The previous chapter showed that simplified methods can approach DIIM at specific $q_0$ points but not universally. This chapter uses Monte Carlo simulation to systematically evaluate the robustness of simplified methods across a range of realistic disruption profiles and intervention scales.
+The previous chapter showed that simplified methods can approach DIIM at specific $q(0)$ points but not universally. This chapter uses Monte Carlo simulation to systematically evaluate the robustness of simplified methods across a range of realistic disruption profiles and intervention scales.
 
 \section{Framework}
 
 \subsection{Motivation}
 
-All simplified methods produce a \emph{fixed} sector ranking---they depend only on the IO table structure ($A$, $x$), not on the disruption profile ($q_0$). The DIIM, by contrast, adapts its ranking to the specific $q_0$. A simplified method performs well when its fixed ranking happens to align with where $q_0$ concentrates; it fails when the disruption hits sectors that the simplified method did not prioritise.
+All simplified methods produce a \emph{fixed} sector ranking---they depend only on the IO table structure ($A$, $x$), not on the disruption profile ($q(0)$). The DIIM, by contrast, adapts its ranking to the specific $q(0)$. A simplified method performs well when its fixed ranking happens to align with where $q(0)$ concentrates; it fails when the disruption hits sectors that the simplified method did not prioritise.
 
-This insight suggests that the effectiveness of a simplified method is predictable from (i)~features of $q_0$ and (ii)~the number of sectors targeted for intervention~$k$. At small~$k$, only the very top sectors matter, while at large~$k$ the specific ranking becomes less consequential because most sectors are covered regardless.
+This insight suggests that the effectiveness of a simplified method is predictable from (i)~features of $q(0)$ and (ii)~the number of sectors targeted for intervention~$k$. At small~$k$, only the very top sectors matter, while at large~$k$ the specific ranking becomes less consequential because most sectors are covered regardless.
 
 \subsection{Performance Metric}
 
-For each simplified method~$m$ and a given $q_0$, we compute the performance ratio from Equation~\eqref{eq:performance-ratio}. The mean ratio $\bar{R}_m$ across trials is the primary metric: it captures how much of the DIIM's loss reduction a simplified method achieves on average. As a secondary metric, we report the \emph{close rate}---the fraction of trials where $R_m \geq 0.80$, i.e., the simplified method captures at least 80\% of the DIIM's benefit.
+For each simplified method~$m$ and a given $q(0)$, we compute the performance ratio from Equation~\eqref{eq:performance-ratio}. The mean ratio $\bar{R}_m$ across trials is the primary metric: it captures how much of the DIIM's loss reduction a simplified method achieves on average. As a secondary metric, we report the \emph{close rate}---the fraction of trials where $R_m \geq 0.80$, i.e., the simplified method captures at least 80\% of the DIIM's benefit.
 
 
 \section{Monte Carlo Design}
 
-\subsection{Perturbation of Real $q_0$}
+\subsection{Perturbation of Real $q(0)$}
 
-Rather than drawing $q_0$ from a uniform distribution---which would generate many unrealistic disruption profiles---we perturb the actual scenario-specific $q_0$ vector using log-normal noise:
+Rather than drawing $q(0)$ from a uniform distribution---which would generate many unrealistic disruption profiles---we perturb the actual scenario-specific $q(0)$ vector using log-normal noise:
 
 \begin{equation}
-    q_{0,i}^{\text{trial}} = q_{0,i}^{\text{actual}} \cdot \exp\!\bigl(\varepsilon_i\bigr), \quad \varepsilon_i \sim \mathcal{N}(0,\; 0.5^2)
+    q_i(0)^{\text{trial}} = q_i(0)^{\text{actual}} \cdot \exp\!\bigl(\varepsilon_i\bigr), \quad \varepsilon_i \sim \mathcal{N}(0,\; 0.5^2)
     \label{eq:q0-perturbation}
 \end{equation}
 
-\noindent with the constraint $q_{0,i}^{\text{trial}} \in [10^{-6},\; 1]$. This preserves the realistic structure of the disruption (sectors that were heavily impacted remain relatively more impacted) while introducing meaningful variation. The log-normal noise ensures that the perturbation is multiplicative---a sector with $q_0 = 0.01$ can plausibly move to $0.005$ or $0.02$, but not jump to $0.5$.
+\noindent with the constraint $q_i(0)^{\text{trial}} \in [10^{-6},\; 1]$. This preserves the realistic structure of the disruption (sectors that were heavily impacted remain relatively more impacted) while introducing meaningful variation. The log-normal noise ensures that the perturbation is multiplicative---a sector with $q(0) = 0.01$ can plausibly move to $0.005$ or $0.02$, but not jump to $0.5$.
 
 \subsection{Simulation Procedure}
 
-For each scenario and each value of $k \in \{3, 5, 7, 10, 12\}$, we draw 2\,000 perturbed $q_0$ vectors. For each trial:
+For each scenario and each value of $k \in \{3, 5, 7, 10, 12\}$, we draw 2\,000 perturbed $q(0)$ vectors. For each trial:
 
 \begin{enumerate}
-    \item Perturb $q_0^{\text{actual}}$ using Equation~\eqref{eq:q0-perturbation}.
+    \item Perturb $q(0)^{\text{actual}}$ using Equation~\eqref{eq:q0-perturbation}.
     \item Run the DIIM baseline (no intervention) and compute total economic loss.
-    \item Run the DIIM with intervention in the DIIM's top-$k$ sectors (10\% $q_0$ reduction) and compute $\Delta EL_{\text{DIIM}}$.
+    \item Run the DIIM with intervention in the DIIM's top-$k$ sectors (10\% $q(0)$ reduction) and compute $\Delta EL_{\text{DIIM}}$.
     \item For each simplified method~$m$, run the DIIM with intervention in method~$m$'s top-$k$ sectors and compute $\Delta EL_m$.
     \item Compute $R_m = \Delta EL_m / \Delta EL_{\text{DIIM}}$ and record whether $R_m \geq 0.80$ (``close'').
 \end{enumerate}
@@ -143,11 +143,11 @@ The results reveal a striking non-monotonic pattern that can be decomposed into 
 Several patterns emerge from the multi-$k$ tables:
 
 \begin{enumerate}
-    \item \textbf{PCA $\times$ xi outperforms Total Output at $k = 5$ (COVID-19)}: PCA $\times$ xi achieves a mean ratio of 0.817 versus 0.641 for Total Output---a 27\% relative improvement---and a close rate of 64.1\% versus just 5.7\%. This stems from PCA's inclusion of sector~3 (Construction), which has the highest structural distance ($d_3^{\text{PCA}} = 0.789$) despite ranking only 6th in economic size. Construction's high initial inoperability ($q_{0,3} = 0.221$) makes intervening there disproportionately effective.
+    \item \textbf{PCA $\times$ xi outperforms Total Output at $k = 5$ (COVID-19)}: PCA $\times$ xi achieves a mean ratio of 0.817 versus 0.641 for Total Output---a 27\% relative improvement---and a close rate of 64.1\% versus just 5.7\%. This stems from PCA's inclusion of sector~3 (Construction), which has the highest structural distance ($d_3^{\text{PCA}} = 0.789$) despite ranking only 6th in economic size. Construction's high initial inoperability ($q_3(0) = 0.221$) makes intervening there disproportionately effective.
 
     \item \textbf{BL $\times$ xi leads at $k = 7$ (COVID-19)}: BL $\times$ xi achieves a mean ratio of 0.834 and a close rate of 67.2\%, outperforming all other simplified methods including PCA $\times$ xi (0.818, 62.0\%). Its backward linkage signal captures sector~12 (Public Administration), whose strong input dependencies amplify the cascading effect of intervention. This demonstrates that different structural methods have complementary strengths at different intervention scales.
 
-    \item \textbf{PageRank $\times$ xi underperforms at medium $k$}: At $k = 7$, PageRank $\times$ xi drops to a mean ratio of 0.703 (COVID-19) and 0.749 (Manpower), with close rates of just 17.7\% and 33.6\% respectively---far below the other methods. PageRank's random-walk centrality prioritises sector~12 over sectors~3 and~10 at positions~6--7, which proves suboptimal under perturbed $q_0$.
+    \item \textbf{PageRank $\times$ xi underperforms at medium $k$}: At $k = 7$, PageRank $\times$ xi drops to a mean ratio of 0.703 (COVID-19) and 0.749 (Manpower), with close rates of just 17.7\% and 33.6\% respectively---far below the other methods. PageRank's random-walk centrality prioritises sector~12 over sectors~3 and~10 at positions~6--7, which proves suboptimal under perturbed $q(0)$.
 
     \item \textbf{All methods converge at large $k$}: At $k = 10$--$12$, close rates reach 97--100\% for most methods, with mean ratios of 0.91--0.98. The specific ranking matters little when the majority of sectors are covered.
 
@@ -164,9 +164,9 @@ The multi-$k$ analysis leads to the following practical guidelines:
 
     \item \textbf{Targeted intervention ($k = 3$--$7$)}: DIIM provides substantial value over purely size-based methods. At $k = 5$, Total Output achieves only 64\% of DIIM's loss reduction (close rate 5.7\%). However, structural methods significantly narrow this gap: PCA $\times$ xi achieves 82\% of DIIM (close rate 64.1\%), and BL $\times$ xi leads at $k = 7$ with 83\% of DIIM (close rate 67.2\%). While a gap to DIIM remains, structural methods provide a meaningful improvement over the naive size-based baseline in this regime.
 
-    \item \textbf{Pre-event planning}: When $q_0$ is unknown, simplified methods remain valuable for pre-positioning resources. The Total Output ranking identifies the sectors whose disruption would cause the greatest absolute economic loss, while PCA $\times$ xi and BL $\times$ xi can flag structurally important sectors that size alone would miss (e.g., Construction in the COVID-19 scenario).
+    \item \textbf{Pre-event planning}: When $q(0)$ is unknown, simplified methods remain valuable for pre-positioning resources. The Total Output ranking identifies the sectors whose disruption would cause the greatest absolute economic loss, while PCA $\times$ xi and BL $\times$ xi can flag structurally important sectors that size alone would miss (e.g., Construction in the COVID-19 scenario).
 
-    \item \textbf{Crisis response}: Once $q_0$ is observed, run the full DIIM if targeting fewer than 10 sectors. The computational cost of the simulation is modest (seconds on modern hardware) and the performance gain is substantial.
+    \item \textbf{Crisis response}: Once $q(0)$ is observed, run the full DIIM if targeting fewer than 10 sectors. The computational cost of the simulation is modest (seconds on modern hardware) and the performance gain is substantial.
 \end{enumerate}
 
 %=== END OF CHAPTER SIX ===

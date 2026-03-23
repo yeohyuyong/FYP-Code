@@ -3,7 +3,7 @@
 
 \chapter{Key Sector Identification Methods}
 
-This chapter compares the key sector identification methods described in Chapter~2 using the actual disruption data from both case studies. Recall that the DIIM identifies key sectors by running the full simulation and ranking by economic loss (expensive, requires $q_0$ and $c^*$), while the simplified methods use only the IO table structure.
+This chapter compares the key sector identification methods described in Chapter~2 using the actual disruption data from both case studies. Recall that the DIIM identifies key sectors by running the full simulation and ranking by economic loss (expensive, requires $q(0)$ and $c^{*}$), while the simplified methods use only the IO table structure.
 
 \section{PCA Applied to the IO Matrix}
 
@@ -88,13 +88,13 @@ Several observations emerge:
 
 \section{Comparison at Original Disruption Data}
 
-Using the actual $q_0$ data from each scenario, we compare each simplified method's economic loss reduction against the DIIM benchmark when intervening in the top-5 sectors.
+Using the actual $q(0)$ data from each scenario, we compare each simplified method's economic loss reduction against the DIIM benchmark when intervening in the top-5 sectors.
 
 For the COVID-19 scenario, the DIIM identifies sectors 2, 3, 4, 5, 12 as key sectors and achieves a loss reduction of 3.91\%. In contrast, Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi achieve 2.65\%, while PCA $\times$ xi achieves 3.38\%---a notable improvement over the purely size-based methods. The DIIM selects Construction (3) and Public Administration (12) in place of Financial Services (8) and Information \& Communications (7), reflecting its ability to capture sectors with high initial inoperability and strong structural dependencies.
 
-For the manpower scenario, PCA $\times$ xi matches the other simplified methods at 4.84\%, while the DIIM achieves 6.88\%---a substantially larger gap. This indicates that when disruptions are concentrated in structurally important sectors, the DIIM's ability to account for both $q_0$ and $c^*$ becomes more valuable.
+For the manpower scenario, PCA $\times$ xi matches the other simplified methods at 4.84\%, while the DIIM achieves 6.88\%---a substantially larger gap. This indicates that when disruptions are concentrated in structurally important sectors, the DIIM's ability to account for both $q(0)$ and $c^{*}$ becomes more valuable.
 
-This observation motivates the Monte Carlo analysis in Chapter~6: the performance of simplified methods at a single $q_0$ point is insufficient to draw general conclusions. We need to understand how performance varies across the space of possible $q_0$ vectors.
+This observation motivates the Monte Carlo analysis in Chapter~6: the performance of simplified methods at a single $q(0)$ point is insufficient to draw general conclusions. We need to understand how performance varies across the space of possible $q(0)$ vectors.
 
 
 \section{Effect of the Number of Key Sectors}

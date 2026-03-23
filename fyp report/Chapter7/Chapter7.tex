@@ -28,7 +28,7 @@ A defining finding is that weighting structural methods by a sector's baseline e
     \item \textbf{The Total Output baseline}: The pure Total Output baseline (ranking sectors solely by $x_i$, completely ignoring the IO network) performs identically to the best structurally-weighted methods at most values of~$k$. At $k = 3$, $k = 10$, and $k = 12$, Total Output matches or exceeds all structural methods. This suggests that for macro-level loss reduction, the initial scale of the intervention matters more than optimising for downstream cascading effects.
 \end{enumerate}
 
-The exception is the medium-$k$ regime, where structural signals can identify ``hidden'' key sectors. Sector~3 (Construction) in the COVID-19 scenario is the clearest example: despite ranking 6th in economic size, it has the highest PCA structural distance (0.789) and high initial inoperability ($q_0 = 0.221$). PCA $\times$ xi captures this; Total Output does not.
+The exception is the medium-$k$ regime, where structural signals can identify ``hidden'' key sectors. Sector~3 (Construction) in the COVID-19 scenario is the clearest example: despite ranking 6th in economic size, it has the highest PCA structural distance (0.789) and high initial inoperability ($q(0) = 0.221$). PCA $\times$ xi captures this; Total Output does not.
 
 
 \section{When Do Structural Methods Add Value?}
@@ -40,17 +40,17 @@ The results suggest that structural methods (PCA $\times$ xi, BL $\times$ xi) ad
 
     \item \textbf{Sectors with high structure--size mismatch}: When a sector has strong IO linkages or unusual propagation patterns but moderate economic size, structural methods can identify it while size-based methods miss it. This is scenario-dependent---the COVID-19 economy has such a sector (Construction), while the manpower economy does not, leading to identical simplified method performance in the latter.
 
-    \item \textbf{Concentrated disruptions}: Simplified methods perform best when $q_0$ is concentrated in the sectors that the method already ranks highly. Structural methods are most valuable when the disruption pattern partially but imperfectly aligns with the economic size ranking---i.e., when some structurally important sectors are heavily disrupted but would not be prioritised by size alone.
+    \item \textbf{Concentrated disruptions}: Simplified methods perform best when $q(0)$ is concentrated in the sectors that the method already ranks highly. Structural methods are most valuable when the disruption pattern partially but imperfectly aligns with the economic size ranking---i.e., when some structurally important sectors are heavily disrupted but would not be prioritised by size alone.
 \end{enumerate}
 
 
 \section{Cross-Scenario Comparison}
 
-The two scenarios differ in an important respect: COVID-19 has both supply disruption ($q_0 > 0$) and demand shock ($c^* > 0$), while manpower has only supply disruption ($c^* = 0$).
+The two scenarios differ in an important respect: COVID-19 has both supply disruption ($q(0) > 0$) and demand shock ($c^{*} > 0$), while manpower has only supply disruption ($c^{*} = 0$).
 
 At $k = 5$, the COVID-19 scenario shows differentiation among simplified methods (PCA $\times$ xi at 0.817 vs others at 0.641), while the manpower scenario shows none (all at 0.682). This suggests that the presence of a demand shock ($c^*$) creates more heterogeneity in the DIIM's optimal ranking, which in turn gives structural methods more room to capture patterns that size alone misses.
 
-At $k = 12$, both scenarios achieve close rates of 100\%, confirming that at large intervention scales the specific ranking is immaterial. The convergence is faster in the manpower scenario: at $k = 7$, close rates already reach 97\% (Manpower) versus 62\% (COVID-19). This occurs because the pure supply-shock dynamics ($c^* = 0$) are more predictable---without a demand shock, the cascading pattern is fully determined by $A^*$ and the initial $q_0$, and covering roughly half the sectors is sufficient to approximate the DIIM's optimal intervention.
+At $k = 12$, both scenarios achieve close rates of 100\%, confirming that at large intervention scales the specific ranking is immaterial. The convergence is faster in the manpower scenario: at $k = 7$, close rates already reach 97\% (Manpower) versus 62\% (COVID-19). This occurs because the pure supply-shock dynamics ($c^{*} = 0$) are more predictable---without a demand shock, the cascading pattern is fully determined by $A^{*}$ and the initial $q(0)$, and covering roughly half the sectors is sufficient to approximate the DIIM's optimal intervention.
 
 
 \section{National Security Implications}
@@ -60,7 +60,7 @@ From a national security perspective, the results support a two-stage approach t
 \begin{enumerate}
     \item \textbf{Peacetime (pre-event)}: Use Total Output to identify the economically dominant sectors for resilience investment. Supplement with PCA $\times$ xi and BL $\times$ xi to flag structurally critical sectors that may not be obvious from size alone (e.g., Construction in the COVID-19 scenario). This requires only the IO table---no disruption data.
 
-    \item \textbf{Crisis response}: Once $q_0$ is observed, the appropriate tool depends on the intervention scale:
+    \item \textbf{Crisis response}: Once $q(0)$ is observed, the appropriate tool depends on the intervention scale:
     \begin{itemize}
         \item If targeting $\leq$7 sectors: run the full DIIM. The performance gap is 18--36\%, and the computational cost is modest.
         \item If targeting $\geq$10 sectors: simplified methods achieve $\geq$90\% of DIIM's performance. Use Total Output for immediate prioritisation.
@@ -75,7 +75,7 @@ For Singapore specifically, the analysis suggests that sectors with high foreign
 Several limitations should be noted:
 
 \begin{enumerate}
-    \item \textbf{Uniform intervention}: All methods are compared using a standardised 10\% reduction in $q_0$ for top-$k$ sectors. In practice, the feasible intervention magnitude may vary across sectors.
+    \item \textbf{Uniform intervention}: All methods are compared using a standardised 10\% reduction in $q(0)$ for top-$k$ sectors. In practice, the feasible intervention magnitude may vary across sectors.
 
     \item \textbf{Sector aggregation}: Both scenarios use 15-sector aggregations. At finer disaggregation, structural signals may become more discriminating and the advantage of structural methods over Total Output could increase.
 
@@ -83,7 +83,7 @@ Several limitations should be noted:
 
     \item \textbf{Recovery dynamics}: The DIIM assumes exponential recovery with fixed resilience coefficients. In practice, recovery may be non-exponential, sector-specific, and dependent on policy interventions.
 
-    \item \textbf{$q_0$ perturbation}: While the log-normal perturbation around actual $q_0$ is more realistic than uniform random draws, it still assumes that the disruption structure is anchored to the historical scenario. Entirely novel disruption patterns (e.g., a pandemic hitting different sectors) are not tested.
+    \item \textbf{$q(0)$ perturbation}: While the log-normal perturbation around actual $q(0)$ is more realistic than uniform random draws, it still assumes that the disruption structure is anchored to the historical scenario. Entirely novel disruption patterns (e.g., a pandemic hitting different sectors) are not tested.
 \end{enumerate}
 
 
@@ -94,7 +94,7 @@ Future extensions could include:
 \begin{itemize}
     \item Testing at finer sector disaggregation (e.g., 50+ sectors) where structural signals may be more discriminating.
     \item Incorporating sector-correlated disruptions in the Monte Carlo analysis.
-    \item Extending the framework to multi-period disruptions where $q_0$ evolves over time.
+    \item Extending the framework to multi-period disruptions where $q(0)$ evolves over time.
     \item Validating the decision rules on actual disruption data from other economies.
     \item Exploring variable intervention magnitudes across sectors, rather than a uniform 10\% reduction.
 \end{itemize}
