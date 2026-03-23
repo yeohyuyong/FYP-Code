@@ -28,16 +28,16 @@ method_prefixes <- c(
 method_labels <- c("Total Output", "PCA x xi", "PageRank x xi",
                    "BL x xi", "FL x xi")
 
-compute_q0_features <- function(q0, cheap_rankings, k = 5) {
+compute_q0_features <- function(q0, simplified_rankings, k = 5) {
     num_sectors <- length(q0)
     total_q0 <- sum(q0)
     
     # Store the calculated features in a list
     calculated_features <- list()
 
-    # Iterate over every cheap method to calculate how well its top-k sectors align with q0
-    for (method_name in names(cheap_rankings)) {
-        top_k_sectors <- cheap_rankings[[method_name]][1:k]
+    # Iterate over every simplified method to calculate how well its top-k sectors align with q0
+    for (method_name in names(simplified_rankings)) {
+        top_k_sectors <- simplified_rankings[[method_name]][1:k]
         prefix <- method_prefixes[method_name]
 
         # Metric 1: Share of total q0 captured by this method's top-k sectors
@@ -83,12 +83,12 @@ run_monte_carlo <- function(scenario_name, data_loader,
     num_sectors <- length(q0_base)
     max_q0 <- max(q0_base) * 2
 
-    # 2. Compute the static rankings for the cheap methods upfront
-    cat("  Computing cheap rankings...\n")
-    cheap_rankings <- compute_cheap_rankings(A, A_star, x)
-    for (method_name in names(cheap_rankings)) {
+    # 2. Compute the static rankings for the simplified methods upfront
+    cat("  Computing simplified rankings...\n")
+    simplified_rankings <- compute_simplified_rankings(A, A_star, x)
+    for (method_name in names(simplified_rankings)) {
         cat(sprintf("    %-25s top-%d: [%s]\n", method_name, k,
-            paste(cheap_rankings[[method_name]][1:k], collapse = ", ")))
+            paste(simplified_rankings[[method_name]][1:k], collapse = ", ")))
     }
 
     # 3. Begin Monte Carlo iterations
@@ -122,16 +122,16 @@ run_monte_carlo <- function(scenario_name, data_loader,
         if (diim_reduction < 1e-10) next
 
         # Start building the results row for this trial
-        trial_row <- compute_q0_features(random_q0, cheap_rankings, k)
+        trial_row <- compute_q0_features(random_q0, simplified_rankings, k)
         trial_row$trial     <- trial
         trial_row$scenario  <- scenario_name
         trial_row$base_loss <- base_loss
         trial_row$diim_reduction <- diim_reduction
         trial_row$diim_pct  <- diim_reduction / base_loss * 100
 
-        # Evaluate each computed cheap method
-        for (method_name in names(cheap_rankings)) {
-            topk_sectors <- cheap_rankings[[method_name]][1:k]
+        # Evaluate each computed simplified method
+        for (method_name in names(simplified_rankings)) {
+            topk_sectors <- simplified_rankings[[method_name]][1:k]
             
             method_model <- DIIM(random_q0, A_star, c_star, x,
                 lockdown_duration, total_duration,
@@ -158,7 +158,7 @@ run_monte_carlo <- function(scenario_name, data_loader,
 
     monte_carlo_df <- bind_rows(all_results)
     cat(sprintf("  Valid trials: %d\n", nrow(monte_carlo_df)))
-    return(list(mc_df = monte_carlo_df, cheap_rankings = cheap_rankings))
+    return(list(mc_df = monte_carlo_df, simplified_rankings = simplified_rankings))
 }
 
 build_decision_rules <- function(mc_df, scenario_name, methods) {
@@ -290,7 +290,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
                      vjust = 2, hjust = 1.1, color = "red", size = 3) +
             scale_fill_brewer(palette = "Set2") +
             labs(title = sprintf("%s: Performance Ratio Distributions", scenario_name),
-                 subtitle = "Ratio = cheap method reduction / DIIM reduction",
+                 subtitle = "Ratio = simplified method reduction / DIIM reduction",
                  x = "Performance Ratio", y = "Density", fill = "Method") +
             theme_minimal() +
             theme(plot.title = element_text(face = "bold", size = 14),
@@ -325,7 +325,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
             scale_y_continuous(labels = scales::percent) +
             scale_fill_manual(values = c(">=95% of DIIM" = "#3498DB",
                                          "Beats DIIM" = "#2ECC71")) +
-            labs(title = sprintf("%s: How Often Each Cheap Method Matches DIIM", scenario_name),
+            labs(title = sprintf("%s: How Often Each Simplified Method Matches DIIM", scenario_name),
                  x = "", y = "Rate", fill = "") +
             theme_minimal() +
             theme(plot.title = element_text(face = "bold", size = 14),
@@ -393,7 +393,7 @@ write.csv(combined_mc, file.path(results_dir, "decision_rules_mc_data.csv"), row
 cat("Saved decision_rules_mc_data.csv\n\n")
 
 # Build summary table: mean ratio by method, scenario, and k
-cat("SUMMARY: Mean Performance Ratio (cheap / DIIM) by k\n\n")
+cat("SUMMARY: Mean Performance Ratio (simplified / DIIM) by k\n\n")
 
 clean_methods <- c("TotalOutput", "PCAxi", "PageRankxi", "BLxi", "FLxi")
 summary_lines <- character()

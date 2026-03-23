@@ -9,7 +9,7 @@ Singapore is a small, open, city-state economy whose prosperity depends on deep 
 
 The COVID-19 pandemic demonstrated this vividly. When Singapore imposed the ``circuit breaker'' lockdown from 7~April to 1~June~2020 \cite{MOH2020EndCircuitBreaker,MOH2020PostCircuitBreakerMeasures}, the disruption was not confined to directly affected sectors. Construction shutdowns deprived building-material manufacturers of demand, transport restrictions disrupted logistics, and hospitality closures cascaded into food supply chains. Understanding these cascading effects requires a framework that captures how sectors depend on each other and how disruptions propagate over time.
 
-Beyond pandemics, Singapore faces national security scenarios that could produce similar or even more severe manpower disruptions. Grey zone conflicts---coercive actions below the threshold of conventional warfare, such as economic coercion, cyber attacks, or hybrid threats---could trigger rapid departures of foreign workers, disrupting sectors that rely heavily on non-resident labour \cite{MINDEF2020Factsheet}. Unlike COVID-19, where the external demand shock ($c^*$) was significant, a manpower disruption scenario is characterised by high initial inoperability ($q_0$) with $c^*=0$, representing a purely structural disruption that propagates through the production network.
+Beyond pandemics, Singapore faces national security scenarios that could produce similar or even more severe manpower disruptions. Grey zone conflicts---coercive actions below the threshold of conventional warfare, such as economic coercion, cyber attacks, or hybrid threats---could trigger rapid departures of foreign workers, disrupting sectors that rely heavily on non-resident labour \cite{MINDEF2020Factsheet}. Unlike COVID-19, where the external demand shock ($c^{*}$) was significant, a manpower disruption scenario is characterised by high initial inoperability ($q(0)$) with $c^{*}=0$, representing a purely structural disruption that propagates through the production network.
 
 \section{The Dynamic Inoperability Input-Output Model}
 
@@ -21,25 +21,25 @@ A critical application of the DIIM is identifying ``key sectors''---those where 
 
 \begin{enumerate}
     \item \textbf{Computational cost}: The DIIM requires running the complete simulation for every candidate intervention strategy.
-    \item \textbf{Data requirements}: The DIIM needs crisis-time data---initial inoperability $q_0$ and the demand perturbation $c^*$---which may not be available in the early stages of a disruption or during pre-event planning.
+    \item \textbf{Data requirements}: The DIIM needs crisis-time data---initial inoperability $q(0)$ and the demand perturbation $c^{*}$---which may not be available in the early stages of a disruption or during pre-event planning.
 \end{enumerate}
 
-This motivates the search for \emph{cheap structural methods} that can identify key sectors using only the input-output table, which is available in peacetime. Principal Component Analysis (PCA) applied to the integrated IO matrix $H = A(I-A)^{-1}$ is one such method, previously shown to produce sector rankings comparable to DIIM for specific scenarios. However, whether PCA's performance generalises across different disruption profiles (i.e., different $q_0$ vectors) is an open question.
+This motivates the search for \emph{simplified structural methods} that can identify key sectors using only the input-output table, which is available in peacetime. Principal Component Analysis (PCA) applied to the integrated IO matrix $H = A(I-A)^{-1}$ is one such method, previously shown to produce sector rankings comparable to DIIM for specific scenarios. However, whether PCA's performance generalises across different disruption profiles (i.e., different $q(0)$ vectors) is an open question.
 
 \section{Objectives}
 
 This study addresses the following objectives:
 
 \begin{enumerate}
-    \item Apply the DIIM framework to two disruption scenarios relevant to Singapore: the COVID-19 pandemic (15~sectors, 2019 IO table) and a manpower disruption (107~sectors, 2022 IO table).
-    \item Evaluate five cheap structural methods for key sector identification---Total Output, PCA $\times$ xi, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi---against the DIIM benchmark.
-    \item Determine the boundary conditions (in terms of the initial inoperability vector $q_0$) under which each cheap method can reliably substitute for the full DIIM simulation.
-    \item Determine how the performance gap between cheap methods and DIIM varies with the number of sectors targeted for intervention ($k$), identifying the regimes where cheap methods are sufficient and where DIIM remains essential.
+    \item Apply the DIIM framework to two disruption scenarios relevant to Singapore: the COVID-19 pandemic (15~sectors, 2019 IO table) and a manpower disruption (15~sectors, 2022 IO table).
+    \item Evaluate five simplified structural methods for key sector identification---Total Output, PCA $\times$ xi, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi---against the DIIM benchmark.
+    \item Determine the boundary conditions (in terms of the initial inoperability vector $q(0)$) under which each simplified method can reliably substitute for the full DIIM simulation.
+    \item Determine how the performance gap between simplified methods and DIIM varies with the number of sectors targeted for intervention ($k$), identifying the regimes where simplified methods are sufficient and where DIIM remains essential.
 \end{enumerate}
 
 \section{Report Organisation}
 
-Chapter~2 presents the methodology, including the derivation of the DIIM and the formulation of the cheap structural methods. Chapter~3 applies the DIIM to the COVID-19 scenario, presenting results and risk management analysis. Chapter~4 extends the analysis to the manpower disruption scenario. Chapter~5 compares the key sector identification methods across both scenarios. Chapter~6 presents the Monte Carlo robustness analysis across multiple intervention scales. Chapter~7 discusses the implications, and Chapter~8 concludes.
+Chapter~2 presents the methodology, including the derivation of the DIIM and the formulation of the simplified structural methods. Chapter~3 applies the DIIM to the COVID-19 scenario, presenting results and risk management analysis. Chapter~4 extends the analysis to the manpower disruption scenario. Chapter~5 compares the key sector identification methods across both scenarios. Chapter~6 presents the Monte Carlo robustness analysis across multiple intervention scales. Chapter~7 discusses the implications, and Chapter~8 concludes.
 
 %=== END OF CHAPTER ONE ===
 \newpage

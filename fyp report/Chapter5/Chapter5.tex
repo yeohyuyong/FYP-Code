@@ -3,7 +3,7 @@
 
 \chapter{Key Sector Identification Methods}
 
-This chapter compares the key sector identification methods described in Chapter~2 using the actual disruption data from both case studies. Recall that the DIIM identifies key sectors by running the full simulation and ranking by economic loss (expensive, requires $q_0$ and $c^*$), while the cheap methods use only the IO table structure.
+This chapter compares the key sector identification methods described in Chapter~2 using the actual disruption data from both case studies. Recall that the DIIM identifies key sectors by running the full simulation and ranking by economic loss (expensive, requires $q_0$ and $c^*$), while the simplified methods use only the IO table structure.
 
 \section{PCA Applied to the IO Matrix}
 
@@ -39,7 +39,7 @@ The top-5 PCA $\times$ xi sectors for COVID-19 are sectors 2 (Manufacturing), 5 
 For the manpower scenario (15~sectors), PCA is computed on the corresponding $H$ matrix from the 2022 aggregated IO table. The top-5 PCA $\times$ xi sectors are sectors 2, 5, 4, 7, and 8. These closely mirror the COVID-19 PCA sectors, reflecting the similar aggregated structure, though the different IO table vintage (2022 vs 2019) and the absence of demand shock ($c^* = 0$) produce some ranking differences.
 
 
-\section{Cheap Method Rankings}
+\section{Simplified Method Rankings}
 
 Table~\ref{tab:rankings-covid} and Table~\ref{tab:rankings-manpower} show the top-5 sectors identified by each method for the two scenarios.
 
@@ -56,7 +56,7 @@ BL $\times$ xi         & 2, 4, 5, 8, 7 \\
 FL $\times$ xi         & 2, 4, 5, 8, 7 \\
 \bottomrule
 \end{tabular}
-\caption{Top-5 sectors by each cheap method (COVID-19, 15 sectors).}
+\caption{Top-5 sectors by each simplified method (COVID-19, 15 sectors).}
 \label{tab:rankings-covid}
 \end{table}
 
@@ -73,7 +73,7 @@ BL $\times$ xi         & 2, 5, 4, 7, 8 \\
 FL $\times$ xi         & 2, 5, 4, 7, 8 \\
 \bottomrule
 \end{tabular}
-\caption{Top-5 sectors by each cheap method (Manpower, 15 sectors).}
+\caption{Top-5 sectors by each simplified method (Manpower, 15 sectors).}
 \label{tab:rankings-manpower}
 \end{table}
 
@@ -82,19 +82,19 @@ Several observations emerge:
 \begin{enumerate}
     \item \textbf{High method agreement}: By incorporating total output $x_i$ as a weight, the methods converge strongly. For COVID-19, Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi produce the exact same top-5 ranking (2, 4, 5, 8, 7). PCA $\times$ xi differs only slightly by including sector 3 instead of 7.
     \item \textbf{Economic size dominates}: The fact that structurally distinct measures (centrality, backward linkage, and forward linkage) yield nearly identical rankings once weighted by $x_i$ indicates that a sector's baseline economic size is the dominant driver of its overall impact in these aggregated models.
-    \item \textbf{Cross-scenario consistency}: Despite using different IO tables (2019 vs 2022) and different shock structures ($c^* > 0$ vs $c^* = 0$), both scenarios produce very similar cheap method rankings. The manpower scenario rankings (2, 4/5, 5/4, 7, 8) closely mirror the COVID-19 rankings (2, 4, 5, 8, 7), confirming that economic size is the overwhelmingly dominant factor in these 15-sector models.
+    \item \textbf{Cross-scenario consistency}: Despite using different IO tables (2019 vs 2022) and different shock structures ($c^* > 0$ vs $c^* = 0$), both scenarios produce very similar simplified method rankings. The manpower scenario rankings (2, 4/5, 5/4, 7, 8) closely mirror the COVID-19 rankings (2, 4, 5, 8, 7), confirming that economic size is the overwhelmingly dominant factor in these 15-sector models.
 \end{enumerate}
 
 
 \section{Comparison at Original Disruption Data}
 
-Using the actual $q_0$ data from each scenario, we compare each cheap method's economic loss reduction against the DIIM benchmark when intervening in the top-5 sectors.
+Using the actual $q_0$ data from each scenario, we compare each simplified method's economic loss reduction against the DIIM benchmark when intervening in the top-5 sectors.
 
 For the COVID-19 scenario, the DIIM identifies sectors 2, 3, 4, 5, 12 as key sectors and achieves a loss reduction of 3.91\%. In contrast, Total Output, PageRank $\times$ xi, BL $\times$ xi, and FL $\times$ xi achieve 2.65\%, while PCA $\times$ xi achieves 3.38\%---a notable improvement over the purely size-based methods. The DIIM selects Construction (3) and Public Administration (12) in place of Financial Services (8) and Information \& Communications (7), reflecting its ability to capture sectors with high initial inoperability and strong structural dependencies.
 
-For the manpower scenario, PCA $\times$ xi matches the other cheap methods at 4.84\%, while the DIIM achieves 6.88\%---a substantially larger gap. This indicates that when disruptions are concentrated in structurally important sectors, the DIIM's ability to account for both $q_0$ and $c^*$ becomes more valuable.
+For the manpower scenario, PCA $\times$ xi matches the other simplified methods at 4.84\%, while the DIIM achieves 6.88\%---a substantially larger gap. This indicates that when disruptions are concentrated in structurally important sectors, the DIIM's ability to account for both $q_0$ and $c^*$ becomes more valuable.
 
-This observation motivates the Monte Carlo analysis in Chapter~6: the performance of cheap methods at a single $q_0$ point is insufficient to draw general conclusions. We need to understand how performance varies across the space of possible $q_0$ vectors.
+This observation motivates the Monte Carlo analysis in Chapter~6: the performance of simplified methods at a single $q_0$ point is insufficient to draw general conclusions. We need to understand how performance varies across the space of possible $q_0$ vectors.
 
 
 \section{Effect of the Number of Key Sectors}

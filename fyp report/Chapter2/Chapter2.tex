@@ -3,7 +3,7 @@
 
 \chapter{Methodology}
 
-This chapter presents the analytical framework. Section~\ref{sec:diim-derivation} derives the DIIM from the Leontief input-output model. Section~\ref{sec:cheap-methods} introduces the cheap structural methods for key sector identification. Section~\ref{sec:performance-metric} defines the performance metric used to compare methods.
+This chapter presents the analytical framework. Section~\ref{sec:diim-derivation} derives the DIIM from the Leontief input-output model. Section~\ref{sec:simplified-methods} introduces the simplified structural methods for key sector identification. Section~\ref{sec:performance-metric} defines the performance metric used to compare methods.
 
 \section{The Dynamic Inoperability Input-Output Model}
 \label{sec:diim-derivation}
@@ -124,7 +124,7 @@ Where $K$ is the elasticity coefficient matrix describing the recovery capacity 
 Solving Equation~\eqref{eq:diim-continuous} we can get the equation describing the evolution of sectoral inoperability over time:
 
 \begin{equation}
-    q(t) = e^{-K(I-A^{\ast})t} q(0) + \int_{0}^{t} K e^{-K(I-A^{\ast})(t-z)} c^{\ast}(z)\, dz
+    q(t) = e^{-K(I-A^{*})t} q(0) + \int_{0}^{t} K e^{-K(I-A^{*})(t-z)} c^{*}(z)\, dz
     \label{eq:diim-solution-general}
 \end{equation}
 
@@ -135,7 +135,7 @@ Assuming that the demand shock $c^{*}$ remains unchanged, and $c^{*}=0$, then Eq
     \label{eq:diim-solution-homogeneous}
 \end{equation}
 
-Where $q(0)$ represents the initial inoperability vector of sectors after being shocked. As time goes by, the inoperability changes at a rate of $e^{-K(I - A^*)t}$.
+Where $q(0)$ represents the initial inoperability vector of sectors after being shocked. As time goes by, the inoperability changes at a rate of $e^{-K(I - A^{*})t}$.
 
 \subsection{Initial Inoperability}
 
@@ -155,18 +155,18 @@ The second factor, $\text{LAPI}_i / \text{Sector Output}_i$, captures how depend
 According to Equation~\eqref{eq:diim-solution-homogeneous}, the inoperability of sector~$i$ at time~$t$ is:
 
 \begin{equation}
-    q_i(t) = q_i(0) e^{-k_i \left( 1 - a_{ii}^\ast \right) t}
+    q_i(t) = q_i(0) \, e^{-k_i \left( 1 - a_{ii}^{*} \right) t}
     \label{eq:qi-exponential-decay}
 \end{equation}
 
 From Equation~\eqref{eq:qi-exponential-decay}, we can derive the calculation formula for~$k_i$:
 
 \begin{equation}
-    k_i = \frac{\ln\left[q_i(0)/q_i(T)\right]}{T_i\left(1 - a_{ii}^*\right)}
+    k_i = \frac{\ln\left[q_i(0)/q_i(T)\right]}{T_i\left(1 - a_{ii}^{*}\right)}
     \label{eq:ki-definition}
 \end{equation}
 
-Where $q_i(0)$ is the initial inoperability of sector~$i$; $q_i(T)$ is the inoperability of sector~$i$ at time~$T$; $a_{ii}^{*}$ is the element on the diagonal of matrix~$A^*$, representing the self-dependence of sector~$i$.
+Where $q_i(0)$ is the initial inoperability of sector~$i$; $q_i(T)$ is the inoperability of sector~$i$ at time~$T$; $a_{ii}^{*}$ is the element on the diagonal of matrix~$A^{*}$, representing the self-dependence of sector~$i$.
 
 \subsection{Economic Loss}
 
@@ -181,13 +181,13 @@ Where $x_i$ is the planned output of sector~$i$ under normal production.
 
 
 \section{Key Sector Identification Methods}
-\label{sec:cheap-methods}
+\label{sec:simplified-methods}
 
-A key sector is defined as one where targeted intervention---modelled as a 10\% reduction in initial inoperability $q_0$---produces the largest reduction in total economic loss. Below we describe the expensive benchmark and five cheap structural alternatives.
+A key sector is defined as one where targeted intervention---modelled as a 10\% reduction in initial inoperability $q(0)$---produces the largest reduction in total economic loss. Below we describe the expensive benchmark and five simplified structural alternatives.
 
 \subsection{DIIM-Based Identification (Benchmark)}
 
-The DIIM identifies key sectors by running the full simulation without intervention, then ranking sectors by their cumulative economic loss $EL_i$ from Equation~\eqref{eq:economic-loss}. The top-$k$ sectors are selected for intervention. This is the ``gold standard'' but requires knowledge of $q_0$ and~$c^*$.
+The DIIM identifies key sectors by running the full simulation without intervention, then ranking sectors by their cumulative economic loss $EL_i$ from Equation~\eqref{eq:economic-loss}. The top-$k$ sectors are selected for intervention. This is the ``gold standard'' but requires knowledge of $q(0)$ and~$c^{*}$.
 
 \subsection{Total Output ($xi$)}
 
@@ -260,14 +260,14 @@ A high $FL_i$ indicates that sector~$i$ is an important supplier to the rest of 
 \section{Performance Metric}
 \label{sec:performance-metric}
 
-To compare a cheap method against DIIM, we define the \emph{performance ratio}:
+To compare a simplified method against DIIM, we define the \emph{performance ratio}:
 
 \begin{equation}
     R_m = \frac{\Delta EL_m}{\Delta EL_{\text{DIIM}}}
     \label{eq:performance-ratio}
 \end{equation}
 
-where $\Delta EL_m$ is the total economic loss reduction achieved by intervening in the top-$k$ sectors identified by cheap method~$m$, and $\Delta EL_{\text{DIIM}}$ is the reduction achieved by the DIIM's top-$k$ sectors. If $R_m \geq 0.95$, the cheap method is considered ``close enough'' to substitute for DIIM.
+where $\Delta EL_m$ is the total economic loss reduction achieved by intervening in the top-$k$ sectors identified by simplified method~$m$, and $\Delta EL_{\text{DIIM}}$ is the reduction achieved by the DIIM's top-$k$ sectors. If $R_m \geq 0.95$, the simplified method is considered ``close enough'' to substitute for DIIM.
 
 %=== END OF CHAPTER TWO ===
 \newpage

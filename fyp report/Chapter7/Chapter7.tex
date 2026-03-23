@@ -5,14 +5,14 @@
 
 \section{The Three Regimes of Intervention Scale}
 
-The most striking finding of the Monte Carlo analysis is that the relative performance of cheap methods is not constant---it depends critically on the number of sectors targeted for intervention. This ``three regimes'' pattern holds across both scenarios:
+The most striking finding of the Monte Carlo analysis is that the relative performance of simplified methods is not constant---it depends critically on the number of sectors targeted for intervention. This ``three regimes'' pattern holds across both scenarios:
 
 \begin{itemize}
     \item \textbf{Small $k$}: All methods agree on the dominant sectors, so structural distinctions are irrelevant. Performance is moderate (ratios of 0.65--0.87) because even agreement on the top sectors does not guarantee alignment with the DIIM's adaptive ranking.
 
     \item \textbf{Medium $k$}: Methods diverge on the marginal sectors (positions 4--7), and structural information adds value. PCA $\times$ xi gains 27\% over Total Output at $k = 5$ in COVID-19; BL $\times$ xi leads at $k = 7$. This is the regime where the question ``which specific sectors?'' matters most.
 
-    \item \textbf{Large $k$}: The methods converge again as the intervention covers most of the economy. At $k = 12$, close rates reach 100\% and mean ratios exceed 0.95, making cheap methods reliable substitutes for DIIM.
+    \item \textbf{Large $k$}: The methods converge again as the intervention covers most of the economy. At $k = 12$, close rates reach 100\% and mean ratios exceed 0.95, making simplified methods reliable substitutes for DIIM.
 \end{itemize}
 
 This pattern has a straightforward mathematical explanation. With 15 sectors and $k = 12$, there are only $\binom{15}{12} = 455$ possible intervention sets. Most reasonable rankings will select similar sets, because the question reduces to which 3 sectors to \emph{exclude}. At $k = 5$, there are $\binom{15}{5} = 3{,}003$ possible sets, and the overlap between methods' selections is much smaller.
@@ -38,9 +38,9 @@ The results suggest that structural methods (PCA $\times$ xi, BL $\times$ xi) ad
 \begin{enumerate}
     \item \textbf{Medium intervention scale}: The marginal benefit of structural information is concentrated at $k = 5$--$7$, where the ``which specific sectors?'' question is most consequential.
 
-    \item \textbf{Sectors with high structure--size mismatch}: When a sector has strong IO linkages or unusual propagation patterns but moderate economic size, structural methods can identify it while size-based methods miss it. This is scenario-dependent---the COVID-19 economy has such a sector (Construction), while the manpower economy does not, leading to identical cheap method performance in the latter.
+    \item \textbf{Sectors with high structure--size mismatch}: When a sector has strong IO linkages or unusual propagation patterns but moderate economic size, structural methods can identify it while size-based methods miss it. This is scenario-dependent---the COVID-19 economy has such a sector (Construction), while the manpower economy does not, leading to identical simplified method performance in the latter.
 
-    \item \textbf{Concentrated disruptions}: Cheap methods perform best when $q_0$ is concentrated in the sectors that the method already ranks highly. Structural methods are most valuable when the disruption pattern partially but imperfectly aligns with the economic size ranking---i.e., when some structurally important sectors are heavily disrupted but would not be prioritised by size alone.
+    \item \textbf{Concentrated disruptions}: Simplified methods perform best when $q_0$ is concentrated in the sectors that the method already ranks highly. Structural methods are most valuable when the disruption pattern partially but imperfectly aligns with the economic size ranking---i.e., when some structurally important sectors are heavily disrupted but would not be prioritised by size alone.
 \end{enumerate}
 
 
@@ -48,7 +48,7 @@ The results suggest that structural methods (PCA $\times$ xi, BL $\times$ xi) ad
 
 The two scenarios differ in an important respect: COVID-19 has both supply disruption ($q_0 > 0$) and demand shock ($c^* > 0$), while manpower has only supply disruption ($c^* = 0$).
 
-At $k = 5$, the COVID-19 scenario shows differentiation among cheap methods (PCA $\times$ xi at 0.817 vs others at 0.641), while the manpower scenario shows none (all at 0.682). This suggests that the presence of a demand shock ($c^*$) creates more heterogeneity in the DIIM's optimal ranking, which in turn gives structural methods more room to capture patterns that size alone misses.
+At $k = 5$, the COVID-19 scenario shows differentiation among simplified methods (PCA $\times$ xi at 0.817 vs others at 0.641), while the manpower scenario shows none (all at 0.682). This suggests that the presence of a demand shock ($c^*$) creates more heterogeneity in the DIIM's optimal ranking, which in turn gives structural methods more room to capture patterns that size alone misses.
 
 At $k = 12$, both scenarios achieve close rates of 100\%, confirming that at large intervention scales the specific ranking is immaterial. The convergence is faster in the manpower scenario: at $k = 7$, close rates already reach 97\% (Manpower) versus 62\% (COVID-19). This occurs because the pure supply-shock dynamics ($c^* = 0$) are more predictable---without a demand shock, the cascading pattern is fully determined by $A^*$ and the initial $q_0$, and covering roughly half the sectors is sufficient to approximate the DIIM's optimal intervention.
 
@@ -63,7 +63,7 @@ From a national security perspective, the results support a two-stage approach t
     \item \textbf{Crisis response}: Once $q_0$ is observed, the appropriate tool depends on the intervention scale:
     \begin{itemize}
         \item If targeting $\leq$7 sectors: run the full DIIM. The performance gap is 18--36\%, and the computational cost is modest.
-        \item If targeting $\geq$10 sectors: cheap methods achieve $\geq$90\% of DIIM's performance. Use Total Output for immediate prioritisation.
+        \item If targeting $\geq$10 sectors: simplified methods achieve $\geq$90\% of DIIM's performance. Use Total Output for immediate prioritisation.
     \end{itemize}
 \end{enumerate}
 

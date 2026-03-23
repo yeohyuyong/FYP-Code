@@ -87,12 +87,12 @@ run_scenario <- function(scenario_name, data_loader,
 
     # --- Step 1: Compute sector rankings using all methods ---
 
-    # Cheap methods (xi-weighted, no simulation needed)
-    cat("  Computing cheap rankings (xi-weighted)...\n")
-    cheap_rankings <- compute_cheap_rankings(A, A_star, x)
-    for (method_name in names(cheap_rankings)) {
+    # Simplified methods (xi-weighted, no simulation needed)
+    cat("  Computing simplified rankings (xi-weighted)...\n")
+    simplified_rankings <- compute_simplified_rankings(A, A_star, x)
+    for (method_name in names(simplified_rankings)) {
         cat(sprintf("    %-20s top-5: [%s]\n", method_name,
-            paste(cheap_rankings[[method_name]][1:min(5, num_sectors)], collapse = ", ")))
+            paste(simplified_rankings[[method_name]][1:min(5, num_sectors)], collapse = ", ")))
     }
 
     # DIIM - gold standard (runs the simulation to observe temporal progression)
@@ -114,7 +114,7 @@ run_scenario <- function(scenario_name, data_loader,
     cat("\n  Evaluating all methods at each k...\n")
 
     # Combine all sector rankings into a single named list
-    all_methods <- cheap_rankings  # already contains all 5 cheap methods
+    all_methods <- simplified_rankings  # already contains all 5 simplified methods
     all_methods[["DIIM"]]          <- diim_results$ranked_sectors
     all_methods[["Sensitivity"]]    <- sensitivity_results$ranked_sectors
 
@@ -164,7 +164,7 @@ cat("\nSaved enhanced_comparison.csv\n")
 
 plot_topk_comparison <- function(data, scenario_name, filename) {
     plot_data <- data[data$scenario == scenario_name, ]
-    plot_data$method_type <- ifelse(plot_data$method %in% c("Total Output", "PCA x xi", "PageRank x xi", "BL x xi", "FL x xi"), "Cheap Method",
+    plot_data$method_type <- ifelse(plot_data$method %in% c("Total Output", "PCA x xi", "PageRank x xi", "BL x xi", "FL x xi"), "Simplified Method",
         ifelse(plot_data$method == "DIIM", "DIIM",
             ifelse(plot_data$method == "Sensitivity", "Sensitivity", "Other")))
 
@@ -174,11 +174,11 @@ plot_topk_comparison <- function(data, scenario_name, filename) {
         geom_point(size = 2.5) +
         scale_color_brewer(palette = "Set2", name = "Method") +
         scale_linetype_manual(
-            values = c("Cheap Method" = "solid", "DIIM" = "dashed",
+            values = c("Simplified Method" = "solid", "DIIM" = "dashed",
                        "Sensitivity" = "dotdash", "Other" = "dotted"),
             name = "Type") +
         labs(title = sprintf("%s: Loss Reduction vs k", scenario_name),
-             subtitle = "Comparing xi-weighted cheap methods, DIIM, and Sensitivity",
+             subtitle = "Comparing xi-weighted simplified methods, DIIM, and Sensitivity",
              x = "Number of Sectors Intervened (k)",
              y = "% Loss Reduction") +
         theme_minimal() +
@@ -193,24 +193,24 @@ plot_topk_comparison <- function(data, scenario_name, filename) {
 plot_topk_comparison(combined, "COVID-19", "enhanced_covid_topk.png")
 plot_topk_comparison(combined, "Manpower", "enhanced_manpower_topk.png")
 
-# Compare all cheap methods side-by-side
-cheap_methods <- c("Total Output", "PCA x xi", "PageRank x xi", "BL x xi", "FL x xi")
-cheap_data <- combined[combined$method %in% cheap_methods, ]
-if (nrow(cheap_data) > 0) {
-    p_cheap <- ggplot(cheap_data, aes(x = k, y = pct_reduction,
+# Compare all simplified methods side-by-side
+simplified_methods <- c("Total Output", "PCA x xi", "PageRank x xi", "BL x xi", "FL x xi")
+simplified_data <- combined[combined$method %in% simplified_methods, ]
+if (nrow(simplified_data) > 0) {
+    p_simplified <- ggplot(simplified_data, aes(x = k, y = pct_reduction,
                                    color = method, shape = method)) +
         geom_line(linewidth = 1.2) +
         geom_point(size = 3) +
         facet_wrap(~scenario, scales = "free_y") +
         scale_color_brewer(palette = "Dark2", name = "Method") +
-        labs(title = "Xi-Weighted Cheap Methods Comparison",
+        labs(title = "Xi-Weighted Simplified Methods Comparison",
              x = "Top-k Sectors", y = "% Loss Reduction") +
         theme_minimal() +
         theme(plot.title = element_text(face = "bold", size = 14),
               legend.position = "bottom")
-    ggsave(file.path(results_dir, "enhanced_cheap_methods.png"), p_cheap,
+    ggsave(file.path(results_dir, "enhanced_simplified_methods.png"), p_simplified,
            width = 12, height = 6)
-    cat("Saved enhanced_cheap_methods.png\n")
+    cat("Saved enhanced_simplified_methods.png\n")
 }
 
 # Find the method that achieved the maximum percentage reduction for each 'k' value in each scenario
@@ -255,7 +255,7 @@ for (scenario_name in unique(combined$scenario)) {
     cat("\n")
 }
 
-# Compare Total Output baseline vs best cheap structural method (at k=5)
+# Compare Total Output baseline vs best simplified structural method (at k=5)
 cat("\nComparison: Structural Methods vs Total Output (at k=5):\n")
 for (scenario_name in unique(combined$scenario)) {
     scenario_data <- combined[combined$scenario == scenario_name & combined$k == 5, ]

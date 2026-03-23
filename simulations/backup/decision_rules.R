@@ -23,7 +23,7 @@ source_notebook("functions.ipynb")
 results_dir <- "results"
 dir.create(results_dir, showWarnings = FALSE, recursive = TRUE)
 
-compute_cheap_rankings <- function(A, A_star, x) {
+compute_simplified_rankings <- function(A, A_star, x) {
     n <- nrow(A)
 
     rankings <- list()
@@ -66,14 +66,14 @@ compute_cheap_rankings <- function(A, A_star, x) {
 }
 
 
-compute_q0_features <- function(q0, cheap_rankings, k = 5) {
+compute_q0_features <- function(q0, simplified_rankings, k = 5) {
     n <- length(q0)
     total_q0 <- sum(q0)
 
     features <- list()
 
-    for (method_name in names(cheap_rankings)) {
-        top_k <- cheap_rankings[[method_name]][1:k]
+    for (method_name in names(simplified_rankings)) {
+        top_k <- simplified_rankings[[method_name]][1:k]
         prefix <- gsub("[^a-zA-Z]", "", method_name) # clean name for column
 
         # Share of total q0 captured by this method's top-k sectors
@@ -124,13 +124,13 @@ run_monte_carlo <- function(scenario_name, data_loader,
     n <- length(q0_base)
     max_q0 <- max(q0_base) * 2
 
-    # Step 1: Compute cheap rankings (ONCE)
-    cat("  Computing cheap rankings...\n")
-    cheap_rankings <- compute_cheap_rankings(A, A_star, x)
-    for (m in names(cheap_rankings)) {
+    # Step 1: Compute simplified rankings (ONCE)
+    cat("  Computing simplified rankings...\n")
+    simplified_rankings <- compute_simplified_rankings(A, A_star, x)
+    for (m in names(simplified_rankings)) {
         cat(sprintf(
             "    %-25s top-%d: [%s]\n", m, k,
-            paste(cheap_rankings[[m]][1:k], collapse = ", ")
+            paste(simplified_rankings[[m]][1:k], collapse = ", ")
         ))
     }
 
@@ -165,16 +165,16 @@ run_monte_carlo <- function(scenario_name, data_loader,
 
         if (diim_reduction < 1e-10) next # skip if DIIM gives ~0 reduction
 
-        # Each cheap method
-        trial_row <- compute_q0_features(q0_rand, cheap_rankings, k)
+        # Each simplified method
+        trial_row <- compute_q0_features(q0_rand, simplified_rankings, k)
         trial_row$trial <- trial
         trial_row$scenario <- scenario_name
         trial_row$base_loss <- base_loss
         trial_row$diim_reduction <- diim_reduction
         trial_row$diim_pct <- diim_reduction / base_loss * 100
 
-        for (m in names(cheap_rankings)) {
-            topk <- cheap_rankings[[m]][1:k]
+        for (m in names(simplified_rankings)) {
+            topk <- simplified_rankings[[m]][1:k]
             m_model <- DIIM(q0_rand, A_star, c_star, x, lockdown_duration,
                 total_duration,
                 key_sectors = topk,
@@ -207,7 +207,7 @@ run_monte_carlo <- function(scenario_name, data_loader,
     mc_df <- bind_rows(all_results)
     cat(sprintf("  Valid trials: %d\n", nrow(mc_df)))
 
-    return(list(mc_df = mc_df, cheap_rankings = cheap_rankings))
+    return(list(mc_df = mc_df, simplified_rankings = simplified_rankings))
 }
 
 
@@ -372,7 +372,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
             scale_fill_brewer(palette = "Set2") +
             labs(
                 title = sprintf("%s: Performance Ratio Distributions", scenario_name),
-                subtitle = "Ratio = cheap method reduction / DIIM reduction",
+                subtitle = "Ratio = simplified method reduction / DIIM reduction",
                 x = "Performance Ratio", y = "Density", fill = "Method"
             ) +
             theme_minimal() +
@@ -420,7 +420,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
                 "Beats DIIM" = "#2ECC71"
             )) +
             labs(
-                title = sprintf("%s: How Often Each Cheap Method Matches DIIM", scenario_name),
+                title = sprintf("%s: How Often Each Simplified Method Matches DIIM", scenario_name),
                 x = "", y = "Rate", fill = ""
             ) +
             theme_minimal() +
@@ -477,7 +477,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
 }
 
 
-cat("=== Decision Rules: Cheap Methods vs DIIM ===\n")
+cat("=== Decision Rules: Simplified Methods vs DIIM ===\n")
 
 method_names <- c("PCA", "Network Centrality", "Backward Linkage",
     "Forward Linkage", "Output-Weighted Linkage")

@@ -287,10 +287,10 @@ pagerank_rank_sectors <- function(A_star, x_vector) {
   return(list(ranked_sectors = ranked_sectors, pagerank = pr, weighted_pagerank = weighted_pr))
 }
 
-# compute_cheap_rankings: computes 5 "cheap" sector rankings that don't need DIIM
+# compute_simplified_rankings: computes 5 "simplified" sector rankings that don't need DIIM
 # All structural methods are weighted by total output (xi) to reflect economic size
 # 1. Total Output  2. PCA x xi  3. PageRank x xi  4. BL x xi  5. FL x xi
-compute_cheap_rankings <- function(A, A_star, x) {
+compute_simplified_rankings <- function(A, A_star, x) {
   n <- nrow(A)
   rankings <- list()
   xi <- as.vector(x)
