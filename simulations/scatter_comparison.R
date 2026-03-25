@@ -4,7 +4,7 @@
 # Uses existing decision_rules_mc_data.csv if available, otherwise runs 500 MC trials
 # ============================================================================
 
-setwd("..")
+if (!file.exists("functions.R")) setwd("..")
 
 library(ggplot2)
 library(dplyr)

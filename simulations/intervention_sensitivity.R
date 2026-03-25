@@ -4,7 +4,7 @@
 # Runs Monte Carlo (500 trials) for magnitudes {5%, 10%, 20%, 30%} across k values
 # ============================================================================
 
-setwd("..")
+if (!file.exists("functions.R")) setwd("..")
 
 library(openxlsx)
 library(igraph)

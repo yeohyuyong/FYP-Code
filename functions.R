@@ -88,10 +88,11 @@ DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_s
 
   for (t in 2:total_duration) {
     if (t <= lockdown_duration) {
+      # During lockdown: risk_management dampens disruption propagation
       inoperability_evolution[, t] <- inoperability_evolution[, t - 1] + K %*% (A_star %*% inoperability_evolution[, t - 1] + c_star - inoperability_evolution[, t - 1]) * risk_management
     } else {
-      # after lockdown c* become 0 as no more external shock
-      inoperability_evolution[, t] <- inoperability_evolution[, t - 1] + K %*% (A_star %*% inoperability_evolution[, t - 1] - inoperability_evolution[, t - 1]) * risk_management
+      # After lockdown: c* becomes 0 (no more external shock), recovery is NOT dampened
+      inoperability_evolution[, t] <- inoperability_evolution[, t - 1] + K %*% (A_star %*% inoperability_evolution[, t - 1] - inoperability_evolution[, t - 1])
     }
   }
 
@@ -111,7 +112,7 @@ DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_s
   )
 }
 
-simulation_ml_vs_diim <- function(q0, A_star, c_star, x, lockdown_duration, total_duration) {
+simulation_ml_vs_diim <- function(q0, A, A_star, c_star, x, lockdown_duration, total_duration) {
   # run model to calculate the economic loss (without intervention)
   model <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration)
   EL_evolution <- model$EL_evolution
@@ -124,14 +125,9 @@ simulation_ml_vs_diim <- function(q0, A_star, c_star, x, lockdown_duration, tota
   # rerun the model with intervention for the top economic sectors
   model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = top_econ_loss_5)
 
-  # Compute PCA x xi key sectors dynamically
-  I_minus_A <- diag(nrow(A_star)) - A_star  # Use A_star since A is not passed
-  L_local <- solve(I_minus_A)
-  H_local <- A_star %*% L_local
-  eig_local <- eigen(H_local)
-  pc_loadings_local <- Re(eig_local$vectors[, 1:min(2, nrow(A_star))])
-  pca_dist_local <- sqrt(rowSums(pc_loadings_local^2))
-  ml_key_sectors <- order(pca_dist_local * as.vector(x), decreasing = TRUE)[1:5]
+  # Compute PCA x xi key sectors dynamically (using A, not A_star)
+  pca_results_local <- pca_rank_sectors(A, x, n_pcs = 2)
+  ml_key_sectors <- pca_results_local$ranked_sectors[1:5]
   model_ml <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = ml_key_sectors)
 
   model_tot_econ_loss <- model$total_economic_loss

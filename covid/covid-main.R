@@ -1,5 +1,5 @@
 # Set working directory to project root
-setwd("..")
+if (!file.exists("functions.R")) setwd("..")
 
 library(openxlsx)
 library(ggplot2)

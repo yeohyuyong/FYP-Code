@@ -4,7 +4,7 @@
 # Simulates intervention at t=0, 7, 14, 30, 60 days into the disruption
 # ============================================================================
 
-setwd("..")
+if (!file.exists("functions.R")) setwd("..")
 
 library(openxlsx)
 library(igraph)

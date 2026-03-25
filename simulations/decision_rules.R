@@ -1,4 +1,4 @@
-setwd("..")
+if (!file.exists("functions.R")) setwd("..")
 
 library(openxlsx)
 library(igraph)
@@ -323,7 +323,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
             geom_bar(stat = "identity", position = "dodge", alpha = 0.85) +
             coord_flip() +
             scale_y_continuous(labels = scales::percent) +
-            scale_fill_manual(values = c(">=95% of DIIM" = "#3498DB",
+            scale_fill_manual(values = c(">=80% of DIIM" = "#3498DB",
                                          "Beats DIIM" = "#2ECC71")) +
             labs(title = sprintf("%s: How Often Each Simplified Method Matches DIIM", scenario_name),
                  x = "", y = "Rate", fill = "") +
@@ -385,6 +385,13 @@ for (k_val in k_values) {
         days_in_year = 365, n_mc = 2000, k = k_val)
     manpower_mc$mc_df$k <- k_val
     all_mc_results[[paste0("manpower_k", k_val)]] <- manpower_mc$mc_df
+
+    # Build decision rules and generate plots for this k value
+    covid_rules <- build_decision_rules(covid_mc$mc_df, sprintf("COVID-19 (k=%d)", k_val), method_labels)
+    generate_plots(covid_mc$mc_df, covid_rules, sprintf("COVID-19 (k=%d)", k_val), sprintf("covid_k%d", k_val))
+
+    manpower_rules <- build_decision_rules(manpower_mc$mc_df, sprintf("Manpower (k=%d)", k_val), method_labels)
+    generate_plots(manpower_mc$mc_df, manpower_rules, sprintf("Manpower (k=%d)", k_val), sprintf("manpower_k%d", k_val))
 }
 
 # Combine all results

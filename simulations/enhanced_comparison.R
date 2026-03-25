@@ -1,4 +1,4 @@
-setwd("..")
+if (!file.exists("functions.R")) setwd("..")
 
 library(openxlsx)
 library(igraph)

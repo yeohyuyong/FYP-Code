@@ -1,5 +1,5 @@
 # Set working directory to project root
-setwd("..")
+if (!file.exists("functions.R")) setwd("..")
 
 library(openxlsx)
 library(ggplot2)
@@ -123,7 +123,7 @@ colnames(sim_matrix) = col_names
 row_idx = 1
 for (l_duration in lockdown_duration_vals) {
   for (t_duration in total_duration_vals) {
-    res = simulation_ml_vs_diim(q0, A_star, c_star, x, lockdown_duration=l_duration, total_duration=t_duration)
+    res = simulation_ml_vs_diim(q0, A, A_star, c_star, x, lockdown_duration=l_duration, total_duration=t_duration)
     res = matrix(unlist(res), ncol=5)
     sim_matrix[row_idx,] = res
     row_idx = row_idx + 1

@@ -4,7 +4,7 @@
 # Runs 500-trial MC for n_pcs in {1, 2, 3, 4} at k=5
 # ============================================================================
 
-setwd("..")
+if (!file.exists("functions.R")) setwd("..")
 
 library(openxlsx)
 library(igraph)
