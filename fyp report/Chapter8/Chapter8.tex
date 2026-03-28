@@ -1,6 +1,3 @@
-%=== CHAPTER EIGHT (8) ===
-%=== Conclusion ===
-
 \chapter{Conclusion}
 
 This project developed and applied a quantitative framework for assessing economic resilience under disruption, relevant to Singapore's national security planning.
@@ -10,22 +7,21 @@ Using the Dynamic Inoperability Input-Output Model (DIIM), two disruption scenar
 This study's main contribution is the systematic comparison of five simplified methods for identifying key sectors against the DIIM benchmark, evaluated across multiple intervention scales ($k = 3, 5, 7, 10, 12$) using 40\,000 Monte Carlo trials with realistic $q(0)$ perturbations. The analysis reveals three distinct regimes:
 
 \begin{itemize}
-    \item At \textbf{small $k$} ($k = 3$), all simplified methods agree on the dominant sectors and perform identically, achieving $\bar{R}_m$ of 0.65--0.87.
+    \item At \textbf{small $k$} ($k = 3$), all simplified methods agree on the dominant sectors and perform identically, achieving $\bar{R}_m$ of 0.73--0.87.
 
     \item At \textbf{medium $k$} ($k = 5$--$7$), methods diverge and structural information adds substantial value. PCA $\times\, x_i$ outperforms the Total Output benchmark by up to 27\% in the COVID-19 scenario (close rate 64\% vs 6\%) by identifying structurally critical sectors (e.g., Construction) that size-based rankings miss. BL $\times\, x_i$ provides complementary value at $k = 7$ (close rate 67\%). At $k = 5$, the best simplified method recovers only 82\% of the loss reduction that DIIM achieves on average. However, structural methods close much of the gap relative to the Total Output benchmark.
 
-    \item At \textbf{large $k$} ($k \geq 10$), simplified methods converge to DIIM performance, with $\bar{R}_m$ of 0.91--0.98 and close rates of 97--100\%. At this scale, even the simplest method---ranking by Total Output alone---is a reliable substitute for the full simulation.
+    \item At \textbf{large $k$} ($k = 12$), simplified methods converge to DIIM performance, with $\bar{R}_m$ of 0.92--0.97 and close rates above 99\%. At this scale, even the simplest method (ranking by Total Output alone) is a reliable substitute for the full simulation.
 \end{itemize}
 
 Four robustness analyses strengthen these conclusions. First, the three-regimes structure is stable across intervention magnitudes of 5--30\%, confirming that relative method rankings depend on \emph{which} sectors are selected, not the magnitude of assistance. Second, PCA robustness testing reveals that the optimal number of principal components is scenario-dependent ($n_{\textit{pcs}} = 2$--$3$ for COVID-19, $n_{\textit{pcs}} = 1$ for Manpower), introducing a hyperparameter that cannot be set without knowledge of the disruption profile. Third, intervention timing analysis shows that the DIIM's advantage over simplified methods is greatest when intervention is immediate; with longer delays, all methods converge as the absolute benefit of intervention diminishes. Fourth, scatter plot diagnostics confirm that PCA $\times\, x_i$'s advantage at $k = 5$ is systematic across the $q(0)$ perturbation space, not driven by outlier trials.
 
 The near-equivalence between Total Output and structurally-weighted methods at most $k$ values shows that a sector's absolute economic scale is the dominant predictor of macro-level loss reduction. Structural analysis adds value only in the medium-$k$ regime, where the marginal sectors differ across methods, and only when the economy contains sectors with a significant mismatch between economic size and structural importance.
 
-Simplified methods perform best when the disruption profile aligns with the economic size distribution---a condition that is scenario-dependent and cannot be assumed in advance.
+Simplified methods perform best when the disruption profile aligns with the economic size distribution, a condition that is scenario-dependent and cannot be assumed in advance.
 
 For national security planning, this enables a scale-dependent approach: use simplified structural analysis for peacetime resilience investments and for large-scale crisis response ($k \geq 10$), but run the full DIIM when targeting fewer than 10 sectors during a crisis. The computational cost of the DIIM is modest, and the performance gain at small $k$ is substantial.
 
 The framework is generalisable beyond the two scenarios studied here. Any economy with an available IO table can compute the simplified structural rankings in peacetime and apply the multi-$k$ analysis to determine the appropriate tool for its intervention scale. Future work could extend the approach to finer sector disaggregation, correlated disruptions, and multi-period dynamics.
 
-%=== END OF CHAPTER EIGHT ===
 \newpage

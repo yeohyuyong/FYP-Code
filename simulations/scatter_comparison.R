@@ -1,8 +1,6 @@
-# ============================================================================
 # scatter_comparison.R
-# Generates scatter plots: simplified method loss reduction vs DIIM loss reduction
-# Uses existing decision_rules_mc_data.csv if available, otherwise runs 500 MC trials
-# ============================================================================
+# Scatter plots of simplified vs DIIM loss reduction.
+# Reuses decision_rules_mc_data.csv if available, otherwise runs 500 MC trials.
 
 if (!file.exists("functions.R")) setwd("..")
 

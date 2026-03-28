@@ -1,6 +1,3 @@
-%=== CHAPTER TWO (2) ===
-%=== Methodology ===
-
 \chapter{Methodology}
 
 This chapter presents the analytical framework. Section~\ref{sec:diim-derivation} derives the DIIM from the Leontief input-output model. Section~\ref{sec:simplified-methods} introduces the simplified structural methods for key sector identification. Section~\ref{sec:performance-metric} defines the performance metric used to compare methods.
@@ -10,7 +7,7 @@ This chapter presents the analytical framework. Section~\ref{sec:diim-derivation
 
 \subsection{Inoperability}
 
-This paper uses the DIIM model to assess the impacts of economic disruptions on the inoperability and economic losses of Singapore's sectors. The DIIM model is derived from the Leontief input-output model and is used to investigate the higher-order transmission effect of input-output linkages between sectors on inoperability. Using the DIIM model requires first introducing the concept of ``inoperability'', which is defined as follows:
+This paper uses the DIIM to assess the impact of economic disruptions on sectoral inoperability and economic losses in Singapore. The DIIM is derived from the Leontief input-output model and captures the higher-order transmission of shocks through inter-sector linkages. We begin by introducing the concept of ``inoperability'':
 
 \begin{equation}
     \label{eq:inoperability-definition}
@@ -114,7 +111,7 @@ The IIM model can be extended to the DIIM model by introducing a time variable a
     \label{eq:diim-discrete}
 \end{equation}
 
-Where $K$ is the elasticity coefficient matrix describing the recovery capacity of sectors after being shocked in production. Assuming that the recovery capacity of a sector depends only on its own production, and is unrelated to the production linkages with other sectors, thus $K$ is a diagonal matrix with diagonal elements greater than 0. The larger the diagonal elements, the stronger the recovery capacity of the corresponding sector in response to shocks. $t$ is the discrete time variable, and $q(t)$ represents the sectoral inoperability vector at time~$t$. Approximating Equation~\eqref{eq:diim-discrete} to differential form:
+Where $K$ is the elasticity coefficient matrix describing how quickly sectors recover after a shock. Since each sector's recovery depends only on its own production and not on linkages with other sectors, $K$ is a diagonal matrix with positive diagonal elements. Larger values indicate faster recovery. $t$ is the discrete time variable and $q(t)$ is the sectoral inoperability vector at time~$t$. Approximating Equation~\eqref{eq:diim-discrete} in differential form:
 
 \begin{equation}
     \label{eq:diim-continuous}
@@ -183,7 +180,7 @@ Where $x_i$ is the planned output of sector~$i$ under normal production.
 \section{Key Sector Identification Methods}
 \label{sec:simplified-methods}
 
-A key sector is defined as one where targeted intervention---modelled as a 10\% reduction in initial inoperability $q(0)$---produces the largest reduction in total economic loss. Below we first describe the intervention and loss reduction evaluation procedure, followed by the expensive benchmark and five simplified structural alternatives.
+A key sector is defined as one where targeted intervention, modelled as a 10\% reduction in initial inoperability $q(0)$, produces the largest reduction in total economic loss. Below we first describe the intervention and loss reduction evaluation procedure, followed by the benchmark and five simplified structural alternatives.
 
 \subsection{Intervention and Loss Reduction Evaluation}
 \label{sec:intervention-procedure}
@@ -222,33 +219,33 @@ $\%\Delta EL_m \leftarrow \dfrac{\Delta EL_m}{EL_{\text{base}}} \times 100$\;
 \Return $\%\Delta EL_m$\;
 \end{algorithm}
 
-In words, the algorithm proceeds as follows. First, the DIIM is run with the original $q(0)$ to establish the baseline total economic loss, which represents the scenario with no policy intervention. Second, a sector ranking method $m$ (either DIIM or a simplified method) produces an ordered list of sectors, and the top $k$ are selected. Third, the initial inoperability of each selected sector is reduced by 10\%, representing a targeted policy intervention that partially restores the sector's production capacity at time zero. Fourth, the DIIM is re-run with this modified initial condition $q'(0)$ to obtain the post-intervention total economic loss. Finally, the loss reduction is computed as the difference between the baseline and post-intervention losses. This procedure is repeated for every method $m$, with identical $q(0)$, $k$, and intervention magnitude, so that differences in loss reduction reflect only the quality of each method's sector ranking.
+In words: the DIIM is first run with the original $q(0)$ to establish the baseline loss. A ranking method $m$ then produces an ordered list of sectors, and the top $k$ are selected. Their initial inoperability is reduced by 10\%, representing a targeted intervention that partially restores production capacity at time zero. The DIIM is re-run with this modified $q'(0)$ to obtain the post-intervention loss. The loss reduction is the difference between baseline and post-intervention losses. This procedure is repeated for every method with identical $q(0)$, $k$, and intervention magnitude, so differences in loss reduction reflect only the quality of each method's ranking.
 
 \subsection{DIIM-Based Identification (Benchmark)}
 
-The DIIM identifies key sectors by running the full simulation without intervention, then ranking sectors by their cumulative economic loss $EL_i$ from Equation~\eqref{eq:economic-loss}. The top-$k$ sectors are selected for intervention. This is the ``gold standard'' but requires knowledge of $q(0)$ and~$c^{*}$.
+The DIIM identifies key sectors by running the full simulation without intervention, then ranking sectors by their cumulative economic loss $EL_i$ from Equation~\eqref{eq:economic-loss}. The top-$k$ sectors are selected for intervention. This is the benchmark but requires knowledge of $q(0)$ and~$c^{*}$.
 
 \subsection{Total Output ($x_i$)}
 
-This is the simplest benchmark method. Sectors are ranked simply by their total planned economic output $x_i$. This method ignores the network structure entirely and assumes that intervening in the largest economic sectors will yield the greatest reduction in loss.
+Sectors are ranked by their total planned output $x_i$. This method ignores the network structure entirely and assumes that intervening in the largest sectors will yield the greatest loss reduction.
 
 \subsection{PCA $\times\, x_i$}
 
-Instead of using $A$ directly, this approach constructs the integrated input-output coefficient matrix:
+Rather than using $A$ directly, this method constructs the integrated input-output coefficient matrix:
 
 \begin{equation}
     H = A (I - A)^{-1} = A \cdot L
     \label{eq:integrated-io-matrix}
 \end{equation}
 
-where $L = (I - A)^{-1}$ is the Leontief inverse. The matrix $H$ captures both direct and indirect effects through the production network. PCA is applied to~$H$, and a structural distance is computed for each sector based on its Euclidean distance from the origin in the space of the principal components:
+where $L = (I - A)^{-1}$ is the Leontief inverse. $H$ captures both direct and indirect effects through the production network. PCA is applied to~$H$, and each sector's structural distance is computed as its Euclidean distance from the origin in the principal component space:
 
 \begin{equation}
     d_i^{\text{PCA}} = \sqrt{ \sum_{k=1}^{n\_pcs} v_{ik}^2 }
     \label{eq:pca-distance}
 \end{equation}
 
-where $v_{ik}$ is the loading of sector~$i$ on principal component $k$. To account for economic size, this structural distance is weighted by the sector's total output $x_i$:
+where $v_{ik}$ is the loading of sector~$i$ on principal component $k$. This distance is then weighted by the sector's total output $x_i$ to account for economic size:
 
 \begin{equation}
     \text{Score}_i^{\text{PCA}} = d_i^{\text{PCA}} \times x_i
@@ -259,7 +256,7 @@ Sectors with larger $\text{Score}_i^{\text{PCA}}$ are ranked higher.
 
 \subsection{PageRank $\times\, x_i$}
 
-The interdependency matrix $A^*$ is treated as the weighted adjacency matrix of a directed graph. The PageRank algorithm \cite{BrinPage1998} is applied to compute a structural centrality score $PR_i$ for each sector, which measures importance based on the structure of incoming links with a damping factor. This centrality score is then weighted by the sector's total output:
+The interdependency matrix $A^*$ is treated as the weighted adjacency matrix of a directed graph. The PageRank algorithm \cite{BrinPage1998} computes a centrality score $PR_i$ for each sector based on the structure of incoming links. This score is weighted by total output:
 
 \begin{equation}
     \text{Score}_i^{\text{PR}} = PR_i \times x_i
@@ -275,7 +272,7 @@ Backward linkages measure the extent to which a sector draws on other sectors' o
     \label{eq:backward-linkage}
 \end{equation}
 
-where $l_{ij}$ are elements of $L$. A high $BL_j$ indicates that sector~$j$ generates large demand for inputs from other sectors. To identify key sectors, this structural linkage is weighted by total output:
+where $l_{ij}$ are elements of $L$. A high $BL_j$ indicates that sector~$j$ draws heavily on other sectors as inputs. This linkage is weighted by total output:
 
 \begin{equation}
     \text{Score}_j^{\text{BL}} = BL_j \times x_j
@@ -290,7 +287,7 @@ Forward linkages measure how much a sector's output is used as inputs by other s
     \label{eq:forward-linkage}
 \end{equation}
 
-A high $FL_i$ indicates that sector~$i$ is an important supplier to the rest of the economy. This structural linkage is weighted by total output:
+A high $FL_i$ indicates that sector~$i$ is a major supplier to the rest of the economy. This linkage is weighted by total output:
 
 \begin{equation}
     \text{Score}_i^{\text{FL}} = FL_i \times x_i
@@ -308,5 +305,4 @@ To compare a simplified method against DIIM, we define the \emph{performance rat
 
 where $\Delta EL_m$ is the total economic loss reduction achieved by intervening in the top-$k$ sectors identified by simplified method~$m$, and $\Delta EL_{\text{DIIM}}$ is the reduction achieved by the DIIM's top-$k$ sectors. If $R_m \geq 0.95$, the simplified method is considered ``close enough'' to substitute for DIIM.
 
-%=== END OF CHAPTER TWO ===
 \newpage

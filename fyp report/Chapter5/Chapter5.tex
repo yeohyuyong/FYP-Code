@@ -1,6 +1,3 @@
-%=== CHAPTER FIVE (5) ===
-%=== Key Sector Identification Methods ===
-
 \chapter{Key Sector Identification Methods}
 
 This chapter compares the key sector identification methods described in Chapter~2 using the actual disruption data from both case studies. Recall that the DIIM identifies key sectors by running the full simulation and ranking by economic loss (expensive, requires $q(0)$ and $c^{*}$), while the simplified methods use only the IO table structure.
@@ -34,7 +31,7 @@ PCA is applied to the integrated IO matrix $H = A(I-A)^{-1}$. Table~\ref{tab:pca
 \label{tab:pca-loadings}
 \end{table}
 
-The top-5 PCA $\times\, x_i$ sectors for COVID-19 are sectors 2 (Manufacturing), 5 (Transportation \& Storage), 4 (Wholesale \& Retail Trade), 8 (Financial \& Insurance Services), and 3 (Construction). While sector 3 has the largest structural distance, sector 2 becomes the highest-ranked when weighted by its massive economic size.
+The top-5 PCA $\times\, x_i$ sectors for COVID-19 are sectors 2 (Manufacturing), 5 (Transportation \& Storage), 4 (Wholesale \& Retail Trade), 8 (Financial \& Insurance Services), and 3 (Construction). While sector 3 has the largest structural distance, sector 2 becomes the highest-ranked when weighted by its large economic size.
 
 For the manpower scenario (15~sectors), PCA is computed on the corresponding $H$ matrix from the 2022 aggregated IO table. The top-5 PCA $\times\, x_i$ sectors are sectors 2, 5, 4, 7, and 8. These closely mirror the COVID-19 PCA sectors, reflecting the similar aggregated structure, though the different IO table vintage (2022 vs 2019) and the absence of demand shock ($c^* = 0$) produce some ranking differences.
 
@@ -77,12 +74,10 @@ FL $\times\, x_i$         & 2, 5, 4, 7, 8 \\
 \label{tab:rankings-manpower}
 \end{table}
 
-Several observations are worth noting:
-
 \begin{enumerate}
-    \item \textbf{High method agreement}: By incorporating total output $x_i$ as a weight, the methods converge strongly. For COVID-19, Total Output, PageRank $\times\, x_i$, BL $\times\, x_i$, and FL $\times\, x_i$ produce the exact same top-5 ranking (2, 4, 5, 8, 7). PCA $\times\, x_i$ differs only slightly by including sector 3 instead of 7.
-    \item \textbf{Economic size dominates}: The fact that structurally distinct measures (centrality, backward linkage, and forward linkage) yield nearly identical rankings once weighted by $x_i$ indicates that a sector's pre-disruption economic size is the dominant driver of its overall impact in these aggregated models.
-    \item \textbf{Cross-scenario consistency}: Despite using different IO tables (2019 vs 2022) and different shock structures ($c^* > 0$ vs $c^* = 0$), both scenarios produce very similar simplified method rankings. The manpower scenario rankings (2, 4/5, 5/4, 7, 8) closely mirror the COVID-19 rankings (2, 4, 5, 8, 7), confirming that economic size is the overwhelmingly dominant factor in these 15-sector models.
+    \item \textbf{High method agreement.} By incorporating total output $x_i$ as a weight, the methods converge. For COVID-19, Total Output, PageRank $\times\, x_i$, BL $\times\, x_i$, and FL $\times\, x_i$ produce the exact same top-5 ranking (2, 4, 5, 8, 7). PCA $\times\, x_i$ differs only by including sector 3 instead of 7.
+    \item \textbf{Economic size dominates.} Structurally distinct measures (centrality, backward linkage, forward linkage) yield nearly identical rankings once weighted by $x_i$. This indicates that a sector's pre-disruption economic size is the dominant driver of its overall impact in these aggregated models.
+    \item \textbf{Cross-scenario consistency.} Despite using different IO tables (2019 vs 2022) and shock structures ($c^* > 0$ vs $c^* = 0$), both scenarios produce similar simplified rankings. The manpower top-5 sets closely mirror the COVID-19 ones, with only minor reordering among sectors 4, 5, 7, and 8.
 \end{enumerate}
 
 
@@ -90,16 +85,16 @@ Several observations are worth noting:
 
 Using the actual $q(0)$ data from each scenario, we compare each simplified method's economic loss reduction against the DIIM benchmark when intervening in the top-5 sectors.
 
-For the COVID-19 scenario, the DIIM identifies sectors 2, 3, 4, 5, 12 as key sectors and achieves a loss reduction of 3.91\%. In contrast, Total Output, PageRank $\times\, x_i$, BL $\times\, x_i$, and FL $\times\, x_i$ achieve 2.65\%, while PCA $\times\, x_i$ achieves 3.38\%---a notable improvement over the purely size-based methods. The DIIM selects Construction (3) and Public Administration (12) in place of Financial Services (8) and Information \& Communications (7), reflecting its ability to capture sectors with high initial inoperability and strong structural dependencies.
+For the COVID-19 scenario, the DIIM identifies sectors 2, 3, 4, 5, 12 as key sectors and achieves a loss reduction of 3.91\%. Total Output, PageRank $\times\, x_i$, BL $\times\, x_i$, and FL $\times\, x_i$ achieve 2.65\%, while PCA $\times\, x_i$ achieves 3.38\%, an improvement over the purely size-based methods. The DIIM selects Construction (3) and Public Administration (12) in place of Financial Services (8) and Information \& Communications (7), capturing sectors with high initial inoperability and strong structural dependencies.
 
-For the manpower scenario, PCA $\times\, x_i$ matches the other simplified methods at 4.84\%, while the DIIM achieves 6.88\%---a substantially larger gap. This indicates that when disruptions are concentrated in structurally important sectors, the DIIM's ability to account for both $q(0)$ and $c^{*}$ becomes more valuable.
+For the manpower scenario, all simplified methods (including PCA $\times\, x_i$) achieve 5.33\%, while the DIIM achieves 6.44\%. The gap is smaller than in the COVID-19 case, but the DIIM still outperforms by accounting for both $q(0)$ and $c^{*}$.
 
 This observation motivates the Monte Carlo analysis in Chapter~6: the performance of simplified methods at a single $q(0)$ point is insufficient to draw general conclusions. We need to understand how performance varies across the space of possible $q(0)$ vectors.
 
 
 \section{Effect of the Number of Key Sectors}
 
-Figure~\ref{fig:impact-vs-total-duration} shows how the economic loss reduction varies across all methods as the number of key sectors~$k$ increases, for the COVID-19 scenario. Across all methods, increasing $k$ improves the loss reduction, but the rate of improvement differs. The simplest benchmark, Total Output, tracks very closely with the other structurally-weighted methods, confirming that weighting by economic size captures the bulk of the necessary information at this scale.
+Figure~\ref{fig:impact-vs-total-duration} shows how economic loss reduction varies across methods as the number of key sectors~$k$ increases, for the COVID-19 scenario. Increasing $k$ improves loss reduction for all methods, but the rate of improvement differs. Total Output tracks closely with the other structurally-weighted methods, confirming that weighting by economic size captures most of the relevant information at this aggregation level.
 
 \begin{figure}[H]
     \centering
@@ -126,5 +121,4 @@ Figures~\ref{fig:ml-vs-diim-loss-reduction} and~\ref{fig:improvement-ml-vs-diim}
 
 These results show that PCA can perform well at the original COVID-19 data point, but the question remains: does this hold across a wider range of disruption profiles? This is addressed in the next chapter.
 
-%=== END OF CHAPTER FIVE ===
 \newpage

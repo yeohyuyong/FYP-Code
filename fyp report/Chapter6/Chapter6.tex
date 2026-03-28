@@ -1,6 +1,3 @@
-%=== CHAPTER SIX (6) ===
-%=== Monte Carlo Robustness Analysis ===
-
 \chapter{Monte Carlo Robustness Analysis}
 
 The previous chapter showed that simplified methods can approach DIIM at specific $q(0)$ points but not universally. This chapter uses Monte Carlo simulation to systematically evaluate the robustness of simplified methods across a range of realistic disruption profiles and intervention scales.
@@ -9,27 +6,27 @@ The previous chapter showed that simplified methods can approach DIIM at specifi
 
 \subsection{Motivation}
 
-All simplified methods produce a \emph{fixed} sector ranking---they depend only on the IO table structure ($A$, $x$), not on the disruption profile ($q(0)$). The DIIM, by contrast, adapts its ranking to the specific $q(0)$. A simplified method performs well when its fixed ranking happens to align with where $q(0)$ concentrates; it fails when the disruption hits sectors that the simplified method did not prioritise.
+All simplified methods produce a \emph{fixed} sector ranking: they depend only on the IO table structure ($A$, $x$), not on the disruption profile ($q(0)$). The DIIM, by contrast, adapts its ranking to the specific $q(0)$. A simplified method performs well when its fixed ranking happens to align with where $q(0)$ concentrates; it fails when the disruption hits sectors that the simplified method did not prioritise.
 
 This insight suggests that the effectiveness of a simplified method is predictable from (i)~features of $q(0)$ and (ii)~the number of sectors targeted for intervention~$k$. At small~$k$, only the very top sectors matter, while at large~$k$ the specific ranking becomes less consequential because most sectors are covered regardless.
 
 \subsection{Performance Metric}
 
-For each simplified method~$m$ and a given $q(0)$, we compute the performance ratio from Equation~\eqref{eq:performance-ratio}. The mean ratio $\bar{R}_m$ across trials is the primary metric: it captures how much of the DIIM's loss reduction a simplified method achieves on average. As a secondary metric, we report the \emph{close rate}---the fraction of trials where $R_m \geq 0.80$, i.e., the simplified method captures at least 80\% of the DIIM's benefit.
+For each simplified method~$m$ and a given $q(0)$, we compute the performance ratio from Equation~\eqref{eq:performance-ratio}. The mean ratio $\bar{R}_m$ across trials is the primary metric: it captures how much of the DIIM's loss reduction a simplified method achieves on average. As a secondary metric, we report the \emph{close rate}, the fraction of trials where $R_m \geq 0.80$, i.e., the simplified method captures at least 80\% of the DIIM's benefit.
 
 
 \section{Monte Carlo Design}
 
 \subsection{Perturbation of Real $q(0)$}
 
-Rather than drawing $q(0)$ from a uniform distribution---which would generate many unrealistic disruption profiles---we perturb the actual scenario-specific $q(0)$ vector using log-normal noise:
+Rather than drawing $q(0)$ from a uniform distribution (which would generate many unrealistic disruption profiles), we perturb the actual scenario-specific $q(0)$ vector using log-normal noise:
 
 \begin{equation}
     q_i(0)^{\text{trial}} = q_i(0)^{\text{actual}} \cdot \exp\!\bigl(\varepsilon_i\bigr), \quad \varepsilon_i \sim \mathcal{N}(0,\; 0.5^2)
     \label{eq:q0-perturbation}
 \end{equation}
 
-\noindent with the constraint $q_i(0)^{\text{trial}} \in [10^{-6},\; 1]$. This preserves the realistic structure of the disruption (sectors that were heavily impacted remain relatively more impacted) while introducing meaningful variation. The log-normal noise ensures that the perturbation is multiplicative---a sector with $q(0) = 0.01$ can plausibly move to $0.005$ or $0.02$, but not jump to $0.5$.
+\noindent with the constraint $q_i(0)^{\text{trial}} \in [10^{-6},\; 1]$. This preserves the realistic structure of the disruption (sectors that were heavily impacted remain relatively more impacted) while introducing meaningful variation. The log-normal noise ensures that the perturbation is multiplicative: a sector with $q(0) = 0.01$ can plausibly move to $0.005$ or $0.02$, but not jump to $0.5$.
 
 \subsection{Simulation Procedure}
 
@@ -75,11 +72,11 @@ FL $\times\, x_i$       & 0.870 & 0.641 & 0.818 & 0.908 & 0.923 \\
 \toprule
 \textbf{Method} & $k{=}3$ & $k{=}5$ & $k{=}7$ & $k{=}10$ & $k{=}12$ \\
 \midrule
-Total Output         & 0.652 & 0.682 & 0.927 & 0.926 & 0.976 \\
-PCA $\times\, x_i$      & 0.652 & 0.682 & 0.927 & 0.926 & 0.976 \\
-PageRank $\times\, x_i$ & 0.652 & 0.682 & 0.749 & 0.926 & 0.976 \\
-BL $\times\, x_i$       & 0.652 & 0.682 & 0.927 & 0.885 & 0.976 \\
-FL $\times\, x_i$       & 0.652 & 0.682 & 0.927 & 0.926 & 0.976 \\
+Total Output         & 0.730 & 0.778 & 0.944 & 0.954 & 0.966 \\
+PCA $\times\, x_i$      & 0.730 & 0.778 & 0.944 & 0.954 & 0.966 \\
+PageRank $\times\, x_i$ & 0.730 & 0.778 & 0.800 & 0.954 & 0.966 \\
+BL $\times\, x_i$       & 0.730 & 0.778 & 0.944 & 0.881 & 0.966 \\
+FL $\times\, x_i$       & 0.730 & 0.778 & 0.944 & 0.954 & 0.966 \\
 \bottomrule
 \end{tabular}
 \caption{$\bar{R}_m$ (simplified / DIIM) by $k$ for Manpower (2\,000 trials per $k$).}
@@ -113,11 +110,11 @@ FL $\times\, x_i$       & 66.1\% &  5.7\% & 62.0\% & 96.7\% &  99.8\% \\
 \toprule
 \textbf{Method} & $k{=}3$ & $k{=}5$ & $k{=}7$ & $k{=}10$ & $k{=}12$ \\
 \midrule
-Total Output         & 16.4\% & 17.2\% & 97.1\% & 99.2\% & 100.0\% \\
-PCA $\times\, x_i$      & 16.4\% & 17.2\% & 97.1\% & 99.2\% & 100.0\% \\
-PageRank $\times\, x_i$ & 16.4\% & 17.2\% & 33.6\% & 99.2\% & 100.0\% \\
-BL $\times\, x_i$       & 16.4\% & 17.2\% & 97.1\% & 93.5\% & 100.0\% \\
-FL $\times\, x_i$       & 16.4\% & 17.2\% & 97.1\% & 99.2\% & 100.0\% \\
+Total Output         & 34.9\% & 45.5\% & 98.3\% & 99.9\% & 100.0\% \\
+PCA $\times\, x_i$      & 34.9\% & 45.5\% & 98.3\% & 99.9\% & 100.0\% \\
+PageRank $\times\, x_i$ & 34.9\% & 45.5\% & 54.4\% & 99.9\% & 100.0\% \\
+BL $\times\, x_i$       & 34.9\% & 45.5\% & 98.3\% & 92.7\% & 100.0\% \\
+FL $\times\, x_i$       & 34.9\% & 45.5\% & 98.3\% & 99.9\% & 100.0\% \\
 \bottomrule
 \end{tabular}
 \caption{Close rates ($R_m \geq 0.80$) by $k$ for Manpower (2\,000 trials per $k$).}
@@ -130,11 +127,11 @@ FL $\times\, x_i$       & 16.4\% & 17.2\% & 97.1\% & 99.2\% & 100.0\% \\
 The results show a non-monotonic pattern that can be decomposed into three regimes:
 
 \begin{enumerate}
-    \item \textbf{Small $k$ ($k = 3$)}: All simplified methods agree on the top 3 sectors and produce identical performance with $\bar{R}_m = 0.870$ (COVID-19) and $0.652$ (Manpower). The dominant economic sectors (Manufacturing, Wholesale \& Retail, Transportation \& Storage) are so large that every method---whether based on size, linkage, or centrality---selects them. Two-thirds of trials achieve $\geq$80\% of DIIM in COVID-19 (66.1\%), but only 16.4\% in Manpower. Structural distinctions between simplified methods are irrelevant at this scale.
+    \item \textbf{Small $k$ ($k = 3$)}: All simplified methods agree on the top 3 sectors and produce identical performance, with $\bar{R}_m = 0.870$ (COVID-19) and $0.730$ (Manpower). The dominant economic sectors (Manufacturing, Wholesale \& Retail, Transportation \& Storage) are so large that every method selects them. Two-thirds of trials achieve $\geq$80\% of DIIM in COVID-19 (66.1\%), and about a third (34.9\%) in Manpower. At this scale, structural distinctions between methods are irrelevant.
 
-    \item \textbf{Medium $k$ ($k = 5$--$7$)}: The methods diverge, and structural information adds substantial value. At $k = 5$ in COVID-19, PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output---a 27\% relative improvement---and a close rate of 64.1\% versus just 5.7\%. This dramatic gap arises because PCA selects sector~3 (Construction) over sector~7 (Information \& Communications). At $k = 7$, BL $\times\, x_i$ leads with $\bar{R}_m = 0.834$ and close rate of 67.2\%, capturing sector~12 (Public Administration) via its backward linkage signal. This is the regime where the ``marginal'' sectors (positions 4--7 in the ranking) matter most, and each method's structural lens produces meaningfully different selections.
+    \item \textbf{Medium $k$ ($k = 5$--$7$)}: The methods diverge, and structural information adds value. At $k = 5$ in COVID-19, PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output, a 27\% relative improvement, with a close rate of 64.1\% versus 5.7\%. The gap comes from PCA selecting sector~3 (Construction) over sector~7 (Information \& Communications). At $k = 7$, BL $\times\, x_i$ leads with $\bar{R}_m = 0.834$ and close rate 67.2\%, capturing sector~12 (Public Administration) via its backward linkage signal. This is the regime where the ``marginal'' sectors (positions 4--7) matter most, and each method's structural lens produces different selections.
 
-    \item \textbf{Large $k$ ($k = 10$--$12$)}: The methods converge again as the intervention covers most of the economy. At $k = 12$ (80\% of 15 sectors), close rates reach 100\% for both scenarios, with $\bar{R}_m$ of 0.92--0.98. When intervening on nearly all sectors, the only question is which 3 sectors to \emph{exclude}, and even suboptimal exclusions have limited impact.
+    \item \textbf{Large $k$ ($k = 10$--$12$)}: The methods converge again as the intervention covers most of the economy. At $k = 12$ (80\% of 15 sectors), close rates reach 100\% for both scenarios, with $\bar{R}_m$ of 0.92--0.97. When intervening on nearly all sectors, the only question is which 3 sectors to \emph{exclude}, and even suboptimal exclusions have limited impact.
 \end{enumerate}
 
 
@@ -143,15 +140,15 @@ The results show a non-monotonic pattern that can be decomposed into three regim
 The multi-$k$ tables show several patterns:
 
 \begin{enumerate}
-    \item \textbf{PCA $\times\, x_i$ outperforms Total Output at $k = 5$ (COVID-19)}: PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output---a 27\% relative improvement---and a close rate of 64.1\% versus just 5.7\%. This stems from PCA's inclusion of sector~3 (Construction), which has the highest structural distance ($d_3^{\text{PCA}} = 0.789$) despite ranking only 6th in economic size. Construction's high initial inoperability ($q_3(0) = 0.221$) makes intervening there disproportionately effective.
+    \item \textbf{PCA $\times\, x_i$ outperforms Total Output at $k = 5$ (COVID-19)}: PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output, a 27\% relative improvement, with a close rate of 64.1\% versus 5.7\%. PCA includes sector~3 (Construction), which has the highest structural distance ($d_3^{\text{PCA}} = 0.789$) despite ranking only 6th in economic size. Construction's high initial inoperability ($q_3(0) = 0.221$) makes intervening there disproportionately effective.
 
     \item \textbf{BL $\times\, x_i$ leads at $k = 7$ (COVID-19)}: BL $\times\, x_i$ achieves $\bar{R}_m = 0.834$ and a close rate of 67.2\%, outperforming all other simplified methods including PCA $\times\, x_i$ (0.818, 62.0\%). Its backward linkage signal captures sector~12 (Public Administration), whose strong input dependencies amplify the cascading effect of intervention. This shows that different structural methods have complementary strengths at different intervention scales.
 
-    \item \textbf{PageRank $\times\, x_i$ underperforms at medium $k$}: At $k = 7$, PageRank $\times\, x_i$ drops to $\bar{R}_m = 0.703$ (COVID-19) and $0.749$ (Manpower), with close rates of just 17.7\% and 33.6\% respectively---far below the other methods. PageRank's random-walk centrality prioritises sector~12 over sectors~3 and~10 at positions~6--7, which proves suboptimal under perturbed $q(0)$.
+    \item \textbf{PageRank $\times\, x_i$ underperforms at medium $k$}: At $k = 7$, PageRank $\times\, x_i$ drops to $\bar{R}_m = 0.703$ (COVID-19) and $0.800$ (Manpower), with close rates of 17.7\% and 54.4\% respectively, well below the other methods. PageRank's random-walk centrality prioritises sector~12 over sectors~3 and~10 at positions~6--7, which proves suboptimal under perturbed $q(0)$.
 
-    \item \textbf{All methods converge at large $k$}: At $k = 10$--$12$, close rates reach 97--100\% for most methods, with $\bar{R}_m$ of 0.91--0.98. The specific ranking matters little when the majority of sectors are covered.
+    \item \textbf{All methods converge at large $k$}: At $k = 10$--$12$, close rates reach 93--100\% for most methods, with $\bar{R}_m$ of 0.88--0.97. The specific ranking matters little when the majority of sectors are covered.
 
-    \item \textbf{No single simplified method dominates across all $k$}: PCA $\times\, x_i$ is best at $k = 5$, BL $\times\, x_i$ is best at $k = 7$, and Total Output matches the best at $k = 3$, $10$, and $12$. This suggests that the optimal simplified method depends on the intervention scale.
+    \item \textbf{No single simplified method dominates across all $k$}: PCA $\times\, x_i$ is best at $k = 5$, BL $\times\, x_i$ is best at $k = 7$, and Total Output matches the best at $k = 3$, $10$, and $12$. The optimal simplified method depends on the intervention scale.
 \end{enumerate}
 
 
@@ -160,11 +157,11 @@ The multi-$k$ tables show several patterns:
 The multi-$k$ analysis leads to the following practical guidelines:
 
 \begin{enumerate}
-    \item \textbf{Large-scale intervention ($k \geq 10$)}: Simplified methods are reliable substitutes for DIIM. With $\bar{R}_m$ above 0.90 and close rates of 97--100\%, the additional computational cost of DIIM is difficult to justify when intervening on the majority of sectors. Total Output alone---requiring no IO table analysis---achieves 95\% of DIIM's performance at $k = 12$.
+    \item \textbf{Large-scale intervention ($k \geq 10$)}: Simplified methods are reliable substitutes for DIIM. With $\bar{R}_m$ mostly above 0.90 and close rates of 93--100\%, the additional computational cost of DIIM is hard to justify when intervening on the majority of sectors. Total Output alone, requiring no IO table analysis, achieves 95--97\% of DIIM's performance at $k = 12$.
 
-    \item \textbf{Targeted intervention ($k = 3$--$7$)}: DIIM provides substantial value over purely size-based methods. At $k = 5$, Total Output achieves only 64\% of DIIM's loss reduction (close rate 5.7\%). However, structural methods significantly narrow this gap: PCA $\times\, x_i$ achieves 82\% of DIIM (close rate 64.1\%), and BL $\times\, x_i$ leads at $k = 7$ with 83\% of DIIM (close rate 67.2\%). While a gap to DIIM remains, structural methods provide a meaningful improvement over the naive size-based benchmark in this regime.
+    \item \textbf{Targeted intervention ($k = 3$--$7$)}: DIIM provides value over purely size-based methods. At $k = 5$ in COVID-19, Total Output achieves only 64\% of DIIM's loss reduction (close rate 5.7\%), while PCA $\times\, x_i$ reaches 82\% (close rate 64.1\%). At $k = 7$, BL $\times\, x_i$ leads with 83\% of DIIM (close rate 67.2\%). A gap to DIIM remains, but structural methods narrow it considerably compared to the size-based benchmark.
 
-    \item \textbf{Pre-event planning}: When $q(0)$ is unknown, simplified methods remain valuable for pre-positioning resources. The Total Output ranking identifies the sectors whose disruption would cause the greatest absolute economic loss, while PCA $\times\, x_i$ and BL $\times\, x_i$ can flag structurally important sectors that size alone would miss (e.g., Construction in the COVID-19 scenario).
+    \item \textbf{Pre-event planning}: When $q(0)$ is unknown, simplified methods are still useful for pre-positioning resources. Total Output identifies sectors whose disruption would cause the greatest absolute economic loss, while PCA $\times\, x_i$ and BL $\times\, x_i$ can flag structurally important sectors that size alone would miss (e.g., Construction in the COVID-19 scenario).
 
     \item \textbf{Crisis response}: Once $q(0)$ is observed, run the full DIIM if targeting fewer than 10 sectors. The computational cost of the simulation is modest (seconds on modern hardware) and the performance gain is substantial.
 \end{enumerate}
@@ -177,7 +174,7 @@ To understand the joint distribution of simplified method performance versus the
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{Chapter6/scatter_covid_19_k5.png}
-    \caption{Scatter plot of simplified method loss reduction vs DIIM loss reduction at $k = 5$ (COVID-19). The dashed line is the $45^\circ$ reference---points below it indicate DIIM outperforms the simplified method.}
+    \caption{Scatter plot of simplified method loss reduction vs DIIM loss reduction at $k = 5$ (COVID-19). The dashed line is the $45^\circ$ reference; points below it indicate DIIM outperforms the simplified method.}
     \label{fig:scatter-covid}
 \end{figure}
 
@@ -211,7 +208,7 @@ Figure~\ref{fig:sensitivity-heatmap} shows the best simplified method's mean per
     \label{fig:sensitivity-k5}
 \end{figure}
 
-The heatmap confirms that the three-regimes structure is preserved across all four magnitudes. At $k = 5$, PCA $\times\, x_i$ consistently achieves $\bar{R}_m \approx 0.82$ regardless of whether the intervention magnitude is 5\% or 30\%, while the non-PCA methods remain at $\bar{R}_m \approx 0.64$. This stability indicates that the relative ranking of methods is driven by \emph{which} sectors are selected, not by the magnitude of assistance applied to them.
+The heatmap confirms that the three-regimes structure persists across all four magnitudes. At $k = 5$, PCA $\times\, x_i$ achieves $\bar{R}_m \approx 0.82$ regardless of whether the intervention magnitude is 5\% or 30\%, while the non-PCA methods stay at $\bar{R}_m \approx 0.64$. The relative ranking of methods is driven by \emph{which} sectors are selected, not by the magnitude of assistance applied.
 
 
 \section{PCA Robustness to Number of Principal Components}
@@ -229,10 +226,10 @@ COVID-19 & 2 & 47.9\% & \textbf{0.820} & \textbf{65.8\%} & 2, 5, 4, 8, 3 \\
 COVID-19 & 3 & 61.6\% & 0.819 & 67.0\% & 2, 5, 4, 8, 3 \\
 COVID-19 & 4 & 73.3\% & 0.640 & 5.4\%  & 2, 5, 8, 4, 7 \\
 \midrule
-Manpower & 1 & 24.4\% & \textbf{0.850} & \textbf{73.8\%} & 2, 5, 4, 7, 3 \\
-Manpower & 2 & 43.8\% & 0.680 & 17.6\% & 2, 5, 4, 7, 8 \\
-Manpower & 3 & 58.6\% & 0.677 & 14.0\% & 2, 5, 7, 4, 8 \\
-Manpower & 4 & 69.8\% & 0.687 & 19.4\% & 2, 5, 7, 4, 8 \\
+Manpower & 1 & 24.4\% & \textbf{0.904} & \textbf{89.8\%} & 2, 5, 4, 7, 3 \\
+Manpower & 2 & 43.8\% & 0.775 & 44.2\% & 2, 5, 4, 7, 8 \\
+Manpower & 3 & 58.6\% & 0.773 & 44.2\% & 2, 5, 7, 4, 8 \\
+Manpower & 4 & 69.8\% & 0.781 & 46.6\% & 2, 5, 7, 4, 8 \\
 \bottomrule
 \end{tabular}
 \caption{PCA $\times\, x_i$ performance at $k = 5$ for different numbers of principal components (500 MC trials per row).}
@@ -246,11 +243,11 @@ Manpower & 4 & 69.8\% & 0.687 & 19.4\% & 2, 5, 7, 4, 8 \\
     \label{fig:pca-robustness}
 \end{figure}
 
-The results reveal a scenario-dependent optimal $n_{\textit{pcs}}$. For COVID-19, $n_{\textit{pcs}} = 2$ and $n_{\textit{pcs}} = 3$ perform nearly identically ($\bar{R}_m \approx 0.82$, close rate 66--67\%), while $n_{\textit{pcs}} = 4$ causes a sharp drop to $\bar{R}_m = 0.640$. This drop occurs because PC4 introduces sector~7 (Information \& Communications) into the top-5 at the expense of sector~3 (Construction)---a critical sector for COVID-19 loss reduction.
+The results reveal a scenario-dependent optimal $n_{\textit{pcs}}$. For COVID-19, $n_{\textit{pcs}} = 2$ and $n_{\textit{pcs}} = 3$ perform nearly identically ($\bar{R}_m \approx 0.82$, close rate 66--67\%), while $n_{\textit{pcs}} = 4$ causes a sharp drop to $\bar{R}_m = 0.640$. This drop occurs because PC4 introduces sector~7 (Information \& Communications) into the top-5 at the expense of sector~3 (Construction), a critical sector for COVID-19 loss reduction.
 
-For Manpower, the pattern reverses: $n_{\textit{pcs}} = 1$ achieves the best performance ($\bar{R}_m = 0.850$, close rate 73.8\%), while $n_{\textit{pcs}} \geq 2$ drops to $\bar{R}_m \approx 0.68$. The first principal component alone captures the dominant structural pattern for the manpower disruption, and additional components introduce noise that reshuffles the marginal sectors.
+For Manpower, the pattern reverses: $n_{\textit{pcs}} = 1$ achieves the best performance ($\bar{R}_m = 0.904$, close rate 89.8\%), while $n_{\textit{pcs}} \geq 2$ drops to $\bar{R}_m \approx 0.78$. The first principal component alone captures the dominant structural pattern for the manpower disruption, and additional components introduce noise that reshuffles the marginal sectors.
 
-This finding has a practical implication: the optimal number of principal components is scenario-dependent and cannot be determined \emph{a priori} without knowledge of the disruption profile. However, $n_{\textit{pcs}} = 1$ or $2$ appears to be a reasonable default across both scenarios.
+The optimal number of principal components is therefore scenario-dependent and cannot be determined \emph{a priori} without knowledge of the disruption profile. That said, $n_{\textit{pcs}} = 1$ or $2$ appears to be a reasonable default across both scenarios.
 
 
 \section{Dynamic Intervention Timing}
@@ -273,16 +270,15 @@ We simulate intervention delays of 0, 7, 14, 30, and 60 days into the disruption
     \label{fig:timing-decay}
 \end{figure}
 
-The results reveal a counterintuitive pattern: the \emph{relative} performance of simplified methods improves with delay. For COVID-19, PCA $\times\, x_i$ achieves $\bar{R}_m = 0.813$ at $t = 0$ but $\bar{R}_m = 0.882$ at a 60-day delay (close rate from 61\% to 89\%). However, Figure~\ref{fig:timing-decay} shows that the \emph{absolute} loss reduction achievable by any method---including DIIM---decreases with delay.
+The relative performance of simplified methods actually improves with delay. For COVID-19, PCA $\times\, x_i$ achieves $\bar{R}_m = 0.813$ at $t = 0$ but $\bar{R}_m = 0.882$ at a 60-day delay (close rate from 61\% to 89\%). However, Figure~\ref{fig:timing-decay} shows that the absolute loss reduction achievable by any method, including DIIM, decreases with delay.
 
-This implies two key points:
+Two points follow from this:
 \begin{enumerate}
-    \item \textbf{Early intervention justifies running the full DIIM}: When intervention is implemented quickly, the DIIM's sector-adaptive selection produces a large absolute advantage over simplified methods. Speed of response is critical.
-    \item \textbf{Late intervention reduces the importance of sector selection}: With longer delays, the disruption has already propagated through the IO network, and the residual benefit of intervening depends less on \emph{which} sectors are targeted and more on \emph{any} intervention being applied.
+    \item \textbf{Early intervention justifies running the full DIIM}: When intervention is implemented quickly, the DIIM's sector-adaptive selection produces a large absolute advantage over simplified methods.
+    \item \textbf{Late intervention reduces the importance of sector selection}: With longer delays, the disruption has already propagated through the IO network, and the residual benefit depends less on \emph{which} sectors are targeted and more on \emph{any} intervention being applied.
 \end{enumerate}
 
-For the manpower scenario, intervention delay has minimal effect on the performance ratio (all methods remain at $\bar{R}_m \approx 0.68$--$0.71$), confirming that the pure supply-shock dynamics are more predictable and less sensitive to timing.
+For the manpower scenario, intervention delay has minimal effect on the performance ratio (all methods remain at $\bar{R}_m \approx 0.78$--$0.79$), confirming that the pure supply-shock dynamics are more predictable and less sensitive to timing.
 
 
-%=== END OF CHAPTER SIX ===
 \newpage

@@ -62,32 +62,26 @@ run_scenario <- function(scenario_name, data_loader,
                          target_k_values = c(3, 5, 7, 10, 15, 20)) {
     cat(sprintf("\n%s Scenario\n", scenario_name))
 
-    # 1. Setup the scenario data
     data   <- data_loader()
     A      <- data$A
     x      <- data$x
-    
-    # Add a tiny epsilon to 0 bounds to prevent divide-by-zero or static evaluation errors
     q0     <- data$q0
-    q0[q0 == 0] <- 1e-8
-    
+    q0[q0 == 0] <- 1e-8  # avoid divide-by-zero
     c_star <- data$c_star
     A_star <- data$A_star
     num_sectors <- length(q0)
 
-    # Filter target k values so we don't try to intervene on more sectors than exist
     target_k_values <- target_k_values[target_k_values < num_sectors]
     cat(sprintf("  Sectors: %d, k values: %s\n", num_sectors, paste(target_k_values, collapse = ", ")))
 
-    # 2. Compute Baseline Model (No intervention)
+    # Baseline (no intervention)
     base_model <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration,
                        days_in_year = days_in_year)
     base_loss <- base_model$total_economic_loss
     cat(sprintf("  Baseline loss: %.2f\n\n", base_loss))
 
-    # --- Step 1: Compute sector rankings using all methods ---
+    # --- Sector rankings ---
 
-    # Simplified methods (xi-weighted, no simulation needed)
     cat("  Computing simplified rankings (xi-weighted)...\n")
     simplified_rankings <- compute_simplified_rankings(A, A_star, x)
     for (method_name in names(simplified_rankings)) {
@@ -95,14 +89,14 @@ run_scenario <- function(scenario_name, data_loader,
             paste(simplified_rankings[[method_name]][1:min(5, num_sectors)], collapse = ", ")))
     }
 
-    # DIIM - gold standard (runs the simulation to observe temporal progression)
+    # DIIM ranking (gold standard — uses full temporal simulation)
     cat("  Computing DIIM ranking...\n")
     diim_results <- diim_rank_sectors(q0, A_star, c_star, x,
                                       lockdown_duration, total_duration, days_in_year)
     cat(sprintf("    DIIM top-5: [%s]\n",
         paste(diim_results$ranked_sectors[1:5], collapse = ", ")))
 
-    # Sensitivity - measures the marginal drop in total loss for each sector's isolated intervention
+    # Sensitivity ranking (marginal loss reduction per sector)
     cat("  Computing Sensitivity ranking...\n")
     sensitivity_results <- sensitivity_rank_sectors(q0, A_star, c_star, x,
                                                     lockdown_duration, total_duration, days_in_year)
@@ -110,25 +104,20 @@ run_scenario <- function(scenario_name, data_loader,
         paste(sensitivity_results$ranked_sectors[1:5], collapse = ", ")))
 
 
-    # --- Step 2: Evaluate the performance of all methods across each k ---
+    # --- Evaluate all methods at each k ---
     cat("\n  Evaluating all methods at each k...\n")
 
-    # Combine all sector rankings into a single named list
-    all_methods <- simplified_rankings  # already contains all 5 simplified methods
+    all_methods <- simplified_rankings
     all_methods[["DIIM"]]          <- diim_results$ranked_sectors
     all_methods[["Sensitivity"]]    <- sensitivity_results$ranked_sectors
 
-    # Prepare an empty dataframe to hold results
     results_dataframe <- data.frame(
         scenario = character(), method = character(),
         k = integer(), pct_reduction = numeric(),
         sectors = character(), stringsAsFactors = FALSE)
 
-    # Loop through each ranking method and test its top k sectors
     for (method_name in names(all_methods)) {
         for (current_k in target_k_values) {
-            
-            # Evaluate the percentage loss reduction of intervening on these specific 'k' sectors
             evaluation <- evaluate_topk(all_methods[[method_name]], current_k, q0, A_star, c_star, x,
                                         lockdown_duration, total_duration, base_loss, days_in_year)
                                         
@@ -140,7 +129,6 @@ run_scenario <- function(scenario_name, data_loader,
         }
     }
 
-    # Print summary format via data shaping
     cat("\n  Results (% loss reduction):\n")
     summary_table <- reshape2::dcast(results_dataframe, method ~ k, value.var = "pct_reduction")
     print(summary_table)
@@ -193,7 +181,6 @@ plot_topk_comparison <- function(data, scenario_name, filename) {
 plot_topk_comparison(combined, "COVID-19", "enhanced_covid_topk.png")
 plot_topk_comparison(combined, "Manpower", "enhanced_manpower_topk.png")
 
-# Compare all simplified methods side-by-side
 simplified_methods <- c("Total Output", "PCA x xi", "PageRank x xi", "BL x xi", "FL x xi")
 simplified_data <- combined[combined$method %in% simplified_methods, ]
 if (nrow(simplified_data) > 0) {
@@ -213,7 +200,6 @@ if (nrow(simplified_data) > 0) {
     cat("Saved enhanced_simplified_methods.png\n")
 }
 
-# Find the method that achieved the maximum percentage reduction for each 'k' value in each scenario
 winners <- combined %>%
     group_by(scenario, k) %>%
     filter(pct_reduction == max(pct_reduction)) %>%
@@ -244,7 +230,6 @@ for (scenario_name in unique(combined$scenario)) {
         best_method <- k_data[which.max(k_data$pct_reduction), ]
         cat(sprintf("  k=%2d: Best = %-25s (%.2f%%)", current_k, best_method$method, best_method$pct_reduction))
 
-        # Also show the best PCA variant alongside the overall winner for easy comparison
         pca_vals <- k_data[k_data$method %in% c("Total Output", "PCA x xi", "PageRank x xi", "BL x xi", "FL x xi"), ]
         if (nrow(pca_vals) > 0) {
             best_pca <- pca_vals[which.max(pca_vals$pct_reduction), ]
@@ -255,7 +240,6 @@ for (scenario_name in unique(combined$scenario)) {
     cat("\n")
 }
 
-# Compare Total Output baseline vs best simplified structural method (at k=5)
 cat("\nComparison: Structural Methods vs Total Output (at k=5):\n")
 for (scenario_name in unique(combined$scenario)) {
     scenario_data <- combined[combined$scenario == scenario_name & combined$k == 5, ]

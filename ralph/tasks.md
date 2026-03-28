@@ -13,18 +13,18 @@
 - [x] Audit, humanize, and verify simulations/decision_rules.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
 - [x] Audit, humanize, and verify simulations/pca_robustness.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
 - [x] Audit, humanize, and verify simulations/intervention_sensitivity.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
-- [ ] Audit, humanize, and verify simulations/intervention_timing.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
+- [x] Audit, humanize, and verify simulations/intervention_timing.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
 
 <!-- Phase 2: Report — consistency check and humanize each chapter -->
-- [ ] Humanize and check consistency of Chapter 1 (Introduction) with code and results
-- [ ] Humanize and check consistency of Chapter 2 with code and results
-- [ ] Humanize and check consistency of Chapter 3 with code and results
-- [ ] Humanize and check consistency of Chapter 4 with code and results
-- [ ] Humanize and check consistency of Chapter 5 (Key Sector Identification Methods) with code and results
-- [ ] Humanize and check consistency of Chapter 6 (Monte Carlo Robustness Analysis) — ensure figures and tables match simulation outputs
-- [ ] Humanize and check consistency of Chapter 7 with code and results
-- [ ] Humanize and check consistency of Chapter 8 (Conclusion) with code and results
-- [ ] Humanize and check consistency of Abstract, Acknowledgement, and Appendix
+- [x] Humanize and check consistency of Chapter 1 (Introduction) with code and results
+- [x] Humanize and check consistency of Chapter 2 with code and results
+- [x] Humanize and check consistency of Chapter 3 with code and results
+- [x] Humanize and check consistency of Chapter 4 with code and results
+- [x] Humanize and check consistency of Chapter 5 (Key Sector Identification Methods) with code and results
+- [x] Humanize and check consistency of Chapter 6 (Monte Carlo Robustness Analysis) — ensure figures and tables match simulation outputs
+- [x] Humanize and check consistency of Chapter 7 with code and results
+- [x] Humanize and check consistency of Chapter 8 (Conclusion) with code and results
+- [x] Humanize and check consistency of Abstract, Acknowledgement, and Appendix
 
 <!-- Phase 3: Presentation -->
 - [ ] Polish presentations/DSO_DIIM_Beamer_Style.pptx — make professional and suitable for FYP presentation

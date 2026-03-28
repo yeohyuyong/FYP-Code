@@ -1,8 +1,6 @@
-# ============================================================================
 # intervention_timing.R
 # Tests how delayed intervention affects simplified method performance
 # Simulates intervention at t=0, 7, 14, 30, 60 days into the disruption
-# ============================================================================
 
 if (!file.exists("functions.R")) setwd("..")
 
@@ -29,15 +27,13 @@ method_prefixes <- c(
 )
 method_labels <- names(method_prefixes)
 
-# Modified DIIM that applies intervention at a specified delay (not at t=0)
-# Runs the model in two phases: pre-intervention and post-intervention
+# DIIM variant that applies intervention after a specified delay
 DIIM_delayed <- function(q0, A_star, c_star, x, lockdown_duration, total_duration,
                           key_sectors, delay, intervention_magnitude = 0.10,
                           days_in_year = 366) {
     a_ii <- diag(A_star)
     num_sectors <- length(q0)
 
-    # Phase 1: Run without intervention for 'delay' timesteps
     q0[q0 == 0] <- 1e-8
     qT <- q0 * 1/100
     k_rate <- log(q0 / qT) / (total_duration * (1 - a_ii))
@@ -48,7 +44,6 @@ DIIM_delayed <- function(q0, A_star, c_star, x, lockdown_duration, total_duratio
 
     for (t in 2:total_duration) {
         if (t == (delay + 1) && delay > 0) {
-            # Apply intervention at the delay point
             inoperability[key_sectors, t - 1] <-
                 inoperability[key_sectors, t - 1] * (1 - intervention_magnitude)
         }
@@ -62,9 +57,8 @@ DIIM_delayed <- function(q0, A_star, c_star, x, lockdown_duration, total_duratio
         }
     }
 
-    # Handle delay=0 case (intervention at t=0, same as original DIIM)
+    # delay=0: re-run with intervention applied at t=0
     if (delay == 0) {
-        # Re-run from scratch with intervention at t=0
         q0_int <- q0
         q0_int[key_sectors] <- q0_int[key_sectors] * (1 - intervention_magnitude)
         q0_int[q0_int == 0] <- 1e-8
@@ -112,7 +106,6 @@ run_timing_analysis <- function(scenario_name, data_loader,
     for (delay in delay_values) {
         cat(sprintf("  delay=%d days: ", delay))
 
-        # Store per-method results
         method_reductions <- list()
         diim_reductions <- numeric(0)
         for (m in names(method_prefixes)) method_reductions[[m]] <- numeric(0)
@@ -143,7 +136,6 @@ run_timing_analysis <- function(scenario_name, data_loader,
             valid_trials <- valid_trials + 1
             diim_reductions <- c(diim_reductions, diim_reduction)
 
-            # Each simplified method with delayed intervention
             for (method_name in names(simplified_rankings)) {
                 topk <- simplified_rankings[[method_name]][1:k]
                 m_delayed <- DIIM_delayed(random_q0, A_star, c_star, x,
@@ -161,7 +153,6 @@ run_timing_analysis <- function(scenario_name, data_loader,
 
         cat(sprintf("%d valid trials\n", valid_trials))
 
-        # Record aggregated results
         for (method_name in names(method_reductions)) {
             r <- method_reductions[[method_name]]
             if (length(r) == 0) next

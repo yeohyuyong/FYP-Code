@@ -23,35 +23,27 @@ cat("PCA sectors:", pca_sectors, "\n")
 cat("Non-PCA sectors:", non_pca_sectors, "\n")
 
 compute_q0_features <- function(q0, pca_idx, non_pca_idx) {
-    # 1. Separate q0 values into sectors identified by PCA vs the rest
     q0_pca     <- q0[pca_idx]
     q0_non_pca <- q0[non_pca_idx]
 
-    # 2. Calculate what percentage of total q0 impact falls onto PCA sectors
     q0_pca_share  <- sum(q0_pca) / sum(q0)
 
-    # 3. Calculate mean and max impact intensity ratios between PCA and non-PCA sectors
     mean_pca     <- mean(q0_pca)
     mean_non_pca <- mean(q0_non_pca)
-    q0_mean_ratio <- mean_pca / max(mean_non_pca, 1e-10) # 1e-10 prevents division by zero
+    q0_mean_ratio <- mean_pca / max(mean_non_pca, 1e-10)
     q0_max_ratio  <- max(q0_pca) / max(max(q0_non_pca), 1e-10)
 
-    # 4. Check overlap: How many of the 5 highest-impact sectors are in PCA sectors?
     top5_q0 <- order(q0, decreasing = TRUE)[1:5]
     q0_top5_overlap <- length(intersect(top5_q0, pca_idx))
 
-    # 5. Measure the average ranking of PCA sectors (where rank 1 = highest q0 impact)
     impact_ranks <- rank(-q0)
     q0_pca_avg_rank <- mean(impact_ranks[pca_idx])
 
-    # 6. Measure structural variance of impact within the PCA sectors
     q0_pca_cv <- sd(q0_pca) / max(mean_pca, 1e-10)
 
-    # 7. Overall global distribution metrics for the entire q0 vector
     q0_gini <- gini(q0)
     q0_cv   <- sd(q0) / max(mean(q0), 1e-10)
 
-    # Compile the extracted features into a single dataframe row
     return(data.frame(
         q0_pca_share    = q0_pca_share,
         q0_mean_ratio   = q0_mean_ratio,
@@ -70,19 +62,15 @@ n_mc <- 2000
 mc_results <- vector("list", n_mc)
 
 for (i in 1:n_mc) {
-    # 1. Perturb the real q0 with log-normal noise to preserve disruption structure
     noise <- exp(rnorm(n_sectors, mean = 0, sd = 0.5))
     random_q0 <- pmax(q0_base * noise, 1e-6)
     random_q0 <- pmin(random_q0, 1)
 
-    # 2. Run the simulation using the randomly generated q0
     experiment_results <- compare_methods(random_q0, A_star, c_star_base, x,
         lockdown_duration = 55, total_duration = 751, pca_sectors = pca_sectors)
-        
-    # 3. Calculate the static mathematical properties of this specific q0 vector
+
     q0_features <- compute_q0_features(random_q0, pca_sectors, non_pca_sectors)
 
-    # 4. Store all computed properties alongside the final simulation results
     mc_results[[i]] <- data.frame(
         sim_id = i,
         q0_features,
@@ -94,7 +82,6 @@ for (i in 1:n_mc) {
         stringsAsFactors = FALSE
     )
 
-    # 5. Output progress metrics every 200 iterations
     if (i %% 200 == 0) {
         current_pca_win_rate <- mean(sapply(mc_results[1:i], function(r) r$pca_wins))
         cat(sprintf("  %d / %d done (PCA win rate: %.1f%%)\n", i, n_mc, current_pca_win_rate * 100))
@@ -124,21 +111,19 @@ logit_simple <- glm(pca_wins_int ~ q0_pca_share,
 cat("Simple Model (q0_pca_share only):\n")
 print(summary(logit_simple))
 
-# extract the threshold where P(PCA wins) = 0.5
+# P(PCA wins) = 0.5 threshold
 coefs_simple <- coef(logit_simple)
 threshold_share <- -coefs_simple[1] / coefs_simple[2]
 cat(sprintf("\nq0_pca_share threshold (P=0.5 boundary): %.4f\n", threshold_share))
 cat(sprintf("Rule: If PCA sectors hold > %.1f%% of total q0 => use PCA, else use DIIM\n",
     threshold_share * 100))
 
-# Alternative 1: q0_mean_ratio
 logit_ratio <- glm(pca_wins_int ~ q0_mean_ratio, data = mc_df, family = binomial)
 coefs_ratio <- coef(logit_ratio)
 threshold_ratio <- -coefs_ratio[1] / coefs_ratio[2]
 cat(sprintf("q0_mean_ratio threshold (P=0.5): %.4f\n", threshold_ratio))
 cat(sprintf("Rule: If mean(q0_PCA) / mean(q0_nonPCA) > %.4f => use PCA\n\n", threshold_ratio))
 
-# Alternative 2: q0_top5_overlap
 logit_overlap <- glm(pca_wins_int ~ q0_top5_overlap, data = mc_df, family = binomial)
 coefs_overlap <- coef(logit_overlap)
 threshold_overlap <- -coefs_overlap[1] / coefs_overlap[2]
@@ -146,7 +131,6 @@ cat(sprintf("q0_top5_overlap threshold (P=0.5): %.4f\n", threshold_overlap))
 cat(sprintf("Rule: If >= %d of the top-5 q0 sectors are PCA sectors => use PCA\n",
     ceiling(threshold_overlap)))
 
-# compute_roc: sweep thresholds and calculate TPR, FPR, accuracy, precision, F1
 compute_roc <- function(scores, labels, n_thresholds = 500) {
     thresholds <- seq(min(scores), max(scores), length.out = n_thresholds)
     roc_data <- data.frame(
@@ -177,7 +161,6 @@ compute_roc <- function(scores, labels, n_thresholds = 500) {
     return(roc_data)
 }
 
-# compute_auc: trapezoidal approximation of the area under the ROC curve
 compute_auc <- function(roc_data) {
     ord <- order(roc_data$fpr)
     fpr_sorted <- roc_data$fpr[ord]
@@ -238,11 +221,10 @@ sweep_results <- data.frame(
 set.seed(456)
 for (share in target_shares) {
     for (rep in 1:n_reps) {
-        # Perturb real q0, then rescale PCA/non-PCA groups to hit target share
         noise <- exp(rnorm(n_sectors, mean = 0, sd = 0.5))
         q0_test <- pmax(q0_base * noise, 1e-6)
 
-        # Rescale to achieve target share split between PCA and non-PCA sectors
+        # Rescale to hit target PCA/non-PCA share split
         current_pca_sum     <- sum(q0_test[pca_sectors])
         current_non_pca_sum <- sum(q0_test[non_pca_sectors])
         total_q0 <- current_pca_sum + current_non_pca_sum
@@ -402,12 +384,10 @@ if (length(sig_names) > 0) {
 }
 cat(sprintf("  Full model AIC: %.1f vs Simple model AIC: %.1f\n", AIC(logit_full), AIC(logit_simple)))
 
-# accuracy of the simple threshold rule
 simple_pred <- mc_df$q0_pca_share >= optimal_threshold_share
 simple_accuracy <- mean(simple_pred == mc_df$pca_wins)
 cat(sprintf("\nSIMPLE RULE ACCURACY: %.1f%%\n", simple_accuracy * 100))
 
-# verify on original data
 original_share <- sum(q0_base[pca_sectors]) / sum(q0_base)
 cat(sprintf("\nVERIFICATION (original COVID data):\n"))
 cat(sprintf("  Original q0_pca_share = %.4f\n", original_share))
@@ -415,7 +395,6 @@ cat(sprintf("  Threshold = %.4f\n", optimal_threshold_share))
 cat(sprintf("  Prediction: %s\n", ifelse(original_share >= optimal_threshold_share,
     "Use PCA (correct!)", "Use DIIM")))
 
-# save summary to text file
 sink("simulations/results/decision_boundary_summary.txt")
 cat("DECISION BOUNDARY SUMMARY\n")
 cat("=========================\n\n")

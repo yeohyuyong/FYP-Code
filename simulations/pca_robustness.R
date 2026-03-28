@@ -1,8 +1,6 @@
-# ============================================================================
 # pca_robustness.R
-# Tests whether n_pcs=2 is optimal for PCA x xi method
-# Runs 500-trial MC for n_pcs in {1, 2, 3, 4} at k=5
-# ============================================================================
+# Tests whether n_pcs=2 is optimal for PCA x xi method.
+# 500-trial MC for n_pcs in {1, 2, 3, 4} at k=5.
 
 if (!file.exists("functions.R")) setwd("..")
 
@@ -20,7 +18,7 @@ n_pcs_values <- c(1, 2, 3, 4)
 k <- 5
 n_mc <- 500
 
-# Custom PCA ranking function that accepts n_pcs
+# PCA ranking with variable n_pcs (unlike functions.R which fixes n_pcs=2)
 pca_rank_with_npcs <- function(A, x, n_pcs) {
     n <- nrow(A)
     I_minus_A <- diag(n) - A
@@ -32,7 +30,6 @@ pca_rank_with_npcs <- function(A, x, n_pcs) {
     weighted_distances <- distances * as.vector(x)
     ranked_sectors <- order(weighted_distances, decreasing = TRUE)
 
-    # Variance explained
     eigenvalues <- Re(eig$values)
     var_explained <- sum(abs(eigenvalues[1:min(n_pcs, n)])) / sum(abs(eigenvalues))
 
@@ -49,7 +46,6 @@ run_pca_robustness <- function(scenario_name, data_loader,
     q0_base <- data$q0; q0_base[q0_base == 0] <- 1e-8
     num_sectors <- length(q0_base)
 
-    # Pre-compute PCA rankings for each n_pcs
     pca_rankings <- list()
     var_explained_vals <- numeric(length(n_pcs_values))
     for (i in seq_along(n_pcs_values)) {
@@ -83,7 +79,6 @@ run_pca_robustness <- function(scenario_name, data_loader,
             base_loss <- base_model$total_economic_loss
             if (base_loss < 1e-6) next
 
-            # DIIM gold standard
             max_el <- apply(base_model$EL_evolution, 1, max)
             diim_topk <- order(max_el, decreasing = TRUE)[1:k]
             diim_model <- DIIM(random_q0, A_star, c_star, x,
@@ -94,7 +89,6 @@ run_pca_robustness <- function(scenario_name, data_loader,
             if (diim_reduction < 1e-10) next
             valid_trials <- valid_trials + 1
 
-            # PCA x xi with this n_pcs
             pca_model <- DIIM(random_q0, A_star, c_star, x,
                               lockdown_duration, total_duration,
                               key_sectors = pca_topk,
@@ -120,7 +114,7 @@ run_pca_robustness <- function(scenario_name, data_loader,
     return(bind_rows(all_results))
 }
 
-# --- Run for both scenarios ---
+# --- Run both scenarios ---
 covid_results <- run_pca_robustness("COVID-19", download_data, 55, 751, 366)
 manpower_results <- run_pca_robustness("Manpower", download_manpower_data, 55, 751, 365)
 
@@ -128,12 +122,11 @@ combined <- bind_rows(covid_results, manpower_results)
 write.csv(combined, file.path(results_dir, "pca_robustness.csv"), row.names = FALSE)
 cat("\nSaved pca_robustness.csv\n")
 
-# --- Print summary ---
+# --- Summary ---
 cat("\nPCA Robustness Summary:\n")
 print(combined[, c("scenario", "n_pcs", "var_explained", "mean_ratio", "close_rate")])
 
-# --- Plot: Performance ratio vs n_pcs ---
-cat("\nGenerating plot...\n")
+# --- Plots ---
 
 p <- ggplot(combined, aes(x = factor(n_pcs), y = mean_ratio,
                            color = scenario, group = scenario)) +
@@ -156,7 +149,6 @@ p <- ggplot(combined, aes(x = factor(n_pcs), y = mean_ratio,
 ggsave(file.path(results_dir, "pca_robustness_plot.png"), p, width = 10, height = 7)
 cat("Saved pca_robustness_plot.png\n")
 
-# --- Secondary plot: Variance explained vs n_pcs ---
 p_var <- ggplot(combined, aes(x = factor(n_pcs), y = var_explained * 100,
                                color = scenario, group = scenario)) +
     geom_line(linewidth = 1.2) +

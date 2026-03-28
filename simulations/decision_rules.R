@@ -32,32 +32,30 @@ compute_q0_features <- function(q0, simplified_rankings, k = 5) {
     num_sectors <- length(q0)
     total_q0 <- sum(q0)
     
-    # Store the calculated features in a list
     calculated_features <- list()
 
-    # Iterate over every simplified method to calculate how well its top-k sectors align with q0
     for (method_name in names(simplified_rankings)) {
         top_k_sectors <- simplified_rankings[[method_name]][1:k]
         prefix <- method_prefixes[method_name]
 
-        # Metric 1: Share of total q0 captured by this method's top-k sectors
+        # share of total q0 captured by top-k
         calculated_features[[paste0(prefix, "_share")]] <- sum(q0[top_k_sectors]) / total_q0
 
-        # Metric 2: Average rank of the method's sectors in the actual q0 ordering (normalised 0-1)
+        # average rank in q0 ordering (normalised 0-1)
         q0_ranks <- rank(-q0)
         calculated_features[[paste0(prefix, "_avgrank")]] <- mean(q0_ranks[top_k_sectors]) / num_sectors
 
-        # Metric 3: Overlap - How many of the top-k highest q0 sectors match the method's top-k
+        # overlap with q0's own top-k
         q0_topk <- order(q0, decreasing = TRUE)[1:k]
         calculated_features[[paste0(prefix, "_overlap")]] <- length(intersect(top_k_sectors, q0_topk)) / k
     }
 
-    # Add general statistical distribution features of the q0 array
+    # distributional features of q0
     calculated_features[["q0_gini"]] <- 1 - 2 * sum((1:num_sectors) * sort(q0)) / (num_sectors * total_q0) + (num_sectors + 1) / num_sectors
     calculated_features[["q0_cv"]]   <- sd(q0) / mean(q0)
     calculated_features[["q0_max_ratio"]] <- max(q0) / mean(q0)
     
-    # Calculate normalized entropy of q0
+    # normalised entropy
     probability_distribution <- q0 / total_q0
     probability_distribution <- probability_distribution[probability_distribution > 0]
     normalized_entropy <- -sum(probability_distribution * log(probability_distribution)) / log(num_sectors)
@@ -71,19 +69,17 @@ run_monte_carlo <- function(scenario_name, data_loader,
                             days_in_year = 366, n_mc = 2000, k = 5) {
     cat(sprintf("\n%s: %d Monte Carlo trials (k=%d)\n", scenario_name, n_mc, k))
 
-    # 1. Load context data
     data <- data_loader()
     A      <- data$A
     x      <- data$x
     c_star <- data$c_star
     A_star <- data$A_star
-    
+
     q0_base <- data$q0
     q0_base[q0_base == 0] <- 1e-8
     num_sectors <- length(q0_base)
     max_q0 <- max(q0_base) * 2
 
-    # 2. Compute the static rankings for the simplified methods upfront
     cat("  Computing simplified rankings...\n")
     simplified_rankings <- compute_simplified_rankings(A, A_star, x)
     for (method_name in names(simplified_rankings)) {
@@ -91,7 +87,6 @@ run_monte_carlo <- function(scenario_name, data_loader,
             paste(simplified_rankings[[method_name]][1:k], collapse = ", ")))
     }
 
-    # 3. Begin Monte Carlo iterations
     cat("  Running Monte Carlo...\n")
     set.seed(42)
     all_results <- list()
@@ -103,14 +98,14 @@ run_monte_carlo <- function(scenario_name, data_loader,
         random_q0 <- pmax(q0_base * noise, 1e-6)
         random_q0 <- pmin(random_q0, 1)  # cap at 1 (100% inoperability)
 
-        # Evaluate the DIIM baseline with no key sectors protected
+        # baseline: no key sectors protected
         base_model <- DIIM(random_q0, A_star, c_star, x,
             lockdown_duration, total_duration, days_in_year = days_in_year)
         base_loss <- base_model$total_economic_loss
         
         if (base_loss < 1e-6) next # Skip degenerate trials
 
-        # Evaluate the Gold Standard (DIIM using its own internal top-k logic)
+        # gold standard: DIIM's own top-k
         max_el <- apply(base_model$EL_evolution, 1, max)
         diim_topk <- order(max_el, decreasing = TRUE)[1:k]
         
@@ -121,7 +116,6 @@ run_monte_carlo <- function(scenario_name, data_loader,
         diim_reduction <- base_loss - diim_model$total_economic_loss
         if (diim_reduction < 1e-10) next
 
-        # Start building the results row for this trial
         trial_row <- compute_q0_features(random_q0, simplified_rankings, k)
         trial_row$trial     <- trial
         trial_row$scenario  <- scenario_name
@@ -129,7 +123,6 @@ run_monte_carlo <- function(scenario_name, data_loader,
         trial_row$diim_reduction <- diim_reduction
         trial_row$diim_pct  <- diim_reduction / base_loss * 100
 
-        # Evaluate each computed simplified method
         for (method_name in names(simplified_rankings)) {
             topk_sectors <- simplified_rankings[[method_name]][1:k]
             
@@ -139,7 +132,6 @@ run_monte_carlo <- function(scenario_name, data_loader,
                 
             method_reduction <- base_loss - method_model$total_economic_loss
 
-            # Store comparative states vs gold standard
             prefix <- method_prefixes[method_name]
             trial_row[[paste0(prefix, "_reduction")]] <- method_reduction
             trial_row[[paste0(prefix, "_ratio")]]     <- method_reduction / diim_reduction
@@ -199,7 +191,6 @@ build_decision_rules <- function(mc_df, scenario_name, methods) {
         tryCatch({
             lr_model <- glm(as.formula(formula_str), data = mc_df, family = binomial)
 
-            # find the most significant predictor (lowest p-value)
             coeffs <- summary(lr_model)$coefficients
             if (nrow(coeffs) > 1) {
                 p_vals    <- coeffs[2:nrow(coeffs), 4]
@@ -269,7 +260,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
     clean_methods <- c("TotalOutput", "PCAxi", "PageRankxi",
                        "BLxi", "FLxi")
 
-    # --- Plot 1: Performance ratio distributions ---
+    # --- Ratio distributions ---
     ratio_data <- data.frame()
     for (i in seq_along(clean_methods)) {
         col <- paste0(clean_methods[i], "_ratio")
@@ -300,7 +291,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
         cat(sprintf("  Saved %s_ratio_distributions.png\n", prefix))
     }
 
-    # --- Plot 2: Close rates bar chart ---
+    # --- Close rates ---
     close_data <- data.frame()
     for (i in seq_along(clean_methods)) {
         col <- paste0(clean_methods[i], "_close")
@@ -335,7 +326,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
         cat(sprintf("  Saved %s_close_rates.png\n", prefix))
     }
 
-    # --- Plot 3: Decision boundary for each method with a rule ---
+    # --- Decision boundaries ---
     for (rule in rules) {
         if (is.null(rule$best_predictor) || is.na(rule$best_predictor)) next
         if (is.na(rule$threshold)) next
@@ -386,7 +377,6 @@ for (k_val in k_values) {
     manpower_mc$mc_df$k <- k_val
     all_mc_results[[paste0("manpower_k", k_val)]] <- manpower_mc$mc_df
 
-    # Build decision rules and generate plots for this k value
     covid_rules <- build_decision_rules(covid_mc$mc_df, sprintf("COVID-19 (k=%d)", k_val), method_labels)
     generate_plots(covid_mc$mc_df, covid_rules, sprintf("COVID-19 (k=%d)", k_val), sprintf("covid_k%d", k_val))
 
@@ -394,12 +384,10 @@ for (k_val in k_values) {
     generate_plots(manpower_mc$mc_df, manpower_rules, sprintf("Manpower (k=%d)", k_val), sprintf("manpower_k%d", k_val))
 }
 
-# Combine all results
 combined_mc <- bind_rows(all_mc_results)
 write.csv(combined_mc, file.path(results_dir, "decision_rules_mc_data.csv"), row.names = FALSE)
 cat("Saved decision_rules_mc_data.csv\n\n")
 
-# Build summary table: mean ratio by method, scenario, and k
 cat("SUMMARY: Mean Performance Ratio (simplified / DIIM) by k\n\n")
 
 clean_methods <- c("TotalOutput", "PCAxi", "PageRankxi", "BLxi", "FLxi")
@@ -411,7 +399,6 @@ for (sc_name in c("COVID-19", "Manpower")) {
 
     sc_data <- combined_mc[combined_mc$scenario == sc_name, ]
 
-    # Header
     header <- sprintf("  %-20s %s", "Method", paste(sprintf("k=%-4d", k_values), collapse = "  "))
     cat(header, "\n")
     summary_lines <- c(summary_lines, header)
@@ -437,7 +424,6 @@ for (sc_name in c("COVID-19", "Manpower")) {
         summary_lines <- c(summary_lines, line)
     }
 
-    # Also print close rates
     cat("\n  Close rates (>=80% of DIIM):\n")
     summary_lines <- c(summary_lines, "  Close rates (>=80% of DIIM):")
 
@@ -464,7 +450,6 @@ for (sc_name in c("COVID-19", "Manpower")) {
     summary_lines <- c(summary_lines, "")
 }
 
-# save summary
 writeLines(summary_lines, file.path(results_dir, "decision_rules_summary.txt"))
 cat("Saved decision_rules_summary.txt\n")
 cat("Done!\n")
