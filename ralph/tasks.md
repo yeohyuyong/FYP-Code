@@ -6,13 +6,13 @@
 <!-- Phase 1: Code — audit, humanize, verify each script -->
 - [x] Audit, humanize, and verify functions.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
 - [x] Audit, humanize, and verify simulations/run_simulations.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
-- [ ] Audit, humanize, and verify simulations/analysis.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
-- [ ] Audit, humanize, and verify simulations/scatter_comparison.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
-- [ ] Audit, humanize, and verify simulations/enhanced_comparison.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
-- [ ] Audit, humanize, and verify simulations/decision_boundary.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
-- [ ] Audit, humanize, and verify simulations/decision_rules.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
-- [ ] Audit, humanize, and verify simulations/pca_robustness.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
-- [ ] Audit, humanize, and verify simulations/intervention_sensitivity.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
+- [x] Audit, humanize, and verify simulations/analysis.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
+- [x] Audit, humanize, and verify simulations/scatter_comparison.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
+- [x] Audit, humanize, and verify simulations/enhanced_comparison.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
+- [x] Audit, humanize, and verify simulations/decision_boundary.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
+- [x] Audit, humanize, and verify simulations/decision_rules.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
+- [x] Audit, humanize, and verify simulations/pca_robustness.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
+- [x] Audit, humanize, and verify simulations/intervention_sensitivity.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
 - [ ] Audit, humanize, and verify simulations/intervention_timing.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
 
 <!-- Phase 2: Report — consistency check and humanize each chapter -->
