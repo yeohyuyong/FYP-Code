@@ -14,7 +14,7 @@ A_star <- data$A_star
 
 n_sectors <- length(q0_base)
 
-# Compute PCA x xi key sectors dynamically
+# PCA x xi key sectors
 pca_results <- pca_rank_sectors(A, x, n_pcs = 2)
 pca_key_sectors <- pca_results$ranked_sectors[1:5]
 
@@ -33,14 +33,10 @@ exp1_results <- data.frame(
 )
 
 for (c_star_multiplier in multipliers) {
-    # Scale the base demand perturbation by the current multiplier
     c_star_scaled <- c_star_base * c_star_multiplier
-    
-    # Run the comparison simulation
     experiment_results <- compare_methods(q0_base, A_star, c_star_scaled, x,
         lockdown_duration = 55, total_duration = 751, pca_sectors = pca_key_sectors)
 
-    # Store the results of this iteration
     exp1_results <- rbind(exp1_results, data.frame(
         multiplier = c_star_multiplier, loss_base = experiment_results$loss_base, loss_diim = experiment_results$loss_diim,
         loss_pca = experiment_results$loss_pca, reduction_diim = experiment_results$reduction_diim,
@@ -56,10 +52,8 @@ cat("Saved exp1_cstar_magnitude.csv\n")
 
 total_c_star <- sum(c_star_base)
 
-# Build the 7 distribution patterns
-# "concentrated_k": all c_star goes equally to the top-k sectors (by original c_star)
-# "uniform": c_star spread equally across all sectors
-# "inverse": sectors that originally had high c_star now get low c_star, and vice versa
+# --- Exp 2: c* distribution patterns ---
+# concentrated_k: all c_star to top-k sectors; uniform: equal spread; inverse: reversed ranking
 
 make_concentrated <- function(top_k) {
     cs <- rep(0, n_sectors)
@@ -73,7 +67,7 @@ inverse_cs <- {
     sorted_idx <- order(c_star_base, decreasing = FALSE)
     weights <- rev(sort(c_star_base))
     if (sum(weights) > 0) cs[sorted_idx] <- weights / sum(weights) * total_c_star
-    else cs <- rep(total_c_star / n_sectors, n_sectors) # safety net. If the original sectors were all zero (meaning the sum is 0), it simply distributes the total value equally (uniformly) across all sectors.
+    else cs <- rep(total_c_star / n_sectors, n_sectors) # fallback if all sectors are zero
     cs
 }
 
@@ -95,16 +89,11 @@ exp2_results <- data.frame(
 )
 
 for (pattern_name in names(distribution_patterns)) {
-    # 1. Get the specific c* distribution pattern for this iteration
     current_c_star_distribution <- distribution_patterns[[pattern_name]]
-    
-    # 2. Run the comparison simulation
-    experiment_results <- compare_methods(q0_base, A_star, current_c_star_distribution, x, lockdown_duration = 55, total_duration = 751, pca_sectors = pca_key_sectors)
-    
-    # 3. Calculate the Gini coefficient to measure the inequality of the distribution
+    experiment_results <- compare_methods(q0_base, A_star, current_c_star_distribution, x,
+        lockdown_duration = 55, total_duration = 751, pca_sectors = pca_key_sectors)
     gini_coefficient <- gini(current_c_star_distribution)
 
-    # 4. Store the results
     exp2_results <- rbind(exp2_results, data.frame(
         pattern = pattern_name, loss_base = experiment_results$loss_base, loss_diim = experiment_results$loss_diim,
         loss_pca = experiment_results$loss_pca, reduction_diim = experiment_results$reduction_diim,
@@ -120,7 +109,7 @@ cat("Saved exp2_cstar_distribution.csv\n")
 
 total_q0 <- sum(q0_base)
 
-# 4 q0 distribution patterns
+# --- Exp 3: q0 distribution patterns ---
 q0_patterns <- list(
     "original" = q0_base,
     "uniform"  = rep(mean(q0_base), n_sectors),
@@ -150,18 +139,12 @@ exp3_results <- data.frame(
 
 for (q0_name in names(q0_patterns)) {
     for (c_star_multiplier in c_star_levels) {
-        # 1. Get the current q0 pattern and scaled c*
         current_q0 <- q0_patterns[[q0_name]]
         current_c_star <- c_star_base * c_star_multiplier
-
-        # 2. Run the comparison simulation
         experiment_results <- compare_methods(current_q0, A_star, current_c_star, x,
             lockdown_duration = 55, total_duration = 751, pca_sectors = pca_key_sectors)
-            
-        # 3. Calculate Gini coefficient for the current q0 pattern
         q0_gini_coefficient <- gini(current_q0)
 
-        # 4. Store the results
         exp3_results <- rbind(exp3_results, data.frame(
             q0_pattern = q0_name, c_star_multiplier = c_star_multiplier,
             loss_base = experiment_results$loss_base, loss_diim = experiment_results$loss_diim,
@@ -193,14 +176,10 @@ combo_count <- 0
 
 for (duration in lockdown_vals) {
     for (multiplier in cstar_mult_vals) {
-        # 1. Calculate current c* using the multiplier
         current_c_star <- c_star_base * multiplier
-        
-        # 2. Run the comparison simulation
         experiment_results <- compare_methods(q0_base, A_star, current_c_star, x,
             lockdown_duration = duration, total_duration = 751, pca_sectors = pca_key_sectors)
 
-        # 3. Store the results for this grid combination
         exp4_results <- rbind(exp4_results, data.frame(
             lockdown_duration = duration, c_star_multiplier = multiplier,
             loss_base = experiment_results$loss_base, loss_diim = experiment_results$loss_diim,
@@ -234,23 +213,20 @@ exp5_results <- data.frame(
 )
 
 for (i in 1:n_mc) {
-    # 1. Generate random c_star, q0, and lockdown duration
     random_c_star <- runif(n_sectors, min = 0, max = max_c_star)
     random_q0 <- runif(n_sectors, min = 1e-6, max = max_q0)
     random_lockdown_duration <- sample(10:80, 1)
 
-    # 2. Run the comparison simulation
     experiment_results <- compare_methods(random_q0, A_star, random_c_star, x,
         lockdown_duration = random_lockdown_duration, total_duration = 751, pca_sectors = pca_key_sectors)
 
-    # 3. Compute summary statistics for this trial to use as predictors
+    # Summary statistics as predictors for logistic regression
     c_star_gini_val <- gini(random_c_star)
     q0_gini_val <- gini(random_q0)
     cstar_q0_corr <- if (sd(random_c_star) > 0 && sd(random_q0) > 0) cor(random_c_star, random_q0) else 0
     c_star_pca_share <- sum(random_c_star[pca_key_sectors]) / sum(random_c_star)
     q0_pca_share <- sum(random_q0[pca_key_sectors]) / sum(random_q0)
 
-    # 4. Store the features and outcome for logistic regression analysis
     exp5_results <- rbind(exp5_results, data.frame(
         sim_id = i, c_star_mean = mean(random_c_star), c_star_sd = sd(random_c_star),
         c_star_max = max(random_c_star), c_star_gini = c_star_gini_val, c_star_sum = sum(random_c_star),
@@ -263,7 +239,6 @@ for (i in 1:n_mc) {
         reduction_pca = experiment_results$reduction_pca, pca_wins = experiment_results$pca_wins,
         overlap = experiment_results$overlap, stringsAsFactors = FALSE))
 
-    # Print progress every 50 iterations
     if (i %% 50 == 0) {
         pca_win_rate <- mean(exp5_results$pca_wins[1:i])
         cat(sprintf("  MC sim %d / %d (PCA win rate: %.1f%%)\n", i, n_mc, pca_win_rate * 100))

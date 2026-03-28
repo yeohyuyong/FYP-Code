@@ -10,3 +10,8 @@
 - Audited functions.R: all logic correct (DIIM dynamics, PCA ranking, PageRank, Gini, compare_methods). No bugs found.
 - Humanization was minimal — removed 5 redundant comments that restated the code (e.g., "# Calculate A_star" before `A_star <- ...`, trailing comment on `eigen()`). Kept all WHY comments and function docs.
 - Verified: ran run_simulations.R, all 21 baseline CSVs match exactly. No logic changes.
+
+## Iteration 2026-03-28 (run_simulations.R)
+- Audited run_simulations.R: all logic correct across 5 experiments (c* magnitude, c* distribution, q0 patterns, lockdown grid, Monte Carlo). No bugs found.
+- Most humanization was already done in working tree (redundant numbered step comments removed, section headers simplified). Only remaining change: removed "dynamically" filler from PCA comment.
+- Verified: all 5 experiment CSVs match baseline exactly. R temp dir issue with Google Drive spaces requires TMPDIR=/tmp/R_temp workaround.
