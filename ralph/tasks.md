@@ -4,7 +4,7 @@
 - [x] Save current simulation outputs (CSVs and PNGs) as baseline snapshots in simulations/baseline/ for comparison
 
 <!-- Phase 1: Code — audit, humanize, verify each script -->
-- [ ] Audit, humanize, and verify functions.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
+- [x] Audit, humanize, and verify functions.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
 - [ ] Audit, humanize, and verify simulations/run_simulations.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
 - [ ] Audit, humanize, and verify simulations/analysis.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged
 - [ ] Audit, humanize, and verify simulations/scatter_comparison.R — check correctness, rewrite AI-style comments naturally, run and confirm outputs unchanged

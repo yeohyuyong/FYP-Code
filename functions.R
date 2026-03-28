@@ -52,7 +52,6 @@ download_manpower_data <- function() {
   c <- rep(0, num_sectors)
   c_star <- rep(0, num_sectors)
 
-  # Calculate A_star
   A_star <- solve(diag(x)) %*% A %*% diag(x)
 
   return(list(
@@ -72,7 +71,6 @@ DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_s
   num_sectors <- length(q0)
   inoperability_evolution <- matrix(NA, nrow = num_sectors, ncol = total_duration)
 
-  # if key_sectors is not NULL, reduce those sectors' initial q0 by intervention_magnitude
   if (!is.null(key_sectors)) {
     q0[key_sectors] <- q0[key_sectors] * (1 - intervention_magnitude)
   }
@@ -143,9 +141,6 @@ simulation_ml_vs_diim <- function(q0, A, A_star, c_star, x, lockdown_duration, t
   ))
 }
 
-
-
-
 # gini: computes the Gini coefficient of a vector (measures inequality)
 # Returns 0 for perfectly equal, closer to 1 for highly unequal
 gini <- function(x) {
@@ -204,12 +199,10 @@ pca_rank_sectors <- function(A_matrix, x_vector, n_pcs = 2) {
   L <- solve(I_minus_A)          # Leontief inverse
   H <- A_matrix %*% L            # influence matrix
 
-  eig <- eigen(H) # computes both eigenvalue and eigenvector
+  eig <- eigen(H)
   eigenvalues <- Re(eig$values)
   eigenvectors <- Re(eig$vectors)
   n_pcs <- min(n_pcs, ncol(eigenvectors))
-
-  # loadings on the first n_pcs principal components
   loadings <- eigenvectors[, 1:n_pcs, drop = FALSE]
 
   # Euclidean distance from origin

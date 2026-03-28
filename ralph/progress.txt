@@ -5,3 +5,8 @@
 - Completed Phase 0: copied all 144 files (CSVs + PNGs) from simulations/results/ to simulations/baseline/
 - The sandbox blocks glob patterns in cp and mkdir outside the project root; workaround is to create a file first (e.g. .gitkeep) to implicitly create the directory, then use a loop for copying
 - Baseline now has identical file count (144) to results/, ready for post-humanization comparison
+
+## Iteration 2026-03-28 (functions.R)
+- Audited functions.R: all logic correct (DIIM dynamics, PCA ranking, PageRank, Gini, compare_methods). No bugs found.
+- Humanization was minimal — removed 5 redundant comments that restated the code (e.g., "# Calculate A_star" before `A_star <- ...`, trailing comment on `eigen()`). Kept all WHY comments and function docs.
+- Verified: ran run_simulations.R, all 21 baseline CSVs match exactly. No logic changes.
