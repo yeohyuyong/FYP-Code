@@ -2,8 +2,6 @@ if (!file.exists("functions.R")) setwd("..")
 
 library(ggplot2)
 library(reshape2)
-library(dplyr)
-library(scales)
 
 results_dir <- "simulations/results"
 
