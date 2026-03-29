@@ -27,3 +27,120 @@ PDF REVIEW FAILED — 7 missing figures fixed, recompiled successfully.
 - [x] No em dash overuse
 - [x] No significance inflation words
 - [x] Writing reads naturally throughout
+
+## PDF REVIEW — 2026-03-29 (second pass)
+
+PDF REVIEW FAILED — 1 factual error in abstract fixed, recompiled successfully.
+
+### Issue found and fixed:
+1. **Abstract close-rate claim** (p.iii): Abstract stated "At $k \geq 10$, all five methods achieve close rates above 92% in both scenarios." Table 6.3 shows PCA $\times\, x_i$ has only 53.4% close rate at $k = 10$ for COVID-19, contradicting this claim. Fixed to "At $k = 12$, all five methods achieve close rates above 99% in both scenarios" which matches the actual data (COVID-19 k=12: 99.8%--100%; Manpower k=12: 100%).
+
+### Checklist results (second pass):
+- [x] No "??" or "[?]" broken references
+- [x] All citations [1]--[17] resolve correctly
+- [x] All cross-references (figures, tables, equations) correct
+- [x] TOC matches chapter/section titles
+- [x] Page numbers continuous (roman i--iv, arabic 1--42)
+- [x] No overfull hbox in main text
+- [x] All 14 figures render correctly (3.1--3.3, 4.1--4.2, 5.1--5.3, 6.1--6.7)
+- [x] All 10 tables render correctly (4.1, 5.1--5.3, 6.1--6.5, 8.1--8.3)
+- [x] No orphan lines or awkward page breaks
+- [x] Numbers in text match tables/figures (FIXED abstract mismatch)
+- [x] Method names consistent throughout
+- [x] Sector names consistent
+- [x] Abstract now matches findings (after fix)
+- [x] No AI writing patterns detected (no significance inflation, no promotional language, no filler phrases, no em dashes, no copula avoidance)
+- [x] Writing reads naturally throughout all 8 chapters + appendices
+
+## PDF REVIEW — 2026-03-29 (third pass)
+
+PDF REVIEW FAILED — 1 numerical mismatch fixed, recompiled successfully.
+
+### Issue found and fixed:
+1. **Construction q(0) value** (Section 6.4, p.23 and Section 7.2, p.32): Text claimed `q_3(0) = 0.221` for sector 3 (Construction) in COVID-19 scenario. Table 8.3 (p.40) and the source data (`unemployment_and_impact_analysis.xlsx`) both show `q_3(0) = 0.155924`. Fixed to `q_3(0) = 0.156` in both Chapter 6 (Section 6.4) and Chapter 7 (Section 7.2).
+
+### Checklist results (third pass):
+- [x] No "??" or "[?]" broken references
+- [x] All citations [1]--[17] resolve correctly
+- [x] All cross-references (figures, tables, equations) correct
+- [x] TOC matches chapter/section titles
+- [x] Page numbers continuous (roman i--iv, arabic 1--42)
+- [x] No overfull hbox in main text
+- [x] All 14 figures render correctly (3.1--3.3, 4.1--4.2, 5.1--5.3, 6.1--6.7)
+- [x] All 10 tables render correctly (4.1, 5.1--5.3, 6.1--6.5, 8.1--8.3)
+- [x] No orphan lines or awkward page breaks
+- [x] Numbers in text now match tables/figures (FIXED q3(0) mismatch)
+- [x] Method names consistent throughout
+- [x] Sector names consistent
+- [x] Abstract matches findings
+- [x] No AI writing patterns detected
+- [x] No em dash overuse (zero em dashes in entire document)
+- [x] No significance inflation, promotional language, filler phrases, or copula avoidance
+- [x] Writing reads naturally throughout all 8 chapters + appendices
+
+PDF REVIEW PASSED
+
+## PPTX REVIEW — 2026-03-29
+
+PPTX REVIEW FAILED — 36 issues fixed across text, font sizes, and overflow boxes.
+
+### Issues found and fixed:
+
+**1. Plain-text math notation (27 text replacements across 13 slides):**
+- "xi-weighted" → "xᵢ-weighted" on S31 TextBox 21, S38 TextBox 20, S39 TextBox 32.
+- A* → A∗ (Unicode U+2217 asterisk operator) on S8, S10, S11, S14, S22 (8 occurrences).
+- c* → c∗ on S3, S8, S10, S13, S16, S20, S21, S22, S23, S44 (13 occurrences).
+- q* → q∗ in S8 DIIM equation: "q(t+1) = A∗ q(t) + K [q(t) − q∗] + c∗(t)".
+
+**2. Font size inconsistency (S7):**
+- S7 TextBox 20 and TextBox 26 had 15pt bullets; all other primary bullet slides use 14pt. Fixed to 14pt.
+
+**3. Overflow text boxes widened (10 boxes across 5 slides):**
+- S14 TextBox 25: 1.80in → 2.50in ("construction, manufacturing, services" label).
+- S16 TextBox 22: 1.85in → 2.30in ("Pre-pandemic structure, aggregated to 15 sectors.").
+- S16 TextBox 27: 1.85in → 2.30in ("Circuit-breaker window from 7 Apr to 1 Jun 2020.").
+- S16 TextBox 32: 2.35in → 2.40in ("Recovery until DORSCON returned to Yellow assumptions.").
+- S16 TextBox 37: 2.35in → 2.60in ("c∗ is active during the lockdown phase only.").
+- S19 TextBox 23: 2.70in → 3.50in (3 interpretation bullets overflowing).
+- S28 TextBox 22/27/32: 2.80in → 3.30in (loss reduction annotations).
+- S36 TextBox 29: 3.20in → 3.80in ("Late intervention narrows..." annotation).
+
+### Previously fixed items verified (from REVIEW.md):
+- A1: Footer "Native PowerPoint" → "DIIM FYP · Yeoh Yu Yong" ✓
+- A4: S46 now has title "PCA loading detail (COVID-19)" ✓
+- B1: S1 has name, supervisor (Assoc Prof Yu Bin), school (SPMS NTU), AY 2025/26 ✓
+- B2: S4 subtitle is descriptive, not meta-commentary ✓
+- B3: S27 title is "Method rankings at observed disruption levels" ✓
+- B4: S40 has 10 limitation/future-work bullets ✓
+- B6: S8 has DIIM equation as centrepiece ✓
+- B7: S31--S36 all have "Key finding" / "Takeaway" callouts ✓
+- B8: S24 section divider has transition subtitle ✓
+- B9: S38 key finding visible at 13pt ✓
+
+### Checklist results:
+- [x] No text overflowing text boxes (0 shrink-risk boxes remain)
+- [x] Font sizes consistent: 14pt primary, 13pt annotations, 11--12pt detail
+- [x] No orphaned text boxes or stray elements
+- [x] Slide numbers present on 39 content slides; 9 section dividers/title unnumbered (Beamer convention)
+- [x] Footer professional: "DIIM FYP · Yeoh Yu Yong"
+- [x] Title slide complete: name, supervisor, school, date
+- [x] Navigation bar consistent across all content slides
+- [x] Tables properly aligned with readable font sizes
+- [x] No AI language detected (pivotal, crucial, testament, landscape, etc.)
+- [x] No filler phrases
+- [x] 0 em dashes across entire presentation (within ≤2 limit)
+- [x] Bullet points concise throughout
+- [x] Slide titles specific and descriptive
+- [x] No meta-commentary subtitles
+- [x] Mathematical notation uses Unicode: xᵢ, qᵢ, q₀, Rₘ, A∗, c∗, q∗
+- [x] Key findings prominently displayed with amber callout pattern
+- [x] Logical transitions between sections
+- [x] Color palette consistent (navy, gray, amber, blue)
+- [x] No duplicate content
+- [x] Section dividers have meaningful subtitles
+- [x] Results slides have clear takeaway callouts (S31--S36)
+- [x] Future work section has 4 substantive items
+- [x] Coherent narrative: problem → method → results → conclusion
+- [x] No slide sounds AI-generated when read aloud
+
+PPTX REVIEW PASSED
