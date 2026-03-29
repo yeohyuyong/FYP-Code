@@ -1,14 +1,14 @@
 \chapter{Case Study 1: COVID-19 Pandemic}
 
-This chapter applies the DIIM framework to Singapore's COVID-19 pandemic. It describes the data and model parameters, then presents simulation results and the risk management analysis.
+This chapter applies the DIIM framework to Singapore's COVID-19 pandemic, covering the data and model parameters, simulation results, and sector vulnerability analysis.
 
 \section{Data and Model Parameters}
 
 \subsection{Input-Output Table}
 
-The IO transaction data for Singapore is obtained from the Department of Statistics, Singapore \cite{DataGovSgIO2019}. This study uses the 2019 IO table because it is the closest year before COVID-19 and represents the pre-pandemic economic structure. The available IO table is aggregated into 20 broad sectors, and this study further aggregates them into 15 sectors to match the Ministry of Manpower dataset used to compute initial inoperability. The mapping is provided in Appendix~A (Table~\ref{tab:sector-mapping}).
+The IO transaction data for Singapore is obtained from the Department of Statistics, Singapore \cite{DataGovSgIO2019}. This study uses the 2019 IO table because it is the closest year before COVID-19 and represents the pre-pandemic economic structure. The available IO table covers 20 broad sectors, further aggregated here into 15 to match the Ministry of Manpower dataset used to compute initial inoperability. The mapping appears in Appendix~A (Table~\ref{tab:sector-mapping}).
 
-From the aggregated IO table, the technical coefficient matrix $A$ is computed. A cross-section of $A$ is provided in Appendix~A (Table~\ref{tab:tech-coeff-cross-section}).
+From the aggregated IO table, the technical coefficient matrix $A$ is computed. A cross-section of $A$ is shown in Appendix~A (Table~\ref{tab:tech-coeff-cross-section}).
 
 \subsection{Initial Inoperability}
 
@@ -60,7 +60,7 @@ This section identifies vulnerable sectors using two measures: inoperability (re
 
 To support prioritisation, we define ordinal ``zones'' (Top~5, Top~7, Top~10) as the intersection of sectors that appear in the top-$k$ rankings of both measures. For example, the Top~5 zone contains sectors that are ranked in the top five for both inoperability and economic loss, i.e., sectors that are both heavily disrupted and economically important.
 
-Differences between the two rankings are expected. For example, a sector such as Arts, Entertainment \& Recreation may rank high in inoperability but lower in economic loss if its pre-disruption output is smaller than that of other sectors. Overall, Figure~\ref{fig:joint-impact-matrix} provides a practical view for decision-making when policymakers want to balance restoring functionality (low inoperability) and reducing macroeconomic damage (low loss).
+Differences between the two rankings are expected. For example, a sector such as Arts, Entertainment \& Recreation may rank high in inoperability but lower in economic loss if its pre-disruption output is smaller than that of other sectors. Figure~\ref{fig:joint-impact-matrix} helps policymakers balance restoring functionality (low inoperability) against reducing macroeconomic damage (low loss).
 
 
 \newpage
