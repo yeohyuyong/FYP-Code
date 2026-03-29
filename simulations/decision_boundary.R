@@ -296,7 +296,7 @@ p1 <- ggplot(win_rate_by_share, aes(x = q0_pca_share, y = pca_win_rate)) +
     theme(plot.title = element_text(face = "bold", size = 13),
           plot.subtitle = element_text(size = 10, color = "gray40"))
 
-ggsave(file.path(results_dir, "decision_boundary_curve.png"), p1, width = 10, height = 6)
+ggsave(file.path(results_dir, "decision_boundary_curve.png"), p1, width = 10, height = 6, bg = "white")
 cat("Saved decision_boundary_curve.png\n")
 
 roc_share$feature   <- "q0_pca_share"
@@ -323,7 +323,7 @@ p2 <- ggplot(roc_all, aes(x = fpr, y = tpr, color = feature)) +
     theme(plot.title = element_text(face = "bold", size = 13), legend.position = "bottom") +
     coord_equal()
 
-ggsave(file.path(results_dir, "decision_boundary_roc.png"), p2, width = 8, height = 8)
+ggsave(file.path(results_dir, "decision_boundary_roc.png"), p2, width = 8, height = 8, bg = "white")
 cat("Saved decision_boundary_roc.png\n")
 
 mc_df$share_bin <- cut(mc_df$q0_pca_share, breaks = seq(0, 1, by = 0.05), include.lowest = TRUE)
@@ -340,7 +340,7 @@ p3 <- ggplot(mc_df, aes(x = share_bin, y = pca_advantage, fill = pca_wins)) +
     theme(plot.title = element_text(face = "bold", size = 13),
           axis.text.x = element_text(angle = 45, hjust = 1, size = 7), legend.position = "bottom")
 
-ggsave(file.path(results_dir, "decision_boundary_advantage_boxplot.png"), p3, width = 12, height = 6)
+ggsave(file.path(results_dir, "decision_boundary_advantage_boxplot.png"), p3, width = 12, height = 6, bg = "white")
 cat("Saved decision_boundary_advantage_boxplot.png\n")
 
 p4 <- ggplot(mc_df, aes(x = q0_pca_share, y = q0_mean_ratio, color = pca_wins)) +
@@ -353,7 +353,7 @@ p4 <- ggplot(mc_df, aes(x = q0_pca_share, y = q0_mean_ratio, color = pca_wins)) 
     theme_minimal() +
     theme(plot.title = element_text(face = "bold", size = 13), legend.position = "bottom")
 
-ggsave(file.path(results_dir, "decision_boundary_scatter.png"), p4, width = 9, height = 7)
+ggsave(file.path(results_dir, "decision_boundary_scatter.png"), p4, width = 9, height = 7, bg = "white")
 cat("Saved decision_boundary_scatter.png\n")
 
 cat("DECISION BOUNDARY SUMMARY (q0 only)\n\n")
@@ -396,8 +396,7 @@ cat(sprintf("  Prediction: %s\n", ifelse(original_share >= optimal_threshold_sha
     "Use PCA (correct!)", "Use DIIM")))
 
 sink("simulations/results/decision_boundary_summary.txt")
-cat("DECISION BOUNDARY SUMMARY\n")
-cat("=========================\n\n")
+cat("DECISION BOUNDARY SUMMARY\n\n")
 cat(sprintf("Best predictor: q0_pca_share (AUC = %.4f)\n", auc_share))
 cat(sprintf("Optimal threshold (Youden's J): %.4f\n", optimal_threshold_share))
 cat(sprintf("Logistic regression threshold: %.4f\n", threshold_share))

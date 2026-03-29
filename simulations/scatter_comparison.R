@@ -1,4 +1,3 @@
-# scatter_comparison.R
 # Scatter plots of simplified vs DIIM loss reduction.
 # Reuses decision_rules_mc_data.csv if available, otherwise runs 500 MC trials.
 
@@ -19,8 +18,6 @@ method_prefixes <- c(
     "BL x xi"       = "BLxi",
     "FL x xi"       = "FLxi"
 )
-
-method_labels <- c("Total Output", "PCA x xi", "PageRank x xi", "BL x xi", "FL x xi")
 
 # --- Load or generate Monte Carlo data ---
 if (file.exists(mc_file)) {
@@ -93,15 +90,13 @@ for (sc in unique(mc_data$scenario)) {
         sc_data <- sc_data[sc_data$k == target_k, ]
     }
 
-    # Build long-form data for faceted plot
     plot_rows <- list()
-    for (i in seq_along(method_labels)) {
-        prefix <- method_prefixes[method_labels[i]]
-        red_col <- paste0(prefix, "_reduction")
+    for (i in seq_along(method_prefixes)) {
+        red_col <- paste0(method_prefixes[i], "_reduction")
         if (!red_col %in% names(sc_data)) next
 
         plot_rows[[i]] <- data.frame(
-            method = method_labels[i],
+            method = names(method_prefixes)[i],
             diim_reduction = sc_data$diim_reduction,
             method_reduction = sc_data[[red_col]],
             stringsAsFactors = FALSE
@@ -111,7 +106,6 @@ for (sc in unique(mc_data$scenario)) {
 
     if (nrow(plot_df) == 0) next
 
-    # Determine axis limits for the 45-degree line
     max_val <- max(c(plot_df$diim_reduction, plot_df$method_reduction), na.rm = TRUE)
 
     p <- ggplot(plot_df, aes(x = diim_reduction, y = method_reduction)) +
@@ -134,7 +128,7 @@ for (sc in unique(mc_data$scenario)) {
 
     sc_label <- tolower(gsub("[- ]", "_", sc))
     fname <- sprintf("scatter_%s_k5.png", sc_label)
-    ggsave(file.path(results_dir, fname), p, width = 12, height = 8)
+    ggsave(file.path(results_dir, fname), p, width = 12, height = 8, bg = "white")
     cat(sprintf("  Saved %s\n", fname))
 }
 

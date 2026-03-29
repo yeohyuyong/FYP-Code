@@ -1,11 +1,9 @@
-# intervention_timing.R
 # Tests how delayed intervention affects simplified method performance
 # Simulates intervention at t=0, 7, 14, 30, 60 days into the disruption
 
 if (!file.exists("functions.R")) setwd("..")
 
 library(openxlsx)
-library(igraph)
 library(ggplot2)
 library(dplyr)
 
@@ -17,15 +15,6 @@ dir.create(results_dir, showWarnings = FALSE, recursive = TRUE)
 delay_values <- c(0, 7, 14, 30, 60)
 k <- 5
 n_mc <- 500
-
-method_prefixes <- c(
-    "Total Output"  = "TotalOutput",
-    "PCA x xi"      = "PCAxi",
-    "PageRank x xi" = "PageRankxi",
-    "BL x xi"       = "BLxi",
-    "FL x xi"       = "FLxi"
-)
-method_labels <- names(method_prefixes)
 
 # DIIM variant that applies intervention after a specified delay
 DIIM_delayed <- function(q0, A_star, c_star, x, lockdown_duration, total_duration,
@@ -92,7 +81,7 @@ DIIM_delayed <- function(q0, A_star, c_star, x, lockdown_duration, total_duratio
 run_timing_analysis <- function(scenario_name, data_loader,
                                  lockdown_duration, total_duration,
                                  days_in_year) {
-    cat(sprintf("\n=== %s Intervention Timing Analysis ===\n", scenario_name))
+    cat(sprintf("\n--- %s Intervention Timing Analysis ---\n", scenario_name))
     data <- data_loader()
     A <- data$A; x <- data$x; c_star <- data$c_star; A_star <- data$A_star
     q0_base <- data$q0; q0_base[q0_base == 0] <- 1e-8
@@ -108,7 +97,7 @@ run_timing_analysis <- function(scenario_name, data_loader,
 
         method_reductions <- list()
         diim_reductions <- numeric(0)
-        for (m in names(method_prefixes)) method_reductions[[m]] <- numeric(0)
+        for (m in names(simplified_rankings)) method_reductions[[m]] <- numeric(0)
         valid_trials <- 0
 
         for (trial in 1:n_mc) {
@@ -216,7 +205,7 @@ p1 <- ggplot(combined, aes(x = delay, y = mean_ratio,
           legend.position = "bottom") +
     guides(color = guide_legend(nrow = 2))
 
-ggsave(file.path(results_dir, "intervention_timing_plot.png"), p1, width = 12, height = 7)
+ggsave(file.path(results_dir, "intervention_timing_plot.png"), p1, width = 12, height = 7, bg = "white")
 cat("Saved intervention_timing_plot.png\n")
 
 # --- Plot 2: DIIM absolute reduction vs delay (shows how much benefit is lost with delay) ---
@@ -238,7 +227,7 @@ p2 <- ggplot(diim_decay, aes(x = delay, y = mean_diim_red,
     theme(plot.title = element_text(face = "bold", size = 14),
           legend.position = "bottom")
 
-ggsave(file.path(results_dir, "intervention_timing_decay.png"), p2, width = 10, height = 7)
+ggsave(file.path(results_dir, "intervention_timing_decay.png"), p2, width = 10, height = 7, bg = "white")
 cat("Saved intervention_timing_decay.png\n")
 
 cat("Done!\n")

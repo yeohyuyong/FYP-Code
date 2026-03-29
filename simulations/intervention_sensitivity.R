@@ -1,11 +1,9 @@
-# intervention_sensitivity.R
 # Tests whether the three-regimes finding is robust to intervention magnitude.
 # MC (500 trials) for magnitudes {5%, 10%, 20%, 30%} across k values.
 
 if (!file.exists("functions.R")) setwd("..")
 
 library(openxlsx)
-library(igraph)
 library(ggplot2)
 library(dplyr)
 library(reshape2)
@@ -19,18 +17,10 @@ intervention_magnitudes <- c(0.05, 0.10, 0.20, 0.30)
 k_values <- c(3, 5, 7, 10, 12)
 n_mc <- 500
 
-method_prefixes <- c(
-    "Total Output"  = "TotalOutput",
-    "PCA x xi"      = "PCAxi",
-    "PageRank x xi" = "PageRankxi",
-    "BL x xi"       = "BLxi",
-    "FL x xi"       = "FLxi"
-)
-
 run_sensitivity <- function(scenario_name, data_loader,
                              lockdown_duration, total_duration,
                              days_in_year) {
-    cat(sprintf("\n=== %s Sensitivity Analysis ===\n", scenario_name))
+    cat(sprintf("\n--- %s Sensitivity Analysis ---\n", scenario_name))
     data <- data_loader()
     A <- data$A; x <- data$x; c_star <- data$c_star; A_star <- data$A_star
     q0_base <- data$q0; q0_base[q0_base == 0] <- 1e-8
@@ -44,7 +34,7 @@ run_sensitivity <- function(scenario_name, data_loader,
         for (k in k_values) {
             cat(sprintf("  mag=%.0f%%, k=%d: ", mag * 100, k))
             ratios <- list()
-            for (m in names(method_prefixes)) ratios[[m]] <- numeric(0)
+            for (m in names(simplified_rankings)) ratios[[m]] <- numeric(0)
             valid_trials <- 0
 
             for (trial in 1:n_mc) {
@@ -132,7 +122,7 @@ p_heat <- ggplot(best_method_data, aes(x = factor(k),
           panel.grid = element_blank())
 
 ggsave(file.path(results_dir, "sensitivity_intervention_heatmap.png"), p_heat,
-       width = 12, height = 6)
+       width = 12, height = 6, bg = "white")
 cat("Saved sensitivity_intervention_heatmap.png\n")
 
 # --- Line plot: all methods across magnitudes at k=5 ---
@@ -157,7 +147,7 @@ if (nrow(k5_data) > 0) {
               legend.position = "bottom")
 
     ggsave(file.path(results_dir, "sensitivity_intervention_k5.png"), p_line,
-           width = 12, height = 6)
+           width = 12, height = 6, bg = "white")
     cat("Saved sensitivity_intervention_k5.png\n")
 }
 

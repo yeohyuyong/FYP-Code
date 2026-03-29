@@ -1,7 +1,6 @@
 if (!file.exists("functions.R")) setwd("..")
 
 library(openxlsx)
-library(igraph)
 library(ggplot2)
 library(reshape2)
 library(dplyr)
@@ -10,10 +9,6 @@ source("functions.R")
 
 results_dir <- "simulations/results"
 dir.create(results_dir, showWarnings = FALSE, recursive = TRUE)
-
-# full method names (used for display and as keys)
-method_names <- c("Total Output", "PCA x xi", "PageRank x xi",
-                  "BL x xi", "FL x xi")
 
 # short column prefixes (letters only, no spaces/hyphens)
 method_prefixes <- c(
@@ -24,7 +19,6 @@ method_prefixes <- c(
     "FL x xi"       = "FLxi"
 )
 
-# short labels for plots
 method_labels <- c("Total Output", "PCA x xi", "PageRank x xi",
                    "BL x xi", "FL x xi")
 
@@ -32,36 +26,35 @@ compute_q0_features <- function(q0, simplified_rankings, k = 5) {
     num_sectors <- length(q0)
     total_q0 <- sum(q0)
     
-    calculated_features <- list()
+    feats <- list()
 
     for (method_name in names(simplified_rankings)) {
         top_k_sectors <- simplified_rankings[[method_name]][1:k]
         prefix <- method_prefixes[method_name]
 
         # share of total q0 captured by top-k
-        calculated_features[[paste0(prefix, "_share")]] <- sum(q0[top_k_sectors]) / total_q0
+        feats[[paste0(prefix, "_share")]] <- sum(q0[top_k_sectors]) / total_q0
 
         # average rank in q0 ordering (normalised 0-1)
         q0_ranks <- rank(-q0)
-        calculated_features[[paste0(prefix, "_avgrank")]] <- mean(q0_ranks[top_k_sectors]) / num_sectors
+        feats[[paste0(prefix, "_avgrank")]] <- mean(q0_ranks[top_k_sectors]) / num_sectors
 
         # overlap with q0's own top-k
         q0_topk <- order(q0, decreasing = TRUE)[1:k]
-        calculated_features[[paste0(prefix, "_overlap")]] <- length(intersect(top_k_sectors, q0_topk)) / k
+        feats[[paste0(prefix, "_overlap")]] <- length(intersect(top_k_sectors, q0_topk)) / k
     }
 
     # distributional features of q0
-    calculated_features[["q0_gini"]] <- 1 - 2 * sum((1:num_sectors) * sort(q0)) / (num_sectors * total_q0) + (num_sectors + 1) / num_sectors
-    calculated_features[["q0_cv"]]   <- sd(q0) / mean(q0)
-    calculated_features[["q0_max_ratio"]] <- max(q0) / mean(q0)
+    feats[["q0_gini"]] <- 1 - 2 * sum((1:num_sectors) * sort(q0)) / (num_sectors * total_q0) + (num_sectors + 1) / num_sectors
+    feats[["q0_cv"]]   <- sd(q0) / mean(q0)
+    feats[["q0_max_ratio"]] <- max(q0) / mean(q0)
     
     # normalised entropy
-    probability_distribution <- q0 / total_q0
-    probability_distribution <- probability_distribution[probability_distribution > 0]
-    normalized_entropy <- -sum(probability_distribution * log(probability_distribution)) / log(num_sectors)
-    calculated_features[["q0_entropy"]] <- normalized_entropy
+    probs <- q0 / total_q0
+    probs <- probs[probs > 0]
+    feats[["q0_entropy"]] <- -sum(probs * log(probs)) / log(num_sectors)
 
-    return(as.data.frame(calculated_features))
+    return(as.data.frame(feats))
 }
 
 run_monte_carlo <- function(scenario_name, data_loader,
@@ -92,8 +85,7 @@ run_monte_carlo <- function(scenario_name, data_loader,
     all_results <- list()
 
     for (trial in 1:n_mc) {
-        # Perturb the real q0: multiply each sector by a log-normal noise factor
-        # This preserves the relative structure of the real scenario while varying intensity
+        # perturb q0 with log-normal noise (preserves relative structure)
         noise <- exp(rnorm(num_sectors, mean = 0, sd = 0.5))
         random_q0 <- pmax(q0_base * noise, 1e-6)
         random_q0 <- pmin(random_q0, 1)  # cap at 1 (100% inoperability)
@@ -174,7 +166,6 @@ build_decision_rules <- function(mc_df, scenario_name, methods) {
         cat(sprintf("\n  %-25s close=%.1f%% wins=%.1f%% ratio=%.3f\n",
             m, close_rate * 100, win_rate * 100, mean_ratio))
 
-        # feature columns for logistic regression
         feature_cols <- c(share_col, avgrank_col, overlap_col,
                           "q0_gini", "q0_cv", "q0_max_ratio", "q0_entropy")
         feature_cols <- feature_cols[feature_cols %in% names(mc_df)]
@@ -287,7 +278,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
             theme(plot.title = element_text(face = "bold", size = 14),
                   legend.position = "bottom")
         ggsave(file.path(results_dir, paste0(prefix, "_ratio_distributions.png")),
-               p1, width = 12, height = 7)
+               p1, width = 12, height = 7, bg = "white")
         cat(sprintf("  Saved %s_ratio_distributions.png\n", prefix))
     }
 
@@ -322,7 +313,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
             theme(plot.title = element_text(face = "bold", size = 14),
                   legend.position = "bottom")
         ggsave(file.path(results_dir, paste0(prefix, "_close_rates.png")),
-               p2, width = 10, height = 6)
+               p2, width = 10, height = 6, bg = "white")
         cat(sprintf("  Saved %s_close_rates.png\n", prefix))
     }
 
@@ -354,7 +345,7 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
             theme(plot.title = element_text(face = "bold", size = 13))
 
         fname <- paste0(prefix, "_boundary_", tolower(prefix_m), ".png")
-        ggsave(file.path(results_dir, fname), p3, width = 10, height = 7)
+        ggsave(file.path(results_dir, fname), p3, width = 10, height = 7, bg = "white")
         cat(sprintf("  Saved %s\n", fname))
     }
 }
@@ -363,7 +354,7 @@ k_values <- c(3, 5, 7, 10, 12)
 all_mc_results <- list()
 
 for (k_val in k_values) {
-    cat(sprintf("\n========== k = %d ==========\n", k_val))
+    cat(sprintf("\n--- k = %d ---\n", k_val))
 
     covid_mc <- run_monte_carlo("COVID-19", download_data,
         lockdown_duration = 55, total_duration = 751,

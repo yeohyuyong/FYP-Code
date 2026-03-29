@@ -1,20 +1,20 @@
 \chapter{Methodology}
 
-This chapter presents the analytical framework. Section~\ref{sec:diim-derivation} derives the DIIM from the Leontief input-output model. Section~\ref{sec:simplified-methods} introduces the simplified structural methods for key sector identification. Section~\ref{sec:performance-metric} defines the performance metric used to compare methods.
+This chapter presents the analytical framework. Section~\ref{sec:diim-derivation} derives the DIIM from the Leontief input-output model. Section~\ref{sec:simplified-methods} describes the key sector identification methods. Section~\ref{sec:performance-metric} defines the performance metric used to compare methods.
 
 \section{The Dynamic Inoperability Input-Output Model}
 \label{sec:diim-derivation}
 
 \subsection{Inoperability}
 
-This paper uses the DIIM to assess the impact of economic disruptions on sectoral inoperability and economic losses in Singapore. The DIIM is derived from the Leontief input-output model and captures the higher-order transmission of shocks through inter-sector linkages. We begin by introducing the concept of ``inoperability'':
+This paper uses the DIIM to assess the impact of economic disruptions on sectoral inoperability and economic losses in Singapore. The DIIM is derived from the Leontief input-output model and captures how shocks propagate through inter-sector linkages. Inoperability is defined as:
 
 \begin{equation}
     \label{eq:inoperability-definition}
     \text{Inoperability} = \frac{\text{As Planned Production} - \text{Degraded Production}}{\text{As Planned Production}}
 \end{equation}
 
-Where ``As Planned Production'' represents the output level of a sector under normal production, and ``Degraded Production'' represents the output level of a sector after being shocked in its production process. ``Inoperability'' takes values between 0 and 1, with higher values indicating greater damage to production caused by the shock. A value of 1 means the shocked sector has completely lost its production capacity, while a value of 0 means the sector is producing at a normal level.
+Where ``As Planned Production'' represents the output level of a sector under normal production, and ``Degraded Production'' represents the output level after a disruption. ``Inoperability'' takes values between 0 and 1, with higher values indicating greater production loss. A value of 1 means the shocked sector has completely lost its production capacity, while a value of 0 means the sector is producing at a normal level.
 
 \subsection{From Leontief to IIM}
 
@@ -118,21 +118,21 @@ Where $K$ is the elasticity coefficient matrix describing how quickly sectors re
     \dot{q}(t) = K \bigl[ A^{*} q(t) + c^{*}(t) - q(t) \bigr]
 \end{equation}
 
-Solving Equation~\eqref{eq:diim-continuous} we can get the equation describing the evolution of sectoral inoperability over time:
+Solving Equation~\eqref{eq:diim-continuous} yields the inoperability as a function of time:
 
 \begin{equation}
     q(t) = e^{-K(I-A^{*})t} q(0) + \int_{0}^{t} K e^{-K(I-A^{*})(t-z)} c^{*}(z)\, dz
     \label{eq:diim-solution-general}
 \end{equation}
 
-Assuming that the demand shock $c^{*}$ remains unchanged, and $c^{*}=0$, then Equation~\eqref{eq:diim-solution-general} can be simplified to:
+When there is no demand shock ($c^{*}=0$), Equation~\eqref{eq:diim-solution-general} simplifies to:
 
 \begin{equation}
     q(t) = e^{-K (I - A^{*}) t} q(0)
     \label{eq:diim-solution-homogeneous}
 \end{equation}
 
-Where $q(0)$ represents the initial inoperability vector of sectors after being shocked. As time goes by, the inoperability changes at a rate of $e^{-K(I - A^{*})t}$.
+Here $q(0)$ is the initial inoperability vector after the shock. The inoperability decays at rate $e^{-K(I - A^{*})t}$.
 
 \subsection{Initial Inoperability}
 
@@ -156,7 +156,7 @@ According to Equation~\eqref{eq:diim-solution-homogeneous}, the inoperability of
     \label{eq:qi-exponential-decay}
 \end{equation}
 
-From Equation~\eqref{eq:qi-exponential-decay}, we can derive the calculation formula for~$k_i$:
+From Equation~\eqref{eq:qi-exponential-decay}, we can solve for~$k_i$:
 
 \begin{equation}
     k_i = \frac{\ln\left[q_i(0)/q_i(T)\right]}{T_i\left(1 - a_{ii}^{*}\right)}
@@ -167,7 +167,7 @@ Where $q_i(0)$ is the initial inoperability of sector~$i$; $q_i(T)$ is the inope
 
 \subsection{Economic Loss}
 
-Under the analytical framework of the DIIM model, the cumulative economic loss for sector~$i$ is:
+The cumulative economic loss for sector~$i$ is:
 
 \begin{equation}
     EL_i = x_i \int_{t=0}^{t=T} q_i(t) \, dt
@@ -180,7 +180,7 @@ Where $x_i$ is the planned output of sector~$i$ under normal production.
 \section{Key Sector Identification Methods}
 \label{sec:simplified-methods}
 
-A key sector is defined as one where targeted intervention, modelled as a 10\% reduction in initial inoperability $q(0)$, produces the largest reduction in total economic loss. Below we first describe the intervention and loss reduction evaluation procedure, followed by the benchmark and five simplified structural alternatives.
+A key sector is defined as one where targeted intervention, modelled as a 10\% reduction in initial inoperability $q(0)$, produces the largest reduction in total economic loss. The evaluation procedure is described first, then the benchmark and five simplified alternatives.
 
 \subsection{Intervention and Loss Reduction Evaluation}
 \label{sec:intervention-procedure}

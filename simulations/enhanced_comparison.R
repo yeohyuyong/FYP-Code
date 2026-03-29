@@ -11,6 +11,8 @@ source("functions.R")
 results_dir <- "simulations/results"
 dir.create(results_dir, showWarnings = FALSE, recursive = TRUE)
 
+simplified_methods <- c("Total Output", "PCA x xi", "PageRank x xi", "BL x xi", "FL x xi")
+
 diim_rank_sectors <- function(q0, A_star, c_star, x,
                               lockdown_duration, total_duration,
                               days_in_year = 366) {
@@ -104,25 +106,24 @@ run_scenario <- function(scenario_name, data_loader,
         paste(sensitivity_results$ranked_sectors[1:5], collapse = ", ")))
 
 
-    # --- Evaluate all methods at each k ---
     cat("\n  Evaluating all methods at each k...\n")
 
     all_methods <- simplified_rankings
     all_methods[["DIIM"]]          <- diim_results$ranked_sectors
     all_methods[["Sensitivity"]]    <- sensitivity_results$ranked_sectors
 
-    results_dataframe <- data.frame(
+    results_df <- data.frame(
         scenario = character(), method = character(),
         k = integer(), pct_reduction = numeric(),
         sectors = character(), stringsAsFactors = FALSE)
 
     for (method_name in names(all_methods)) {
-        for (current_k in target_k_values) {
-            evaluation <- evaluate_topk(all_methods[[method_name]], current_k, q0, A_star, c_star, x,
+        for (kval in target_k_values) {
+            evaluation <- evaluate_topk(all_methods[[method_name]], kval, q0, A_star, c_star, x,
                                         lockdown_duration, total_duration, base_loss, days_in_year)
                                         
-            results_dataframe <- rbind(results_dataframe, data.frame(
-                scenario = scenario_name, method = method_name, k = current_k,
+            results_df <- rbind(results_df, data.frame(
+                scenario = scenario_name, method = method_name, k = kval,
                 pct_reduction = evaluation$pct_reduction,
                 sectors = paste(evaluation$sectors, collapse = ","),
                 stringsAsFactors = FALSE))
@@ -130,10 +131,10 @@ run_scenario <- function(scenario_name, data_loader,
     }
 
     cat("\n  Results (% loss reduction):\n")
-    summary_table <- reshape2::dcast(results_dataframe, method ~ k, value.var = "pct_reduction")
+    summary_table <- reshape2::dcast(results_df, method ~ k, value.var = "pct_reduction")
     print(summary_table)
 
-    return(results_dataframe)
+    return(results_df)
 }
 
 # COVID-19 (15 sectors)
@@ -152,7 +153,7 @@ cat("\nSaved enhanced_comparison.csv\n")
 
 plot_topk_comparison <- function(data, scenario_name, filename) {
     plot_data <- data[data$scenario == scenario_name, ]
-    plot_data$method_type <- ifelse(plot_data$method %in% c("Total Output", "PCA x xi", "PageRank x xi", "BL x xi", "FL x xi"), "Simplified Method",
+    plot_data$method_type <- ifelse(plot_data$method %in% simplified_methods, "Simplified Method",
         ifelse(plot_data$method == "DIIM", "DIIM",
             ifelse(plot_data$method == "Sensitivity", "Sensitivity", "Other")))
 
@@ -174,14 +175,13 @@ plot_topk_comparison <- function(data, scenario_name, filename) {
               legend.position = "bottom", legend.box = "vertical") +
         guides(color = guide_legend(nrow = 3), linetype = guide_legend(nrow = 1))
 
-    ggsave(file.path(results_dir, filename), p, width = 12, height = 7)
+    ggsave(file.path(results_dir, filename), p, width = 12, height = 7, bg = "white")
     cat(sprintf("Saved %s\n", filename))
 }
 
 plot_topk_comparison(combined, "COVID-19", "enhanced_covid_topk.png")
 plot_topk_comparison(combined, "Manpower", "enhanced_manpower_topk.png")
 
-simplified_methods <- c("Total Output", "PCA x xi", "PageRank x xi", "BL x xi", "FL x xi")
 simplified_data <- combined[combined$method %in% simplified_methods, ]
 if (nrow(simplified_data) > 0) {
     p_simplified <- ggplot(simplified_data, aes(x = k, y = pct_reduction,
@@ -196,7 +196,7 @@ if (nrow(simplified_data) > 0) {
         theme(plot.title = element_text(face = "bold", size = 14),
               legend.position = "bottom")
     ggsave(file.path(results_dir, "enhanced_simplified_methods.png"), p_simplified,
-           width = 12, height = 6)
+           width = 12, height = 6, bg = "white")
     cat("Saved enhanced_simplified_methods.png\n")
 }
 
@@ -216,7 +216,7 @@ p_winner <- ggplot(winners, aes(x = factor(k), y = pct_reduction, fill = method)
           legend.position = "bottom")
 
 ggsave(file.path(results_dir, "enhanced_best_at_k.png"), p_winner,
-       width = 12, height = 6)
+       width = 12, height = 6, bg = "white")
 cat("Saved enhanced_best_at_k.png\n")
 
 cat("ENHANCED COMPARISON SUMMARY\n\n")
@@ -225,35 +225,19 @@ for (scenario_name in unique(combined$scenario)) {
     cat(sprintf("--- %s ---\n", scenario_name))
     scenario_data <- combined[combined$scenario == scenario_name, ]
 
-    for (current_k in sort(unique(scenario_data$k))) {
-        k_data <- scenario_data[scenario_data$k == current_k, ]
+    for (kval in sort(unique(scenario_data$k))) {
+        k_data <- scenario_data[scenario_data$k == kval, ]
         best_method <- k_data[which.max(k_data$pct_reduction), ]
-        cat(sprintf("  k=%2d: Best = %-25s (%.2f%%)", current_k, best_method$method, best_method$pct_reduction))
+        cat(sprintf("  k=%2d: Best = %-25s (%.2f%%)", kval, best_method$method, best_method$pct_reduction))
 
-        pca_vals <- k_data[k_data$method %in% c("Total Output", "PCA x xi", "PageRank x xi", "BL x xi", "FL x xi"), ]
-        if (nrow(pca_vals) > 0) {
-            best_pca <- pca_vals[which.max(pca_vals$pct_reduction), ]
-            cat(sprintf("  |  Best PCA = %-20s (%.2f%%)", best_pca$method, best_pca$pct_reduction))
+        simp_vals <- k_data[k_data$method %in% simplified_methods, ]
+        if (nrow(simp_vals) > 0) {
+            best_simp <- simp_vals[which.max(simp_vals$pct_reduction), ]
+            cat(sprintf("  |  Best Simplified = %-20s (%.2f%%)", best_simp$method, best_simp$pct_reduction))
         }
         cat("\n")
     }
     cat("\n")
-}
-
-cat("\nComparison: Structural Methods vs Total Output (at k=5):\n")
-for (scenario_name in unique(combined$scenario)) {
-    scenario_data <- combined[combined$scenario == scenario_name & combined$k == 5, ]
-    
-    total_output_red <- scenario_data[scenario_data$method == "Total Output", "pct_reduction"]
-    structural <- scenario_data[scenario_data$method %in% c("PCA", "PageRank", "BL", "FL"), ]
-    
-    if (length(total_output_red) > 0 && nrow(structural) > 0) {
-        best_struct <- structural[which.max(structural$pct_reduction), ]
-        improvement <- best_struct$pct_reduction - total_output_red
-        
-        cat(sprintf("  %s: Total Output=%.3f%% -> %s=%.3f%% (delta=%.3f%%)\n",
-            scenario_name, total_output_red, best_struct$method, best_struct$pct_reduction, improvement))
-    }
 }
 
 cat("\nDone!\n")

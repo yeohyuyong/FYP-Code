@@ -1,5 +1,4 @@
 DECISION BOUNDARY SUMMARY
-=========================
 
 Best predictor: q0_pca_share (AUC = 0.5098)
 Optimal threshold (Youden's J): 0.3695

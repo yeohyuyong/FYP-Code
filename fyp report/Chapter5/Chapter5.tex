@@ -4,7 +4,7 @@ This chapter compares the key sector identification methods described in Chapter
 
 \section{PCA Applied to the IO Matrix}
 
-PCA is applied to the integrated IO matrix $H = A(I-A)^{-1}$. Table~\ref{tab:pca-loadings} lists the PCA loadings for the COVID-19 scenario (15~sectors), sorted by Euclidean distance in the PC space, along with the final weighted score $\text{Score}_i^{\text{PCA}}$ which determines the ranking.
+PCA is applied to the integrated IO matrix $H = A(I-A)^{-1}$. Table~\ref{tab:pca-loadings} lists the PCA loadings for the COVID-19 scenario (15~sectors), with the Euclidean distance in the PC space and the final weighted score $\text{Score}_i^{\text{PCA}}$, sorted by that score.
 
 \begin{table}[H]
 \centering
@@ -33,7 +33,7 @@ PCA is applied to the integrated IO matrix $H = A(I-A)^{-1}$. Table~\ref{tab:pca
 
 The top-5 PCA $\times\, x_i$ sectors for COVID-19 are sectors 2 (Manufacturing), 5 (Transportation \& Storage), 4 (Wholesale \& Retail Trade), 8 (Financial \& Insurance Services), and 3 (Construction). While sector 3 has the largest structural distance, sector 2 becomes the highest-ranked when weighted by its large economic size.
 
-For the manpower scenario (15~sectors), PCA is computed on the corresponding $H$ matrix from the 2022 aggregated IO table. The top-5 PCA $\times\, x_i$ sectors are sectors 2, 5, 4, 7, and 8. These closely mirror the COVID-19 PCA sectors, reflecting the similar aggregated structure, though the different IO table vintage (2022 vs 2019) and the absence of demand shock ($c^* = 0$) produce some ranking differences.
+For the manpower scenario (15~sectors), PCA is computed on the corresponding $H$ matrix from the 2022 aggregated IO table. The top-5 PCA $\times\, x_i$ sectors are sectors 2, 5, 4, 7, and 8. These closely mirror the COVID-19 PCA sectors because the aggregated structures are similar, though the different IO table vintage (2022 vs 2019) and the absence of demand shock ($c^* = 0$) produce some ranking differences.
 
 
 \section{Simplified Method Rankings}
@@ -87,7 +87,7 @@ Using the actual $q(0)$ data from each scenario, we compare each simplified meth
 
 For the COVID-19 scenario, the DIIM identifies sectors 2, 3, 4, 5, 12 as key sectors and achieves a loss reduction of 3.91\%. Total Output, PageRank $\times\, x_i$, BL $\times\, x_i$, and FL $\times\, x_i$ achieve 2.65\%, while PCA $\times\, x_i$ achieves 3.38\%, an improvement over the purely size-based methods. The DIIM selects Construction (3) and Public Administration (12) in place of Financial Services (8) and Information \& Communications (7), capturing sectors with high initial inoperability and strong structural dependencies.
 
-For the manpower scenario, all simplified methods (including PCA $\times\, x_i$) achieve 5.33\%, while the DIIM achieves 6.44\%. The gap is smaller than in the COVID-19 case, but the DIIM still outperforms by accounting for both $q(0)$ and $c^{*}$.
+For the manpower scenario, all simplified methods (including PCA $\times\, x_i$) achieve 5.33\%, while the DIIM achieves 6.44\%. The gap is smaller because $c^* = 0$, but the DIIM still outperforms by incorporating $q(0)$ into its ranking.
 
 This observation motivates the Monte Carlo analysis in Chapter~6: the performance of simplified methods at a single $q(0)$ point is insufficient to draw general conclusions. We need to understand how performance varies across the space of possible $q(0)$ vectors.
 
@@ -119,6 +119,6 @@ Figures~\ref{fig:ml-vs-diim-loss-reduction} and~\ref{fig:improvement-ml-vs-diim}
     \label{fig:improvement-ml-vs-diim}
 \end{figure}
 
-These results show that PCA can perform well at the original COVID-19 data point, but the question remains: does this hold across a wider range of disruption profiles? This is addressed in the next chapter.
+PCA performs well at the original COVID-19 data point, but whether this holds across a wider range of disruption profiles is less clear. The next chapter tests this with Monte Carlo simulation.
 
 \newpage

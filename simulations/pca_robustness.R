@@ -1,11 +1,9 @@
-# pca_robustness.R
 # Tests whether n_pcs=2 is optimal for PCA x xi method.
 # 500-trial MC for n_pcs in {1, 2, 3, 4} at k=5.
 
 if (!file.exists("functions.R")) setwd("..")
 
 library(openxlsx)
-library(igraph)
 library(ggplot2)
 library(dplyr)
 
@@ -40,7 +38,7 @@ pca_rank_with_npcs <- function(A, x, n_pcs) {
 run_pca_robustness <- function(scenario_name, data_loader,
                                 lockdown_duration, total_duration,
                                 days_in_year) {
-    cat(sprintf("\n=== %s PCA Robustness (k=%d) ===\n", scenario_name, k))
+    cat(sprintf("\n--- %s PCA Robustness (k=%d) ---\n", scenario_name, k))
     data <- data_loader()
     A <- data$A; x <- data$x; c_star <- data$c_star; A_star <- data$A_star
     q0_base <- data$q0; q0_base[q0_base == 0] <- 1e-8
@@ -146,7 +144,7 @@ p <- ggplot(combined, aes(x = factor(n_pcs), y = mean_ratio,
     theme(plot.title = element_text(face = "bold", size = 14),
           legend.position = "bottom")
 
-ggsave(file.path(results_dir, "pca_robustness_plot.png"), p, width = 10, height = 7)
+ggsave(file.path(results_dir, "pca_robustness_plot.png"), p, width = 10, height = 7, bg = "white")
 cat("Saved pca_robustness_plot.png\n")
 
 p_var <- ggplot(combined, aes(x = factor(n_pcs), y = var_explained * 100,
@@ -162,7 +160,7 @@ p_var <- ggplot(combined, aes(x = factor(n_pcs), y = var_explained * 100,
     theme(plot.title = element_text(face = "bold", size = 14),
           legend.position = "bottom")
 
-ggsave(file.path(results_dir, "pca_variance_explained.png"), p_var, width = 10, height = 7)
+ggsave(file.path(results_dir, "pca_variance_explained.png"), p_var, width = 10, height = 7, bg = "white")
 cat("Saved pca_variance_explained.png\n")
 
 cat("Done!\n")

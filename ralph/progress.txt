@@ -320,3 +320,52 @@ REVIEW PASSED — Humanize and check consistency of Chapter 4 with code and resu
 - Consistency check: verified all ~15 numerical claims against decision_rules_mc_data.csv, enhanced_comparison.csv, pca_robustness.csv, and intervention_timing.csv. Found 1 factual error: Chapter 8 claimed "40,000 Monte Carlo trials" but the data has 2,000 trials × 5 k values × 2 scenarios = 20,000 total. Same arithmetic error existed in Chapter 6 line 43 ("20,000 per scenario" should be "10,000 per scenario"). Fixed both to match actual data.
 - Humanization: Chapter 8 was already very clean (data-heavy conclusion with specific numbers). Made 3 targeted fixes: "revealed how" → "showed how", "The analysis reveals three distinct regimes" → "The results show three regimes", "strengthen these conclusions" → "support these findings". No structural rewrites needed.
 - Gotcha: trial count errors can propagate across chapters — when a number is wrong in a results chapter, check whether the conclusion repeats it. Also, 2000 × 5 = 10,000, not 20,000 — always verify arithmetic in prose, not just the data values themselves.
+
+REVIEW PASSED — Humanize and check consistency of Chapter 5 (Key Sector Identification Methods)
+- 0 AI phrases, 0 em dashes, 0 -ing phrases, 0 copula avoidance, 0 filler. Grep scans all clean.
+- 4 changes verified: table sort description fix (Euclidean distance → weighted score), "reflecting" → "because", c* factual fix (manpower has c*=0), closing paragraph rewrite.
+- All 3 figure PNGs exist (impact_total_duration.png, econ_loss_ml_vs_diim.png, improvement_diim_ml.png).
+- Numbers match enhanced_comparison.csv: COVID-19 k=5 DIIM=3.91%, simplified=2.65%, PCA=3.38%.
+- Read aloud: short factual results chapter. Sounds like a student wrote it.
+- Note: changes were uncommitted (working tree only). Committed as part of this review pass.
+
+REVIEW PASSED — Humanize and check consistency of Chapter 1 (Introduction)
+- 0 AI phrases, 0 em dashes. Changes committed in f297487.
+- 4 targeted fixes verified: "clearly" removed, trailing -ing phrases removed, "far beyond" → "beyond".
+- No numerical claims to verify (introductory chapter).
+- Read aloud: clean introductory prose. No AI patterns.
+
+REVIEW PASSED — Humanize and check consistency of Chapter 2 (Methodology)
+- 0 AI phrases, 0 em dashes, 0 -ing phrases, 0 copula avoidance.
+- 9 changes verified: "introduces" → "describes", "We begin by introducing" → "Inoperability is defined as:", verbose explanation trimmed, "As time goes by" → direct statement, "derive the calculation formula for" → "solve for", other prose simplifications.
+- All style-only changes. No logic/formula modifications.
+- Read aloud: methodology prose with equations. Reads naturally.
+- Note: changes were uncommitted (working tree only). Committed as part of this review pass.
+
+REVIEW PASSED — Humanize and check consistency of Chapter 6 (Monte Carlo Robustness Analysis)
+- 0 AI phrases, 0 em dashes, 0 -ing phrases, 0 copula avoidance, 0 filler.
+- Trial count fix verified: 2,000 × 5 = 10,000 per scenario, 20,000 total. Arithmetic correct.
+- All 7 referenced figure PNGs exist in Chapter6/.
+- Tables 6.1–6.5 values verified against decision_rules_summary.txt in prior work iteration.
+- 4 humanization changes verified: "structural lens produces different selections" → "ranks them differently", removed generic conclusion, added specific "18 percentage points", removed synonym cycling.
+- Read aloud: data-heavy results chapter with specific numbers. No AI patterns.
+
+REVIEW PASSED — Humanize and check consistency of Chapter 7 (Discussion)
+- 0 AI phrases, 0 em dashes, 0 -ing phrases, 0 copula avoidance.
+- ≥90% claim fix verified: line 63 correctly scoped to "Total Output alone achieves ≥90%". Data confirms: TO at k=10 is 0.908 (COVID-19) and 0.954 (Manpower). PCA at k=10 is only 0.800 — correctly excluded from claim.
+- Small k range fix verified: "0.65–0.87" → "0.73–0.87". Data confirms: Manpower k=3 = 0.730, COVID k=3 = 0.870.
+- Removed em dash ("not constant---it depends critically") → semicolon + removed "critically".
+- Synonym usage: method(23), approach(1), framework(1) — appropriate, no cycling.
+- 53 sentences, avg 22.1 words, range 2–54 — natural variation. 0 rule-of-three lists.
+- Read aloud: discussion chapter with specific numbers and policy recommendations. Sounds like a student.
+
+REVIEW PASSED — Humanize and check consistency of Chapter 8 (Conclusion)
+- 0 AI phrases, 0 em dashes, 0 -ing phrases, 0 copula avoidance, 0 filler.
+- Trial count fix verified: "20,000 Monte Carlo trials" matches Ch 6 total (10,000 × 2 scenarios).
+- "The analysis reveals three distinct regimes" → "The results show three regimes" — clean.
+- Large k claim "0.92–0.97 and close rates above 99%" verified: k=12 range is 0.923–0.966, close rates 99.8–100%.
+- 14 sentences, avg 24.5 words, range 10–38 — natural variation. 0 rule-of-three lists. 0 runs of similar-length sentences.
+- Synonym usage: method(13), framework(2), approach(2) — appropriate for conclusion.
+- Read aloud: concise conclusion with specific findings. No AI patterns. Sounds like a student.
+
+Phase 2 COMPLETE — all 8 chapters reviewed and passed.
