@@ -23,7 +23,7 @@
 - [x] Humanize and check consistency of Chapter 5 (Key Sector Identification Methods) with code and results
 - [x] Humanize and check consistency of Chapter 6 (Monte Carlo Robustness Analysis) — ensure figures and tables match simulation outputs
 - [x] Humanize and check consistency of Chapter 7 with code and results
-- [ ] Humanize and check consistency of Chapter 8 (Conclusion) with code and results
+- [x] Humanize and check consistency of Chapter 8 (Conclusion) with code and results
 - [ ] Humanize and check consistency of Abstract, Acknowledgement, and Appendix
 
 <!-- Phase B: PDF compile & review — [PDF_REVIEW_PROMPT](PDF_REVIEW_PROMPT.md) -->
