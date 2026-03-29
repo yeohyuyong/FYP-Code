@@ -131,3 +131,10 @@
 - STALE DATA FIX (Abstract): All four close rate percentages (89.8%, 86.6%, 55.4%, 38.8%) were from an older simulation run and don't match any current data. Rewrote results paragraph to describe k-dependent performance with correct numbers from decision_rules_summary (e.g., COVID k=5 PCA 64.1%, others 5.7%; Manpower k=5 all 45.5%; k≥10 all above 92%). Also removed "computationally expensive" claim.
 - STALE DATA FIX (Appendix B): Mean q0 was 0.07178, actual is 0.08165. Max q0 was 0.22146, actual is 0.289. PCA top-5 sectors (2,5,4,7,8) verified correct.
 - Humanized Acknowledgement: removed AI tells ("sincere gratitude", "invaluable", "profoundly thankful", "unwavering support", "constant source of strength"), tightened prose. Removed all decorated banner comments across all three files.
+
+## Iteration 2026-03-29 (Presentation polish)
+- Used python-pptx to programmatically fix remaining REVIEW.md items. Most issues (footer, title slide, S4 subtitle, S24 transition, S27 title, S40 future work, S31-S36 takeaway boxes, S46 title) were already addressed in a prior commit (2193e59).
+- Widened 5 step-description boxes on S30 from 2.00in to 2.60in to prevent text overflow.
+- Promoted S38 key finding ("xi-weighted methods stay surprisingly close") to 13pt bold amber for visibility.
+- Applied 27 Unicode math notation improvements across all slides: q(0)→q₀, x_i→xᵢ, q_i→qᵢ, R_m→Rₘ.
+- AI language scan: zero hits across all 48 slides. Presentation is clean.

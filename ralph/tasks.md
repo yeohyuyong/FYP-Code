@@ -27,4 +27,4 @@
 - [x] Humanize and check consistency of Abstract, Acknowledgement, and Appendix
 
 <!-- Phase 3: Presentation -->
-- [ ] Polish presentations/DSO_DIIM_Beamer_Style.pptx — make professional and suitable for FYP presentation
+- [x] Polish presentations/DSO_DIIM_Beamer_Style.pptx — make professional and suitable for FYP presentation
