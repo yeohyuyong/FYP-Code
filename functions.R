@@ -1,7 +1,7 @@
 library(openxlsx)
 
 download_data <- function() {
-  # download 2019 IOT and extract total output and final demand column
+  # 2019 IOT: extract 15x15 intermediate flows, total output, and final demand
   data <- read.xlsx("dataset/io_tables/iot_2019_2021_combined.xlsx", sheet = "2019IOTable")
   iot2019 <- data[2:(2 + 15 - 1), 3:(3 + 15 - 1)]
   x <- data[2:(2 + 15 - 1), ncol(data)]
@@ -9,18 +9,19 @@ download_data <- function() {
   x <- as.matrix(sapply(x, as.numeric))
   c <- as.matrix(sapply(c, as.numeric))
 
-  # extract technical coefficient matrix
+  # Technical coefficient matrix A
   A <- read.xlsx("dataset/io_tables/iot_2019_2021_combined.xlsx", sheet = "A")
   A <- A[2:(2 + 15 - 1), 3:(3 + 15 - 1)]
   A <- as.matrix(sapply(A, as.numeric))
 
-  # extract sector initial inoperability
+  # Sector initial inoperability q(0) and perturbation c*
   q0_df <- read.xlsx("dataset/covid_data/unemployment_and_impact_analysis.xlsx", sheet = "sector inoperability", colNames = FALSE)
   q0 <- as.numeric(q0_df[2:16, 3])
 
   c_star_df <- read.xlsx("dataset/covid_data/unemployment_and_impact_analysis.xlsx", sheet = "c_star")
   c_star <- as.numeric(c_star_df[1:15, 7])
 
+  # Interdependency matrix: A* = x^{-1} A x
   A_star <- solve(diag(as.vector(x))) %*% A %*% diag(as.vector(x))
 
   return(list(
@@ -34,21 +35,19 @@ download_data <- function() {
 }
 
 download_manpower_data <- function() {
-  # Load 15-sector aggregated 2022 IOT for A matrix and x vector
+  # 2022 IOT (15-sector aggregation) for manpower disruption scenario
   data_A <- read.xlsx("dataset/manpower_disruption_data/iot_2022_15_sectors.xlsx", sheet = "A", colNames = FALSE)
   num_sectors <- nrow(data_A) - 1
   A <- data_A[2:(num_sectors + 1), 2:(num_sectors + 1)]
   A <- as.matrix(sapply(A, as.numeric))
 
-  # Sheet "x" contains the total output
   data_x <- read.xlsx("dataset/manpower_disruption_data/iot_2022_15_sectors.xlsx", sheet = "x")
   x <- as.numeric(data_x$Total_Output)
 
-  # Load sector initial inoperability (q0)
   data_q0 <- read.xlsx("dataset/manpower_disruption_data/sector_initial_inoperability_15_sectors.xlsx", sheet = "Sector_initial_inoperability")
   q0 <- as.numeric(data_q0$Sector_initial_inoperability)
 
-  # Initialize c and c_star to 0 for manpower disruption scenario
+  # No external perturbation in manpower scenario (c* = 0)
   c <- rep(0, num_sectors)
   c_star <- rep(0, num_sectors)
 
@@ -75,10 +74,11 @@ DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_s
     q0[key_sectors] <- q0[key_sectors] * (1 - intervention_magnitude)
   }
 
-  # we assume after 2 years the economic activity return to 99% of pre lock down level
+  # Assume 99% recovery by time T; avoid log(0) for zero-inoperability sectors
   q0[q0 == 0] <- 1e-8
   qT = q0 * 1/100
 
+  # Recovery rate from Santos & Haimes (2004)
   k <- log(q0 / qT) / (T * (1 - a_ii))
   K <- diag(as.vector(k))
 
@@ -86,15 +86,15 @@ DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_s
 
   for (t in 2:total_duration) {
     if (t <= lockdown_duration) {
-      # During lockdown: risk_management dampens disruption propagation
+      # Lockdown phase: c* active, risk_management dampens propagation
       inoperability_evolution[, t] <- inoperability_evolution[, t - 1] + K %*% (A_star %*% inoperability_evolution[, t - 1] + c_star - inoperability_evolution[, t - 1]) * risk_management
     } else {
-      # After lockdown: c* becomes 0 (no more external shock), recovery is NOT dampened
+      # Recovery phase: c* = 0, no dampening
       inoperability_evolution[, t] <- inoperability_evolution[, t - 1] + K %*% (A_star %*% inoperability_evolution[, t - 1] - inoperability_evolution[, t - 1])
     }
   }
 
-  # convert to planned DAILY output (output is in millions)
+  # Cumulative economic loss (daily output in $M)
   x_daily <- x / days_in_year
   EL_evolution <- t(apply(inoperability_evolution, 1, cumsum)) * as.vector(x_daily)
   EL_end <- EL_evolution[, ncol(EL_evolution)]
@@ -111,19 +111,17 @@ DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_s
 }
 
 simulation_ml_vs_diim <- function(q0, A, A_star, c_star, x, lockdown_duration, total_duration) {
-  # run model to calculate the economic loss (without intervention)
+  # Baseline (no intervention)
   model <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration)
   EL_evolution <- model$EL_evolution
 
-  # obtain the sectors with top economic loss
+  # DIIM top-5: sectors with highest peak economic loss
   max_econ_loss <- apply(EL_evolution, 1, max)
   sorted_indices <- order(max_econ_loss, decreasing = TRUE)
   top_econ_loss_5 <- sorted_indices[1:5]
-
-  # rerun the model with intervention for the top economic sectors
   model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = top_econ_loss_5)
 
-  # Compute PCA x xi key sectors dynamically (using A, not A_star)
+  # PCA x xi top-5 (using A, not A_star)
   pca_results_local <- pca_rank_sectors(A, x, n_pcs = 2)
   ml_key_sectors <- pca_results_local$ranked_sectors[1:5]
   model_ml <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = ml_key_sectors)
@@ -141,8 +139,7 @@ simulation_ml_vs_diim <- function(q0, A, A_star, c_star, x, lockdown_duration, t
   ))
 }
 
-# gini: computes the Gini coefficient of a vector (measures inequality)
-# Returns 0 for perfectly equal, closer to 1 for highly unequal
+# Gini coefficient (0 = equal, 1 = maximally concentrated)
 gini <- function(x) {
   x <- sort(abs(x))
   n <- length(x)
@@ -151,25 +148,20 @@ gini <- function(x) {
   return((2 * sum(index * x) / (n * sum(x))) - (n + 1) / n)
 }
 
-# compare_methods: runs DIIM three times (baseline, DIIM top-k intervention, PCA intervention)
-# and returns losses, reductions, and whether PCA wins
+# Compare baseline vs DIIM top-k vs PCA top-k intervention
 compare_methods <- function(q0, A_star, c_star, x,
                             lockdown_duration, total_duration,
                             pca_sectors,
                             days_in_year = 366) {
-  # 1. Baseline run (no intervention)
   model_base <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, days_in_year = days_in_year)
   EL_base <- model_base$EL_evolution
 
-  # 2. Find DIIM top-5 sectors (by peak economic loss)
+  # DIIM top-k: sectors with highest peak loss
   max_econ_loss <- apply(EL_base, 1, max)
   diim_sectors <- order(max_econ_loss, decreasing = TRUE)[1:length(pca_sectors)]
 
-  # 3. Rerun with DIIM intervention
   model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration,
                      key_sectors = diim_sectors, days_in_year = days_in_year)
-
-  # 4. Rerun with PCA intervention
   model_pca <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration,
                     key_sectors = pca_sectors, days_in_year = days_in_year)
 
@@ -180,7 +172,7 @@ compare_methods <- function(q0, A_star, c_star, x,
   reduction_diim <- loss_base - loss_diim
   reduction_pca  <- loss_base - loss_pca
   pca_wins <- reduction_pca > reduction_diim
-  overlap <- length(intersect(pca_sectors, diim_sectors)) # number of overlapping sectors
+  overlap <- length(intersect(pca_sectors, diim_sectors))
 
   return(list(
     loss_base = loss_base, loss_diim = loss_diim, loss_pca = loss_pca,
@@ -190,9 +182,7 @@ compare_methods <- function(q0, A_star, c_star, x,
   ))
 }
 
-# pca_rank_sectors: ranks sectors by Euclidean distance in multi-PC space, weighted by total output
-# Uses eigendecomposition of the influence matrix H = A * L
-# Sectors farther from origin in PC space AND with higher output are ranked more important
+# Rank sectors by PCA distance on H = A*L, weighted by total output xi
 pca_rank_sectors <- function(A_matrix, x_vector, n_pcs = 2) {
   n <- nrow(A_matrix)
   I_minus_A <- diag(n) - A_matrix
@@ -205,14 +195,10 @@ pca_rank_sectors <- function(A_matrix, x_vector, n_pcs = 2) {
   n_pcs <- min(n_pcs, ncol(eigenvectors))
   loadings <- eigenvectors[, 1:n_pcs, drop = FALSE]
 
-  # Euclidean distance from origin
   distances <- sqrt(rowSums(loadings^2))
-
-  # weight by total output (xi)
   weighted_distances <- distances * as.vector(x_vector)
   ranked_sectors <- order(weighted_distances, decreasing = TRUE)
 
-  # variance explained by each PC
   var_explained <- eigenvalues / sum(abs(eigenvalues))
   cumulative_var <- cumsum(var_explained[1:n_pcs])
 
@@ -227,52 +213,42 @@ pca_rank_sectors <- function(A_matrix, x_vector, n_pcs = 2) {
   ))
 }
 
-# pagerank_rank_sectors: ranks sectors by PageRank weighted by total output
+# Rank sectors by PageRank on A*, weighted by total output xi
 pagerank_rank_sectors <- function(A_star, x_vector) {
   g <- igraph::graph_from_adjacency_matrix(A_star, mode = "directed",
                                            weighted = TRUE, diag = FALSE)
 
   pr <- igraph::page_rank(g)$vector
 
-  # weight by total output (xi)
   weighted_pr <- pr * as.vector(x_vector)
-
   ranked_sectors <- order(weighted_pr, decreasing = TRUE)
   return(list(ranked_sectors = ranked_sectors, pagerank = pr, weighted_pagerank = weighted_pr))
 }
 
-# compute_simplified_rankings: computes 5 "simplified" sector rankings that don't need DIIM
-# All structural methods are weighted by total output (xi) to reflect economic size
-# 1. Total Output  2. PCA x xi  3. PageRank x xi  4. BL x xi  5. FL x xi
+# Five xi-weighted structural rankings (no DIIM run needed)
 compute_simplified_rankings <- function(A, A_star, x) {
   n <- nrow(A)
   rankings <- list()
   xi <- as.vector(x)
 
-  # 1. Total Output: rank sectors by total output (xi)
   rankings[["Total Output"]] <- order(xi, decreasing = TRUE)
 
-  # Compute Leontief inverse (shared by PCA, BL, FL)
-  I_minus_A <- diag(n) - A
-  L <- solve(I_minus_A)
+  L <- solve(diag(n) - A)  # Leontief inverse
 
-  # 2. PCA x xi: 2-PC distance on influence matrix H = A * L, weighted by xi
+  # PCA x xi: 2-PC distance on H = A*L
   H <- A %*% L
   eig <- eigen(H)
   pc_loadings <- Re(eig$vectors[, 1:min(2, n)])
   pca_dist <- sqrt(rowSums(pc_loadings^2))
   rankings[["PCA x xi"]] <- order(pca_dist * xi, decreasing = TRUE)
 
-  # 3. PageRank x xi: PageRank centrality weighted by total output
   pr <- igraph::page_rank(igraph::graph_from_adjacency_matrix(
           A_star, mode = "directed", weighted = TRUE, diag = FALSE))$vector
   rankings[["PageRank x xi"]] <- order(pr * xi, decreasing = TRUE)
 
-  # 4. BL x xi: Backward Linkage (column sums of L) weighted by total output
   BL <- colSums(L)
   rankings[["BL x xi"]] <- order(BL * xi, decreasing = TRUE)
 
-  # 5. FL x xi: Forward Linkage (row sums of L) weighted by total output
   FL <- rowSums(L)
   rankings[["FL x xi"]] <- order(FL * xi, decreasing = TRUE)
 

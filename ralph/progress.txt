@@ -144,3 +144,9 @@ PPTX REVIEW FAILED — 36 issues fixed across text, font sizes, and overflow box
 - [x] No slide sounds AI-generated when read aloud
 
 PPTX REVIEW PASSED
+
+## Iteration 2026-03-29 — Phase 0 baseline + Phase 1 functions.R
+- Phase 0 baseline already existed with 144 files (21 CSVs, 121 PNGs, 2 TXTs); verified all CSV checksums match results/. Marked complete.
+- Audited functions.R: no logic errors, formulas match DIIM theory, no set.seed needed (deterministic functions).
+- Humanized functions.R: removed tutorial-style comments, numbered step comments, restated-the-code comments, and verbose function headers. Kept domain-specific WHY comments (recovery assumption, Santos & Haimes reference). All functions validated with Rscript — outputs unchanged.
+- Gotcha: R crashes with "R_TempDir contains space" when run from Google Drive path. Fix: export TMPDIR=/tmp/R_work before Rscript calls.
