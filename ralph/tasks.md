@@ -19,9 +19,9 @@
 - [x] Humanize and check consistency of Chapter 1 (Introduction) with code and results
 - [x] Humanize and check consistency of Chapter 2 with code and results
 - [x] Humanize and check consistency of Chapter 3 with code and results
-- [ ] Humanize and check consistency of Chapter 4 with code and results
-- [ ] Humanize and check consistency of Chapter 5 (Key Sector Identification Methods) with code and results
-- [ ] Humanize and check consistency of Chapter 6 (Monte Carlo Robustness Analysis) — ensure figures and tables match simulation outputs
+- [x] Humanize and check consistency of Chapter 4 with code and results
+- [x] Humanize and check consistency of Chapter 5 (Key Sector Identification Methods) with code and results
+- [x] Humanize and check consistency of Chapter 6 (Monte Carlo Robustness Analysis) — ensure figures and tables match simulation outputs
 - [ ] Humanize and check consistency of Chapter 7 with code and results
 - [ ] Humanize and check consistency of Chapter 8 (Conclusion) with code and results
 - [ ] Humanize and check consistency of Abstract, Acknowledgement, and Appendix

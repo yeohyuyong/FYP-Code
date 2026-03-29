@@ -265,6 +265,11 @@ REVIEW PASSED — Audit, humanize, and verify intervention_timing.R
 
 Phase 1 COMPLETE — all 10 R scripts audited, humanized, and verified.
 
+## Iteration 2026-03-29 — Phase 2 Chapter 5 (Key Sector Identification Methods)
+- Consistency check: all numbers verified against enhanced_comparison.csv — COVID-19 k=5 loss reductions (DIIM=3.91%, Total/PR/BL/FL=2.65%, PCA=3.38%), manpower k=5 (simplified=5.33%, DIIM=6.44%), all top-5 rankings in Tables 5.2/5.3 match CSV, all 3 figures exist. Found and fixed: (1) table sort description said "sorted by Euclidean distance" but table is sorted by weighted score, (2) manpower paragraph claimed DIIM accounts for "both q(0) and c*" but c*=0 for manpower — fixed to "incorporating q(0) into its ranking."
+- Humanization: Chapter 5 was already clean (short factual results chapter). Made 4 targeted fixes: corrected table sort description, replaced "reflecting" -ing phrase with "because," fixed c* factual error, removed "These results show that" filler and "the question remains" AI phrasing from closing.
+- Gotcha: Table prose vs caption consistency matters — always check that descriptive text matches the actual sort order shown in the data.
+
 ## Iteration 2026-03-29 — Phase 2 Chapter 1 (Introduction)
 - Consistency check: all facts verified against code — 15 sectors, 2019/2022 IOTs, 5 method names, c*=0 for manpower, chapter org matches actual chapters. No mismatches.
 - Humanization: Chapter 1 was already quite clean. Made 4 targeted fixes: removed filler "clearly", removed trailing -ing phrases ("representing...", "presenting..."), toned down "far beyond" → "beyond". No structural rewrites needed.
@@ -279,3 +284,29 @@ Phase 1 COMPLETE — all 10 R scripts audited, humanized, and verified.
 - Consistency check: all parameters verified against code — lockdown_duration=55, total_duration=751, 15 sectors, 2019 IOT, qT=q0*1/100 (1% final inoperability). Figures (inoperability.png, econ_loss.png, ordinal.png) all exist in Chapter3/. Appendix labels (sector-mapping, tech-coeff-cross-section, sector-inoperability) confirmed in Appendix.tex. Found and fixed: Chapter 3 intro and Chapter 1 both claimed Chapter 3 "presents the risk management analysis" but the chapter has no risk management section — removed from both.
 - Humanization: Chapter 3 was already clean (short, factual chapter). Made 5 targeted fixes: removed false "risk management analysis" claim from intro, varied "this study" repetition, replaced two "is provided in" with "appears in"/"is shown in", simplified "provides a practical view for decision-making" → direct phrasing.
 - Gotcha: ordinal.png has no generating R script (grep found zero matches). It was likely created manually or from an older workflow. Not a problem for consistency but worth noting if regeneration is ever needed.
+
+REVIEW PASSED — Humanize and check consistency of Chapter 3 with code and results
+- All 3 figures exist (inoperability.png, econ_loss.png, ordinal.png). All \ref/\label pairs match. Appendix cross-refs intact.
+- Numbers verified against run_simulations.R: lockdown_duration=55, total_duration=751, 15 sectors.
+- 0 AI phrases detected (grep scan clean). 0 em dashes. No filler, no copula avoidance, no significance inflation.
+- Sentence length varies naturally. Read aloud: short, factual case study chapter — reads like a student wrote it.
+- Ch1 fix (removed false "risk management analysis" claim about Ch3) is appropriate and directly related.
+- Commit scope clean: only Ch1.tex, Ch3.tex, progress.txt, tasks.md. No scope creep.
+
+## Iteration 2026-03-29 — Phase 2 Chapter 4 (Case Study 2: Manpower Disruption)
+- Consistency check: all parameters verified against code — 15 sectors, 2022 IOT, c*=0 (rep(0, num_sectors)), lockdown=55, total_duration=751, days_in_year=365 for manpower (confirmed in enhanced_comparison.R line 148). Figures (manpower_inoperability.png, manpower_econ_loss.png) exist. Cross-refs (eq:diim-solution-homogeneous, eq:initial-inoperability) resolve to Ch2 labels. Table 4.1 matches code. No mismatches.
+- Humanization: Chapter 4 was already clean (short factual case study, similar to Ch3). Made 3 targeted fixes: collapsed two-sentence grey zone example pattern into one sentence, removed "while capturing the heterogeneous distribution..." clause (restated the obvious), tightened "as explored in the following chapters" → "as the following chapters show".
+- Gotcha: Chapter 4 is very similar in style/cleanliness to Chapter 3 — light touch appropriate. Don't over-edit factual case study chapters.
+
+REVIEW PASSED — Humanize and check consistency of Chapter 4 with code and results
+- Both figures exist (manpower_inoperability.png, manpower_econ_loss.png). All \ref/\label pairs match. Cross-refs to Ch2 equations intact.
+- Numbers verified against code: 15 sectors, 2022 IOT, c*=0, lockdown=55, total_duration=751, days_in_year=365.
+- 0 AI phrases detected (grep scan clean). 0 em dashes. No filler, no copula avoidance, no significance inflation.
+- Sentence length varies naturally. Read aloud: short, factual case study chapter — reads like a student wrote it.
+- 3 changes are style-only (collapsed grey zone sentences, removed restating clause, tightened transition). No content altered.
+- Scope clean: only Chapter4.tex + metadata files. No scope creep.
+
+## Iteration 2026-03-29 — Phase 2 Chapter 6 (Monte Carlo Robustness Analysis)
+- Consistency check: all 50 values in Tables 6.1–6.4 (R̄_m and close rates by k) verified against decision_rules_mc_data.csv — exact match. Table 6.5 (PCA robustness) verified against pca_robustness.csv — mean_ratio, close_rate, var_explained all match. Intervention timing numbers (delay=0 PCA R=0.813/61.2%, delay=60 R=0.882/88.6%) verified against intervention_timing.csv. All 7 figure PNGs exist in Chapter6/. No mismatches found.
+- Humanization: Chapter 6 was already very clean (data-heavy results chapter with specific numbers). Made 4 targeted fixes: replaced "structural lens produces different selections" metaphor with "ranks them differently", removed generic "complementary strengths at different intervention scales" concluding sentence, replaced vague "performance gain is substantial" with specific "18 percentage points short at k=5", removed synonym cycling "systematic, consistent" → "consistent".
+- Gotcha: results-heavy chapters with lots of specific numbers tend to be cleaner than prose-heavy chapters. Don't over-edit — 4 changes was appropriate here.

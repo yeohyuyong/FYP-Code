@@ -129,7 +129,7 @@ The results show a non-monotonic pattern that can be decomposed into three regim
 \begin{enumerate}
     \item \textbf{Small $k$ ($k = 3$)}: All simplified methods agree on the top 3 sectors and produce identical performance, with $\bar{R}_m = 0.870$ (COVID-19) and $0.730$ (Manpower). The dominant economic sectors (Manufacturing, Wholesale \& Retail, Transportation \& Storage) are so large that every method selects them. Two-thirds of trials achieve $\geq$80\% of DIIM in COVID-19 (66.1\%), and about a third (34.9\%) in Manpower. At this scale, structural distinctions between methods are irrelevant.
 
-    \item \textbf{Medium $k$ ($k = 5$--$7$)}: The methods diverge, and structural information adds value. At $k = 5$ in COVID-19, PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output, a 27\% relative improvement, with a close rate of 64.1\% versus 5.7\%. The gap comes from PCA selecting sector~3 (Construction) over sector~7 (Information \& Communications). At $k = 7$, BL $\times\, x_i$ leads with $\bar{R}_m = 0.834$ and close rate 67.2\%, capturing sector~12 (Public Administration) via its backward linkage signal. This is the regime where the ``marginal'' sectors (positions 4--7) matter most, and each method's structural lens produces different selections.
+    \item \textbf{Medium $k$ ($k = 5$--$7$)}: The methods diverge, and structural information adds value. At $k = 5$ in COVID-19, PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output, a 27\% relative improvement, with a close rate of 64.1\% versus 5.7\%. The gap comes from PCA selecting sector~3 (Construction) over sector~7 (Information \& Communications). At $k = 7$, BL $\times\, x_i$ leads with $\bar{R}_m = 0.834$ and close rate 67.2\%, capturing sector~12 (Public Administration) via its backward linkage signal. This is the regime where the ``marginal'' sectors (positions 4--7) matter most, and each method ranks them differently.
 
     \item \textbf{Large $k$ ($k = 10$--$12$)}: The methods converge again as the intervention covers most of the economy. At $k = 12$ (80\% of 15 sectors), close rates reach 100\% for both scenarios, with $\bar{R}_m$ of 0.92--0.97. When intervening on nearly all sectors, the only question is which 3 sectors to \emph{exclude}, and even suboptimal exclusions have limited impact.
 \end{enumerate}
@@ -142,7 +142,7 @@ The multi-$k$ tables show several patterns:
 \begin{enumerate}
     \item \textbf{PCA $\times\, x_i$ outperforms Total Output at $k = 5$ (COVID-19)}: PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output, a 27\% relative improvement, with a close rate of 64.1\% versus 5.7\%. PCA includes sector~3 (Construction), which has the highest structural distance ($d_3^{\text{PCA}} = 0.789$) despite ranking only 6th in economic size. Construction's high initial inoperability ($q_3(0) = 0.156$) makes intervening there disproportionately effective.
 
-    \item \textbf{BL $\times\, x_i$ leads at $k = 7$ (COVID-19)}: BL $\times\, x_i$ achieves $\bar{R}_m = 0.834$ and a close rate of 67.2\%, outperforming all other simplified methods including PCA $\times\, x_i$ (0.818, 62.0\%). Its backward linkage signal captures sector~12 (Public Administration), whose strong input dependencies amplify the cascading effect of intervention. This shows that different structural methods have complementary strengths at different intervention scales.
+    \item \textbf{BL $\times\, x_i$ leads at $k = 7$ (COVID-19)}: BL $\times\, x_i$ achieves $\bar{R}_m = 0.834$ and a close rate of 67.2\%, outperforming all other simplified methods including PCA $\times\, x_i$ (0.818, 62.0\%). Its backward linkage signal captures sector~12 (Public Administration), whose strong input dependencies amplify cascading losses.
 
     \item \textbf{PageRank $\times\, x_i$ underperforms at medium $k$}: At $k = 7$, PageRank $\times\, x_i$ drops to $\bar{R}_m = 0.703$ (COVID-19) and $0.800$ (Manpower), with close rates of 17.7\% and 54.4\% respectively, well below the other methods. PageRank's random-walk centrality prioritises sector~12 over sectors~3 and~10 at positions~6--7, which proves suboptimal under perturbed $q(0)$.
 
@@ -163,7 +163,7 @@ The multi-$k$ analysis leads to the following practical guidelines:
 
     \item \textbf{Pre-event planning}: When $q(0)$ is unknown, simplified methods are still useful for pre-positioning resources. Total Output identifies sectors whose disruption would cause the greatest absolute economic loss, while PCA $\times\, x_i$ and BL $\times\, x_i$ can flag structurally important sectors that size alone would miss (e.g., Construction in the COVID-19 scenario).
 
-    \item \textbf{Crisis response}: Once $q(0)$ is observed, run the full DIIM if targeting fewer than 10 sectors. The computational cost of the simulation is modest (seconds on modern hardware) and the performance gain is substantial.
+    \item \textbf{Crisis response}: Once $q(0)$ is observed, run the full DIIM if targeting fewer than 10 sectors. The computational cost is modest (seconds on modern hardware), and the best simplified method still falls 18 percentage points short at $k = 5$.
 \end{enumerate}
 
 
@@ -185,7 +185,7 @@ To understand the joint distribution of simplified method performance versus the
     \label{fig:scatter-manpower}
 \end{figure}
 
-For COVID-19, PCA $\times\, x_i$ points cluster near the $45^\circ$ line, while the other four methods cluster well below it. This confirms that PCA's advantage at $k = 5$ is not driven by outliers but is a systematic, consistent improvement across the $q(0)$ perturbation space. For Manpower, all five simplified methods produce identical scatter patterns (as expected from the identical rankings at $k = 5$), with points concentrated below the $45^\circ$ line.
+For COVID-19, PCA $\times\, x_i$ points cluster near the $45^\circ$ line, while the other four methods cluster well below it. This confirms that PCA's advantage at $k = 5$ is not driven by outliers but is consistent across the $q(0)$ perturbation space. For Manpower, all five simplified methods produce identical scatter patterns (as expected from the identical rankings at $k = 5$), with points concentrated below the $45^\circ$ line.
 
 
 \section{Intervention Magnitude Sensitivity}
