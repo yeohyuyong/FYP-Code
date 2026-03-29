@@ -5,7 +5,7 @@
 
 <!-- Phase 1: Code — [WORK_PROMPT](WORK_PROMPT.md) → [REVIEW_PROMPT](REVIEW_PROMPT.md) -->
 - [x] Audit, humanize, and verify [functions.R](../functions.R)
-- [ ] Audit, humanize, and verify [run_simulations.R](../simulations/run_simulations.R)
+- [x] Audit, humanize, and verify [run_simulations.R](../simulations/run_simulations.R)
 - [ ] Audit, humanize, and verify [analysis.R](../simulations/analysis.R)
 - [ ] Audit, humanize, and verify [scatter_comparison.R](../simulations/scatter_comparison.R)
 - [ ] Audit, humanize, and verify [enhanced_comparison.R](../simulations/enhanced_comparison.R)

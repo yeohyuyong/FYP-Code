@@ -150,3 +150,14 @@ PPTX REVIEW PASSED
 - Audited functions.R: no logic errors, formulas match DIIM theory, no set.seed needed (deterministic functions).
 - Humanized functions.R: removed tutorial-style comments, numbered step comments, restated-the-code comments, and verbose function headers. Kept domain-specific WHY comments (recovery assumption, Santos & Haimes reference). All functions validated with Rscript — outputs unchanged.
 - Gotcha: R crashes with "R_TempDir contains space" when run from Google Drive path. Fix: export TMPDIR=/tmp/R_work before Rscript calls.
+
+REVIEW PASSED — Audit, humanize, and verify functions.R
+- 24 comments checked: no tutorial-style, no step-N patterns, no chatbot voice, no restatement comments. All terse domain labels or WHY explanations.
+- One non-comment change: dead code removal (unused iot2019 conversion on old line 11). Does not affect behavior.
+- 9 functions load and run without errors. All deterministic — no set.seed needed.
+- Commit message accurate. No scope creep.
+
+## Iteration 2026-03-29 — Phase 1 run_simulations.R
+- Audited run_simulations.R: no logic errors, set.seed(42) correctly placed before MC loop (exp5), deterministic exps 1-4 don't need seeds. All 5 experiments write CSVs correctly.
+- Humanized: renamed verbose loop temporaries (`experiment_results` → `res`, `current_c_star_distribution` → `cs`, `gini_coefficient` → `gini_val`, `q0_gini_coefficient` → `q0_gini_val`, `cstar_q0_corr` → `cstar_q0_cor` for column-name consistency). Comments were already terse — kept the two useful ones (exp2 pattern glossary, logistic regression predictor note).
+- Verified: all 5 output CSVs (exp1–exp5) identical to baseline via diff. No logic changed.

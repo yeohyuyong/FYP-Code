@@ -34,17 +34,17 @@ exp1_results <- data.frame(
 
 for (c_star_multiplier in multipliers) {
     c_star_scaled <- c_star_base * c_star_multiplier
-    experiment_results <- compare_methods(q0_base, A_star, c_star_scaled, x,
+    res <- compare_methods(q0_base, A_star, c_star_scaled, x,
         lockdown_duration = 55, total_duration = 751, pca_sectors = pca_key_sectors)
 
     exp1_results <- rbind(exp1_results, data.frame(
-        multiplier = c_star_multiplier, loss_base = experiment_results$loss_base, loss_diim = experiment_results$loss_diim,
-        loss_pca = experiment_results$loss_pca, reduction_diim = experiment_results$reduction_diim,
-        reduction_pca = experiment_results$reduction_pca, pca_wins = experiment_results$pca_wins,
-        diim_sectors = experiment_results$diim_sectors, overlap = experiment_results$overlap,
+        multiplier = c_star_multiplier, loss_base = res$loss_base, loss_diim = res$loss_diim,
+        loss_pca = res$loss_pca, reduction_diim = res$reduction_diim,
+        reduction_pca = res$reduction_pca, pca_wins = res$pca_wins,
+        diim_sectors = res$diim_sectors, overlap = res$overlap,
         stringsAsFactors = FALSE))
 
-    cat(sprintf("  Multiplier %.1f: PCA wins = %s\n", c_star_multiplier, experiment_results$pca_wins))
+    cat(sprintf("  Multiplier %.1f: PCA wins = %s\n", c_star_multiplier, res$pca_wins))
 }
 
 write.csv(exp1_results, "simulations/results/exp1_cstar_magnitude.csv", row.names = FALSE)
@@ -89,19 +89,19 @@ exp2_results <- data.frame(
 )
 
 for (pattern_name in names(distribution_patterns)) {
-    current_c_star_distribution <- distribution_patterns[[pattern_name]]
-    experiment_results <- compare_methods(q0_base, A_star, current_c_star_distribution, x,
+    cs <- distribution_patterns[[pattern_name]]
+    res <- compare_methods(q0_base, A_star, cs, x,
         lockdown_duration = 55, total_duration = 751, pca_sectors = pca_key_sectors)
-    gini_coefficient <- gini(current_c_star_distribution)
+    gini_val <- gini(cs)
 
     exp2_results <- rbind(exp2_results, data.frame(
-        pattern = pattern_name, loss_base = experiment_results$loss_base, loss_diim = experiment_results$loss_diim,
-        loss_pca = experiment_results$loss_pca, reduction_diim = experiment_results$reduction_diim,
-        reduction_pca = experiment_results$reduction_pca, pca_wins = experiment_results$pca_wins,
-        diim_sectors = experiment_results$diim_sectors, overlap = experiment_results$overlap,
-        c_star_gini = gini_coefficient, stringsAsFactors = FALSE))
+        pattern = pattern_name, loss_base = res$loss_base, loss_diim = res$loss_diim,
+        loss_pca = res$loss_pca, reduction_diim = res$reduction_diim,
+        reduction_pca = res$reduction_pca, pca_wins = res$pca_wins,
+        diim_sectors = res$diim_sectors, overlap = res$overlap,
+        c_star_gini = gini_val, stringsAsFactors = FALSE))
 
-    cat(sprintf("  Pattern '%s' (Gini=%.3f): PCA wins = %s\n", pattern_name, gini_coefficient, experiment_results$pca_wins))
+    cat(sprintf("  Pattern '%s' (Gini=%.3f): PCA wins = %s\n", pattern_name, gini_val, res$pca_wins))
 }
 
 write.csv(exp2_results, "simulations/results/exp2_cstar_distribution.csv", row.names = FALSE)
@@ -141,20 +141,20 @@ for (q0_name in names(q0_patterns)) {
     for (c_star_multiplier in c_star_levels) {
         current_q0 <- q0_patterns[[q0_name]]
         current_c_star <- c_star_base * c_star_multiplier
-        experiment_results <- compare_methods(current_q0, A_star, current_c_star, x,
+        res <- compare_methods(current_q0, A_star, current_c_star, x,
             lockdown_duration = 55, total_duration = 751, pca_sectors = pca_key_sectors)
-        q0_gini_coefficient <- gini(current_q0)
+        q0_gini_val <- gini(current_q0)
 
         exp3_results <- rbind(exp3_results, data.frame(
             q0_pattern = q0_name, c_star_multiplier = c_star_multiplier,
-            loss_base = experiment_results$loss_base, loss_diim = experiment_results$loss_diim,
-            loss_pca = experiment_results$loss_pca, reduction_diim = experiment_results$reduction_diim,
-            reduction_pca = experiment_results$reduction_pca, pca_wins = experiment_results$pca_wins,
-            diim_sectors = experiment_results$diim_sectors, overlap = experiment_results$overlap,
-            q0_gini = q0_gini_coefficient, stringsAsFactors = FALSE))
+            loss_base = res$loss_base, loss_diim = res$loss_diim,
+            loss_pca = res$loss_pca, reduction_diim = res$reduction_diim,
+            reduction_pca = res$reduction_pca, pca_wins = res$pca_wins,
+            diim_sectors = res$diim_sectors, overlap = res$overlap,
+            q0_gini = q0_gini_val, stringsAsFactors = FALSE))
 
         cat(sprintf("  q0='%s', c_star_mult=%.1f: PCA wins = %s\n",
-            q0_name, c_star_multiplier, experiment_results$pca_wins))
+            q0_name, c_star_multiplier, res$pca_wins))
     }
 }
 
@@ -177,15 +177,15 @@ combo_count <- 0
 for (duration in lockdown_vals) {
     for (multiplier in cstar_mult_vals) {
         current_c_star <- c_star_base * multiplier
-        experiment_results <- compare_methods(q0_base, A_star, current_c_star, x,
+        res <- compare_methods(q0_base, A_star, current_c_star, x,
             lockdown_duration = duration, total_duration = 751, pca_sectors = pca_key_sectors)
 
         exp4_results <- rbind(exp4_results, data.frame(
             lockdown_duration = duration, c_star_multiplier = multiplier,
-            loss_base = experiment_results$loss_base, loss_diim = experiment_results$loss_diim,
-            loss_pca = experiment_results$loss_pca, reduction_diim = experiment_results$reduction_diim,
-            reduction_pca = experiment_results$reduction_pca, pca_wins = experiment_results$pca_wins,
-            overlap = experiment_results$overlap, stringsAsFactors = FALSE))
+            loss_base = res$loss_base, loss_diim = res$loss_diim,
+            loss_pca = res$loss_pca, reduction_diim = res$reduction_diim,
+            reduction_pca = res$reduction_pca, pca_wins = res$pca_wins,
+            overlap = res$overlap, stringsAsFactors = FALSE))
 
         combo_count <- combo_count + 1
         if (combo_count %% 50 == 0) cat(sprintf("  Progress: %d / %d\n", combo_count, total_combos))
@@ -217,13 +217,13 @@ for (i in 1:n_mc) {
     random_q0 <- runif(n_sectors, min = 1e-6, max = max_q0)
     random_lockdown_duration <- sample(10:80, 1)
 
-    experiment_results <- compare_methods(random_q0, A_star, random_c_star, x,
+    res <- compare_methods(random_q0, A_star, random_c_star, x,
         lockdown_duration = random_lockdown_duration, total_duration = 751, pca_sectors = pca_key_sectors)
 
     # Summary statistics as predictors for logistic regression
     c_star_gini_val <- gini(random_c_star)
     q0_gini_val <- gini(random_q0)
-    cstar_q0_corr <- if (sd(random_c_star) > 0 && sd(random_q0) > 0) cor(random_c_star, random_q0) else 0
+    cstar_q0_cor <- if (sd(random_c_star) > 0 && sd(random_q0) > 0) cor(random_c_star, random_q0) else 0
     c_star_pca_share <- sum(random_c_star[pca_key_sectors]) / sum(random_c_star)
     q0_pca_share <- sum(random_q0[pca_key_sectors]) / sum(random_q0)
 
@@ -232,12 +232,12 @@ for (i in 1:n_mc) {
         c_star_max = max(random_c_star), c_star_gini = c_star_gini_val, c_star_sum = sum(random_c_star),
         q0_mean = mean(random_q0), q0_sd = sd(random_q0), q0_max = max(random_q0),
         q0_gini = q0_gini_val, q0_sum = sum(random_q0),
-        cstar_q0_cor = cstar_q0_corr, c_star_pca_share = c_star_pca_share,
+        cstar_q0_cor = cstar_q0_cor, c_star_pca_share = c_star_pca_share,
         q0_pca_share = q0_pca_share, lockdown_duration = random_lockdown_duration,
-        loss_base = experiment_results$loss_base, loss_diim = experiment_results$loss_diim,
-        loss_pca = experiment_results$loss_pca, reduction_diim = experiment_results$reduction_diim,
-        reduction_pca = experiment_results$reduction_pca, pca_wins = experiment_results$pca_wins,
-        overlap = experiment_results$overlap, stringsAsFactors = FALSE))
+        loss_base = res$loss_base, loss_diim = res$loss_diim,
+        loss_pca = res$loss_pca, reduction_diim = res$reduction_diim,
+        reduction_pca = res$reduction_pca, pca_wins = res$pca_wins,
+        overlap = res$overlap, stringsAsFactors = FALSE))
 
     if (i %% 50 == 0) {
         pca_win_rate <- mean(exp5_results$pca_wins[1:i])
