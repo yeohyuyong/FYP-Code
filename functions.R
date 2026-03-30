@@ -76,7 +76,7 @@ DIIM <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, key_s
 
   # Assume 99% recovery by time T; avoid log(0) for zero-inoperability sectors
   q0[q0 == 0] <- 1e-8
-  qT = q0 * 1/100
+  qT <- q0 * 1 / 100
 
   # Recovery rate from Santos & Haimes (2004)
   k <- log(q0 / qT) / (T * (1 - a_ii))
@@ -121,9 +121,9 @@ simulation_ml_vs_diim <- function(q0, A, A_star, c_star, x, lockdown_duration, t
   top_econ_loss_5 <- sorted_indices[1:5]
   model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = top_econ_loss_5)
 
-  # PCA x xi top-5 (using A, not A_star)
+  # PCA x xi top-5
   pca_results_local <- pca_rank_sectors(A, x, n_pcs = 2)
-  ml_key_sectors <- pca_results_local$ranked_sectors[1:5]
+  ml_key_sectors <- pca_results_local$ranked_sectors[1:5] # ml here refers to PCA
   model_ml <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, key_sectors = ml_key_sectors)
 
   model_tot_econ_loss <- model$total_economic_loss
@@ -141,10 +141,7 @@ simulation_ml_vs_diim <- function(q0, A, A_star, c_star, x, lockdown_duration, t
 
 
 # Compare baseline vs DIIM top-k vs PCA top-k intervention
-compare_methods <- function(q0, A_star, c_star, x,
-                            lockdown_duration, total_duration,
-                            pca_sectors,
-                            days_in_year = 366) {
+compare_methods <- function(q0, A_star, c_star, x, lockdown_duration, total_duration, pca_sectors, days_in_year = 366) {
   model_base <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration, days_in_year = days_in_year)
   EL_base <- model_base$EL_evolution
 
@@ -153,16 +150,18 @@ compare_methods <- function(q0, A_star, c_star, x,
   diim_sectors <- order(max_econ_loss, decreasing = TRUE)[1:length(pca_sectors)]
 
   model_diim <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration,
-                     key_sectors = diim_sectors, days_in_year = days_in_year)
+    key_sectors = diim_sectors, days_in_year = days_in_year
+  )
   model_pca <- DIIM(q0, A_star, c_star, x, lockdown_duration, total_duration,
-                    key_sectors = pca_sectors, days_in_year = days_in_year)
+    key_sectors = pca_sectors, days_in_year = days_in_year
+  )
 
   loss_base <- model_base$total_economic_loss
   loss_diim <- model_diim$total_economic_loss
-  loss_pca  <- model_pca$total_economic_loss
+  loss_pca <- model_pca$total_economic_loss
 
   reduction_diim <- loss_base - loss_diim
-  reduction_pca  <- loss_base - loss_pca
+  reduction_pca <- loss_base - loss_pca
   pca_wins <- reduction_pca > reduction_diim
   overlap <- length(intersect(pca_sectors, diim_sectors))
 
@@ -178,8 +177,8 @@ compare_methods <- function(q0, A_star, c_star, x,
 pca_rank_sectors <- function(A_matrix, x_vector, n_pcs = 2) {
   n <- nrow(A_matrix)
   I_minus_A <- diag(n) - A_matrix
-  L <- solve(I_minus_A)          # Leontief inverse
-  H <- A_matrix %*% L            # influence matrix
+  L <- solve(I_minus_A) # Leontief inverse
+  H <- A_matrix %*% L # influence matrix
 
   eig <- eigen(H)
   eigenvalues <- Re(eig$values)
@@ -205,8 +204,6 @@ pca_rank_sectors <- function(A_matrix, x_vector, n_pcs = 2) {
   ))
 }
 
-
-
 # Five xi-weighted structural rankings (no DIIM run needed)
 compute_simplified_rankings <- function(A, A_star, x) {
   n <- nrow(A)
@@ -215,7 +212,7 @@ compute_simplified_rankings <- function(A, A_star, x) {
 
   rankings[["Total Output"]] <- order(xi, decreasing = TRUE)
 
-  L <- solve(diag(n) - A)  # Leontief inverse
+  L <- solve(diag(n) - A) # Leontief inverse
 
   # PCA x xi: 2-PC distance on H = A*L
   H <- A %*% L
@@ -225,7 +222,9 @@ compute_simplified_rankings <- function(A, A_star, x) {
   rankings[["PCA x xi"]] <- order(pca_dist * xi, decreasing = TRUE)
 
   pr <- igraph::page_rank(igraph::graph_from_adjacency_matrix(
-          A_star, mode = "directed", weighted = TRUE, diag = FALSE))$vector
+    A_star,
+    mode = "directed", weighted = TRUE, diag = FALSE
+  ))$vector
   rankings[["PageRank x xi"]] <- order(pr * xi, decreasing = TRUE)
 
   BL <- colSums(L)

@@ -19,13 +19,15 @@ method_prefixes <- c(
     "FL x xi"       = "FLxi"
 )
 
-method_labels <- c("Total Output", "PCA x xi", "PageRank x xi",
-                   "BL x xi", "FL x xi")
+method_labels <- c(
+    "Total Output", "PCA x xi", "PageRank x xi",
+    "BL x xi", "FL x xi"
+)
 
 compute_q0_features <- function(q0, simplified_rankings, k = 5) {
     num_sectors <- length(q0)
     total_q0 <- sum(q0)
-    
+
     feats <- list()
 
     for (method_name in names(simplified_rankings)) {
@@ -46,9 +48,9 @@ compute_q0_features <- function(q0, simplified_rankings, k = 5) {
 
     # distributional features of q0
     feats[["q0_gini"]] <- 1 - 2 * sum((1:num_sectors) * sort(q0)) / (num_sectors * total_q0) + (num_sectors + 1) / num_sectors
-    feats[["q0_cv"]]   <- sd(q0) / mean(q0)
+    feats[["q0_cv"]] <- sd(q0) / mean(q0)
     feats[["q0_max_ratio"]] <- max(q0) / mean(q0)
-    
+
     # normalised entropy
     probs <- q0 / total_q0
     probs <- probs[probs > 0]
@@ -57,14 +59,13 @@ compute_q0_features <- function(q0, simplified_rankings, k = 5) {
     return(as.data.frame(feats))
 }
 
-run_monte_carlo <- function(scenario_name, data_loader,
-                            lockdown_duration = 55, total_duration = 751,
-                            days_in_year = 366, n_mc = 2000, k = 5) {
+
+run_monte_carlo <- function(scenario_name, data_loader, lockdown_duration = 55, total_duration = 751, days_in_year = 366, n_mc = 2000, k = 5) {
     cat(sprintf("\n%s: %d Monte Carlo trials (k=%d)\n", scenario_name, n_mc, k))
 
     data <- data_loader()
-    A      <- data$A
-    x      <- data$x
+    A <- data$A
+    x <- data$x
     c_star <- data$c_star
     A_star <- data$A_star
 
@@ -76,8 +77,10 @@ run_monte_carlo <- function(scenario_name, data_loader,
     cat("  Computing simplified rankings...\n")
     simplified_rankings <- compute_simplified_rankings(A, A_star, x)
     for (method_name in names(simplified_rankings)) {
-        cat(sprintf("    %-25s top-%d: [%s]\n", method_name, k,
-            paste(simplified_rankings[[method_name]][1:k], collapse = ", ")))
+        cat(sprintf(
+            "    %-25s top-%d: [%s]\n", method_name, k,
+            paste(simplified_rankings[[method_name]][1:k], collapse = ", ")
+        ))
     }
 
     cat("  Running Monte Carlo...\n")
@@ -88,55 +91,61 @@ run_monte_carlo <- function(scenario_name, data_loader,
         # perturb q0 with log-normal noise (preserves relative structure)
         noise <- exp(rnorm(num_sectors, mean = 0, sd = 0.5))
         random_q0 <- pmax(q0_base * noise, 1e-6)
-        random_q0 <- pmin(random_q0, 1)  # cap at 1 (100% inoperability)
+        random_q0 <- pmin(random_q0, 1) # cap at 1 (100% inoperability)
 
         # baseline: no key sectors protected
         base_model <- DIIM(random_q0, A_star, c_star, x,
-            lockdown_duration, total_duration, days_in_year = days_in_year)
+            lockdown_duration, total_duration,
+            days_in_year = days_in_year
+        )
         base_loss <- base_model$total_economic_loss
-        
+
         if (base_loss < 1e-6) next # Skip degenerate trials
 
         # gold standard: DIIM's own top-k
         max_el <- apply(base_model$EL_evolution, 1, max)
         diim_topk <- order(max_el, decreasing = TRUE)[1:k]
-        
+
         diim_model <- DIIM(random_q0, A_star, c_star, x,
             lockdown_duration, total_duration,
-            key_sectors = diim_topk, days_in_year = days_in_year)
-            
+            key_sectors = diim_topk, days_in_year = days_in_year
+        )
+
         diim_reduction <- base_loss - diim_model$total_economic_loss
         if (diim_reduction < 1e-10) next
 
         trial_row <- compute_q0_features(random_q0, simplified_rankings, k)
-        trial_row$trial     <- trial
-        trial_row$scenario  <- scenario_name
+        trial_row$trial <- trial
+        trial_row$scenario <- scenario_name
         trial_row$base_loss <- base_loss
         trial_row$diim_reduction <- diim_reduction
-        trial_row$diim_pct  <- diim_reduction / base_loss * 100
+        trial_row$diim_pct <- diim_reduction / base_loss * 100
 
         for (method_name in names(simplified_rankings)) {
             topk_sectors <- simplified_rankings[[method_name]][1:k]
-            
+
             method_model <- DIIM(random_q0, A_star, c_star, x,
                 lockdown_duration, total_duration,
-                key_sectors = topk_sectors, days_in_year = days_in_year)
-                
+                key_sectors = topk_sectors, days_in_year = days_in_year
+            )
+
             method_reduction <- base_loss - method_model$total_economic_loss
 
             prefix <- method_prefixes[method_name]
             trial_row[[paste0(prefix, "_reduction")]] <- method_reduction
-            trial_row[[paste0(prefix, "_ratio")]]     <- method_reduction / diim_reduction
-            trial_row[[paste0(prefix, "_wins")]]      <- method_reduction >= diim_reduction
-            trial_row[[paste0(prefix, "_close")]]     <- method_reduction / diim_reduction >= 0.80
+            trial_row[[paste0(prefix, "_ratio")]] <- method_reduction / diim_reduction
+            trial_row[[paste0(prefix, "_wins")]] <- method_reduction >= diim_reduction
+            trial_row[[paste0(prefix, "_close")]] <- method_reduction / diim_reduction >= 0.80
         }
 
         all_results[[length(all_results) + 1]] <- trial_row
 
         if (trial %% 200 == 0) {
             pca_close_rate <- mean(sapply(all_results, function(r) r$TotalOutput_close), na.rm = TRUE)
-            cat(sprintf("    %d/%d done (TotalOutput close rate: %.1f%%)\n",
-                trial, n_mc, pca_close_rate * 100))
+            cat(sprintf(
+                "    %d/%d done (TotalOutput close rate: %.1f%%)\n",
+                trial, n_mc, pca_close_rate * 100
+            ))
         }
     }
 
@@ -150,106 +159,127 @@ build_decision_rules <- function(mc_df, scenario_name, methods) {
     rules <- list()
 
     for (m in methods) {
-        prefix      <- method_prefixes[m]
-        close_col   <- paste0(prefix, "_close")
-        ratio_col   <- paste0(prefix, "_ratio")
-        share_col   <- paste0(prefix, "_share")
+        prefix <- method_prefixes[m]
+        close_col <- paste0(prefix, "_close")
+        ratio_col <- paste0(prefix, "_ratio")
+        share_col <- paste0(prefix, "_share")
         avgrank_col <- paste0(prefix, "_avgrank")
         overlap_col <- paste0(prefix, "_overlap")
 
         if (!close_col %in% names(mc_df)) next
 
         close_rate <- mean(mc_df[[close_col]], na.rm = TRUE)
-        win_rate   <- mean(mc_df[[paste0(prefix, "_wins")]], na.rm = TRUE)
+        win_rate <- mean(mc_df[[paste0(prefix, "_wins")]], na.rm = TRUE)
         mean_ratio <- mean(mc_df[[ratio_col]], na.rm = TRUE)
 
-        cat(sprintf("\n  %-25s close=%.1f%% wins=%.1f%% ratio=%.3f\n",
-            m, close_rate * 100, win_rate * 100, mean_ratio))
+        cat(sprintf(
+            "\n  %-25s close=%.1f%% wins=%.1f%% ratio=%.3f\n",
+            m, close_rate * 100, win_rate * 100, mean_ratio
+        ))
 
-        feature_cols <- c(share_col, avgrank_col, overlap_col,
-                          "q0_gini", "q0_cv", "q0_max_ratio", "q0_entropy")
+        feature_cols <- c(
+            share_col, avgrank_col, overlap_col,
+            "q0_gini", "q0_cv", "q0_max_ratio", "q0_entropy"
+        )
         feature_cols <- feature_cols[feature_cols %in% names(mc_df)]
 
         if (length(feature_cols) == 0 || close_rate == 0 || close_rate == 1) {
             cat("    Skipping logistic regression (degenerate)\n")
-            rules[[m]] <- list(method = m, close_rate = close_rate,
+            rules[[m]] <- list(
+                method = m, close_rate = close_rate,
                 win_rate = win_rate, mean_ratio = mean_ratio,
-                model = NULL, threshold = NA, best_predictor = NA)
+                model = NULL, threshold = NA, best_predictor = NA
+            )
             next
         }
 
         formula_str <- paste(close_col, "~", paste(feature_cols, collapse = " + "))
-        tryCatch({
-            lr_model <- glm(as.formula(formula_str), data = mc_df, family = binomial)
+        tryCatch(
+            {
+                lr_model <- glm(as.formula(formula_str), data = mc_df, family = binomial)
 
-            coeffs <- summary(lr_model)$coefficients
-            if (nrow(coeffs) > 1) {
-                p_vals    <- coeffs[2:nrow(coeffs), 4]
-                best_pred <- names(which.min(p_vals))
-            } else {
-                best_pred <- NA
-            }
-
-            cat(sprintf("    Best predictor: %s (p=%.4f)\n",
-                best_pred, min(coeffs[2:nrow(coeffs), 4])))
-
-            # sweep thresholds on the best predictor to find Youden's J optimal
-            if (!is.na(best_pred) && best_pred %in% names(mc_df)) {
-                pred_vals  <- mc_df[[best_pred]]
-                close_vals <- mc_df[[close_col]]
-                thresholds <- quantile(pred_vals, probs = seq(0.05, 0.95, 0.05))
-                best_j     <- -Inf
-                best_thresh <- NA
-
-                for (thresh in thresholds) {
-                    if (grepl("avgrank", best_pred)) {
-                        predicted <- pred_vals < thresh  # lower rank = better
-                    } else {
-                        predicted <- pred_vals > thresh
-                    }
-                    tp <- sum(predicted & close_vals)
-                    tn <- sum(!predicted & !close_vals)
-                    fp <- sum(predicted & !close_vals)
-                    fn <- sum(!predicted & close_vals)
-
-                    sens <- tp / max(tp + fn, 1)
-                    spec <- tn / max(tn + fp, 1)
-                    j    <- sens + spec - 1
-
-                    if (j > best_j) {
-                        best_j      <- j
-                        best_thresh <- thresh
-                    }
+                coeffs <- summary(lr_model)$coefficients
+                if (nrow(coeffs) > 1) {
+                    p_vals <- coeffs[2:nrow(coeffs), 4]
+                    best_pred <- names(which.min(p_vals))
+                } else {
+                    best_pred <- NA
                 }
 
-                direction <- if (grepl("avgrank", best_pred)) "<" else ">"
-                cat(sprintf("    Rule: Use %s if %s %s %.3f (Youden J=%.3f)\n",
-                    m, best_pred, direction, best_thresh, best_j))
+                cat(sprintf(
+                    "    Best predictor: %s (p=%.4f)\n",
+                    best_pred, min(coeffs[2:nrow(coeffs), 4])
+                ))
 
-                rules[[m]] <- list(method = m, close_rate = close_rate,
-                    win_rate = win_rate, mean_ratio = mean_ratio,
-                    model = lr_model, best_predictor = best_pred,
-                    threshold = best_thresh, direction = direction,
-                    youden_j = best_j)
-            } else {
-                rules[[m]] <- list(method = m, close_rate = close_rate,
-                    win_rate = win_rate, mean_ratio = mean_ratio,
-                    model = lr_model, best_predictor = best_pred,
-                    threshold = NA)
+                # sweep thresholds on the best predictor to find Youden's J optimal
+                if (!is.na(best_pred) && best_pred %in% names(mc_df)) {
+                    pred_vals <- mc_df[[best_pred]]
+                    close_vals <- mc_df[[close_col]]
+                    thresholds <- quantile(pred_vals, probs = seq(0.05, 0.95, 0.05))
+                    best_j <- -Inf
+                    best_thresh <- NA
+
+                    for (thresh in thresholds) {
+                        if (grepl("avgrank", best_pred)) {
+                            predicted <- pred_vals < thresh # lower rank = better
+                        } else {
+                            predicted <- pred_vals > thresh
+                        }
+                        tp <- sum(predicted & close_vals)
+                        tn <- sum(!predicted & !close_vals)
+                        fp <- sum(predicted & !close_vals)
+                        fn <- sum(!predicted & close_vals)
+
+                        sens <- tp / max(tp + fn, 1)
+                        spec <- tn / max(tn + fp, 1)
+                        j <- sens + spec - 1
+
+                        if (j > best_j) {
+                            best_j <- j
+                            best_thresh <- thresh
+                        }
+                    }
+
+                    direction <- if (grepl("avgrank", best_pred)) "<" else ">"
+                    cat(sprintf(
+                        "    Rule: Use %s if %s %s %.3f (Youden J=%.3f)\n",
+                        m, best_pred, direction, best_thresh, best_j
+                    ))
+
+                    rules[[m]] <- list(
+                        method = m, close_rate = close_rate,
+                        win_rate = win_rate, mean_ratio = mean_ratio,
+                        model = lr_model, best_predictor = best_pred,
+                        threshold = best_thresh, direction = direction,
+                        youden_j = best_j
+                    )
+                } else {
+                    rules[[m]] <- list(
+                        method = m, close_rate = close_rate,
+                        win_rate = win_rate, mean_ratio = mean_ratio,
+                        model = lr_model, best_predictor = best_pred,
+                        threshold = NA
+                    )
+                }
+            },
+            error = function(e) {
+                cat(sprintf("    Logistic regression failed: %s\n", e$message))
+                rules[[m]] <<- list(
+                    method = m, close_rate = close_rate,
+                    win_rate = win_rate, mean_ratio = mean_ratio, model = NULL
+                )
             }
-        }, error = function(e) {
-            cat(sprintf("    Logistic regression failed: %s\n", e$message))
-            rules[[m]] <<- list(method = m, close_rate = close_rate,
-                win_rate = win_rate, mean_ratio = mean_ratio, model = NULL)
-        })
+        )
     }
 
     return(rules)
 }
 
 generate_plots <- function(mc_df, rules, scenario_name, prefix) {
-    clean_methods <- c("TotalOutput", "PCAxi", "PageRankxi",
-                       "BLxi", "FLxi")
+    clean_methods <- c(
+        "TotalOutput", "PCAxi", "PageRankxi",
+        "BLxi", "FLxi"
+    )
 
     # --- Ratio distributions ---
     ratio_data <- data.frame()
@@ -258,8 +288,9 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
         if (col %in% names(mc_df)) {
             ratio_data <- rbind(ratio_data, data.frame(
                 method = method_labels[i],
-                ratio  = mc_df[[col]],
-                stringsAsFactors = FALSE))
+                ratio = mc_df[[col]],
+                stringsAsFactors = FALSE
+            ))
         }
     }
 
@@ -268,17 +299,25 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
             geom_density(alpha = 0.5) +
             geom_vline(xintercept = 0.80, linetype = "dashed", color = "red", linewidth = 0.8) +
             geom_vline(xintercept = 1.0, linetype = "dotted", color = "darkgreen", linewidth = 0.8) +
-            annotate("text", x = 0.80, y = Inf, label = "80% threshold",
-                     vjust = 2, hjust = 1.1, color = "red", size = 3) +
+            annotate("text",
+                x = 0.80, y = Inf, label = "80% threshold",
+                vjust = 2, hjust = 1.1, color = "red", size = 3
+            ) +
             scale_fill_brewer(palette = "Set2") +
-            labs(title = sprintf("%s: Performance Ratio Distributions", scenario_name),
-                 subtitle = "Ratio = simplified method reduction / DIIM reduction",
-                 x = "Performance Ratio", y = "Density", fill = "Method") +
+            labs(
+                title = sprintf("%s: Performance Ratio Distributions", scenario_name),
+                subtitle = "Ratio = simplified method reduction / DIIM reduction",
+                x = "Performance Ratio", y = "Density", fill = "Method"
+            ) +
             theme_minimal() +
-            theme(plot.title = element_text(face = "bold", size = 14),
-                  legend.position = "bottom")
+            theme(
+                plot.title = element_text(face = "bold", size = 14),
+                legend.position = "bottom"
+            )
         ggsave(file.path(results_dir, paste0(prefix, "_ratio_distributions.png")),
-               p1, width = 12, height = 7, bg = "white")
+            p1,
+            width = 12, height = 7, bg = "white"
+        )
         cat(sprintf("  Saved %s_ratio_distributions.png\n", prefix))
     }
 
@@ -288,32 +327,44 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
         col <- paste0(clean_methods[i], "_close")
         if (col %in% names(mc_df)) {
             close_data <- rbind(close_data, data.frame(
-                method     = method_labels[i],
+                method = method_labels[i],
                 close_rate = mean(mc_df[[col]], na.rm = TRUE),
-                win_rate   = mean(mc_df[[paste0(clean_methods[i], "_wins")]], na.rm = TRUE),
-                stringsAsFactors = FALSE))
+                win_rate = mean(mc_df[[paste0(clean_methods[i], "_wins")]], na.rm = TRUE),
+                stringsAsFactors = FALSE
+            ))
         }
     }
 
     if (nrow(close_data) > 0) {
-        close_long <- melt(close_data, id.vars = "method",
-                           variable.name = "metric", value.name = "rate")
+        close_long <- melt(close_data,
+            id.vars = "method",
+            variable.name = "metric", value.name = "rate"
+        )
         close_long$metric <- ifelse(close_long$metric == "close_rate",
-                                    ">=80% of DIIM", "Beats DIIM")
+            ">=80% of DIIM", "Beats DIIM"
+        )
 
         p2 <- ggplot(close_long, aes(x = reorder(method, rate), y = rate, fill = metric)) +
             geom_bar(stat = "identity", position = "dodge", alpha = 0.85) +
             coord_flip() +
             scale_y_continuous(labels = scales::percent) +
-            scale_fill_manual(values = c(">=80% of DIIM" = "#3498DB",
-                                         "Beats DIIM" = "#2ECC71")) +
-            labs(title = sprintf("%s: How Often Each Simplified Method Matches DIIM", scenario_name),
-                 x = "", y = "Rate", fill = "") +
+            scale_fill_manual(values = c(
+                ">=80% of DIIM" = "#3498DB",
+                "Beats DIIM" = "#2ECC71"
+            )) +
+            labs(
+                title = sprintf("%s: How Often Each Simplified Method Matches DIIM", scenario_name),
+                x = "", y = "Rate", fill = ""
+            ) +
             theme_minimal() +
-            theme(plot.title = element_text(face = "bold", size = 14),
-                  legend.position = "bottom")
+            theme(
+                plot.title = element_text(face = "bold", size = 14),
+                legend.position = "bottom"
+            )
         ggsave(file.path(results_dir, paste0(prefix, "_close_rates.png")),
-               p2, width = 10, height = 6, bg = "white")
+            p2,
+            width = 10, height = 6, bg = "white"
+        )
         cat(sprintf("  Saved %s_close_rates.png\n", prefix))
     }
 
@@ -322,25 +373,32 @@ generate_plots <- function(mc_df, rules, scenario_name, prefix) {
         if (is.null(rule$best_predictor) || is.na(rule$best_predictor)) next
         if (is.na(rule$threshold)) next
 
-        prefix_m  <- method_prefixes[rule$method]
+        prefix_m <- method_prefixes[rule$method]
         close_col <- paste0(prefix_m, "_close")
-        pred_col  <- rule$best_predictor
+        pred_col <- rule$best_predictor
 
         if (!pred_col %in% names(mc_df) || !close_col %in% names(mc_df)) next
 
         p3 <- ggplot(mc_df, aes_string(x = pred_col, y = paste0(prefix_m, "_ratio"))) +
             geom_point(aes_string(color = close_col), alpha = 0.3, size = 1) +
-            geom_vline(xintercept = rule$threshold, linetype = "dashed",
-                       color = "red", linewidth = 1) +
+            geom_vline(
+                xintercept = rule$threshold, linetype = "dashed",
+                color = "red", linewidth = 1
+            ) +
             geom_hline(yintercept = 0.80, linetype = "dotted", color = "blue") +
             scale_color_manual(
                 values = c("TRUE" = "#2ECC71", "FALSE" = "#E74C3C"),
                 labels = c("TRUE" = ">=80%", "FALSE" = "<80%"),
-                name = "Close to DIIM") +
-            labs(title = sprintf("%s: %s Decision Boundary", scenario_name, rule$method),
-                 subtitle = sprintf("Rule: Use %s if %s %s %.3f",
-                     rule$method, pred_col, rule$direction, rule$threshold),
-                 x = pred_col, y = "Performance Ratio") +
+                name = "Close to DIIM"
+            ) +
+            labs(
+                title = sprintf("%s: %s Decision Boundary", scenario_name, rule$method),
+                subtitle = sprintf(
+                    "Rule: Use %s if %s %s %.3f",
+                    rule$method, pred_col, rule$direction, rule$threshold
+                ),
+                x = pred_col, y = "Performance Ratio"
+            ) +
             theme_minimal() +
             theme(plot.title = element_text(face = "bold", size = 13))
 
@@ -358,13 +416,15 @@ for (k_val in k_values) {
 
     covid_mc <- run_monte_carlo("COVID-19", download_data,
         lockdown_duration = 55, total_duration = 751,
-        days_in_year = 366, n_mc = 2000, k = k_val)
+        days_in_year = 366, n_mc = 2000, k = k_val
+    )
     covid_mc$mc_df$k <- k_val
     all_mc_results[[paste0("covid_k", k_val)]] <- covid_mc$mc_df
 
     manpower_mc <- run_monte_carlo("Manpower", download_manpower_data,
         lockdown_duration = 55, total_duration = 751,
-        days_in_year = 365, n_mc = 2000, k = k_val)
+        days_in_year = 365, n_mc = 2000, k = k_val
+    )
     manpower_mc$mc_df$k <- k_val
     all_mc_results[[paste0("manpower_k", k_val)]] <- manpower_mc$mc_df
 
@@ -409,8 +469,10 @@ for (sc_name in c("COVID-19", "Manpower")) {
             }
         }
 
-        line <- sprintf("  %-20s %s", method_labels[i],
-            paste(sprintf("%.3f ", ratios), collapse = "  "))
+        line <- sprintf(
+            "  %-20s %s", method_labels[i],
+            paste(sprintf("%.3f ", ratios), collapse = "  ")
+        )
         cat(line, "\n")
         summary_lines <- c(summary_lines, line)
     }
@@ -432,8 +494,10 @@ for (sc_name in c("COVID-19", "Manpower")) {
             }
         }
 
-        line <- sprintf("  %-20s %s", method_labels[i],
-            paste(sprintf("%5.1f%%", close_rates), collapse = "  "))
+        line <- sprintf(
+            "  %-20s %s", method_labels[i],
+            paste(sprintf("%5.1f%%", close_rates), collapse = "  ")
+        )
         cat(line, "\n")
         summary_lines <- c(summary_lines, line)
     }
