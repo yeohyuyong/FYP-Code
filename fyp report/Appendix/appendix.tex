@@ -47,7 +47,7 @@
 {\color[HTML]{000000} Manufacturing} & {\color[HTML]{000000} 498.915600} & {\color[HTML]{000000} 59,777.284000} & {\color[HTML]{000000} 4,939.792300} \\
 {\color[HTML]{000000} Construction} & {\color[HTML]{000000} 166.973900} & {\color[HTML]{000000} 498.152500} & {\color[HTML]{000000} 23,583.027800} \\ \bottomrule
 \end{tabular}
-\caption{Cross-section of technical coefficient matrix (COVID-19)}
+\caption{Cross-section of intermediate input flow matrix, \$ million (COVID-19)}
 \label{tab:tech-coeff-cross-section}
 \end{table}
 
@@ -94,9 +94,9 @@ The R code for all simulations and analyses is available in the project reposito
 
 \begin{itemize}
     \item \texttt{functions.R}: Core DIIM function, data loading, and simplified method implementations (Total Output, PCA $\times\, x_i$, PageRank $\times\, x_i$, BL $\times\, x_i$, FL $\times\, x_i$)
-    \item \texttt{pca.R}: PCA analysis on the integrated IO matrix
+    \item \texttt{pca.R}: PCA on the influence matrix $H = AL$ and sector clustering
     \item \texttt{simulations/decision\_rules.R}: Monte Carlo framework, logistic regression, and decision boundary rules
-    \item \texttt{simulations/enhanced\_comparison.R}: Multi-PC PCA, varying top-$k$ sweep, and benchmark vs structured method comparison
+    \item \texttt{simulations/enhanced\_comparison.R}: Varying top-$k$ comparison of all five simplified methods against the DIIM benchmark
     \item \texttt{simulations/run\_simulations.R}: Parameter sweeps for severity ($c^*$) and lockdown duration impacts
     \item \texttt{manpower-disruption/manpower-disruption.R}: Manpower scenario DIIM simulation implementation
 \end{itemize}
