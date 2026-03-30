@@ -139,14 +139,6 @@ simulation_ml_vs_diim <- function(q0, A, A_star, c_star, x, lockdown_duration, t
   ))
 }
 
-# Gini coefficient (0 = equal, 1 = maximally concentrated)
-gini <- function(x) {
-  x <- sort(abs(x))
-  n <- length(x)
-  if (sum(x) == 0) return(0)
-  index <- 1:n
-  return((2 * sum(index * x) / (n * sum(x))) - (n + 1) / n)
-}
 
 # Compare baseline vs DIIM top-k vs PCA top-k intervention
 compare_methods <- function(q0, A_star, c_star, x,
@@ -213,17 +205,7 @@ pca_rank_sectors <- function(A_matrix, x_vector, n_pcs = 2) {
   ))
 }
 
-# Rank sectors by PageRank on A*, weighted by total output xi
-pagerank_rank_sectors <- function(A_star, x_vector) {
-  g <- igraph::graph_from_adjacency_matrix(A_star, mode = "directed",
-                                           weighted = TRUE, diag = FALSE)
 
-  pr <- igraph::page_rank(g)$vector
-
-  weighted_pr <- pr * as.vector(x_vector)
-  ranked_sectors <- order(weighted_pr, decreasing = TRUE)
-  return(list(ranked_sectors = ranked_sectors, pagerank = pr, weighted_pagerank = weighted_pr))
-}
 
 # Five xi-weighted structural rankings (no DIIM run needed)
 compute_simplified_rankings <- function(A, A_star, x) {

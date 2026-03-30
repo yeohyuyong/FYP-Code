@@ -85,23 +85,22 @@ exp2_results <- data.frame(
     pattern = character(), loss_base = numeric(), loss_diim = numeric(),
     loss_pca = numeric(), reduction_diim = numeric(), reduction_pca = numeric(),
     pca_wins = logical(), diim_sectors = character(), overlap = integer(),
-    c_star_gini = numeric(), stringsAsFactors = FALSE
+    stringsAsFactors = FALSE
 )
 
 for (pattern_name in names(distribution_patterns)) {
     cs <- distribution_patterns[[pattern_name]]
     res <- compare_methods(q0_base, A_star, cs, x,
         lockdown_duration = 55, total_duration = 751, pca_sectors = pca_key_sectors)
-    gini_val <- gini(cs)
 
     exp2_results <- rbind(exp2_results, data.frame(
         pattern = pattern_name, loss_base = res$loss_base, loss_diim = res$loss_diim,
         loss_pca = res$loss_pca, reduction_diim = res$reduction_diim,
         reduction_pca = res$reduction_pca, pca_wins = res$pca_wins,
         diim_sectors = res$diim_sectors, overlap = res$overlap,
-        c_star_gini = gini_val, stringsAsFactors = FALSE))
+        stringsAsFactors = FALSE))
 
-    cat(sprintf("  Pattern '%s' (Gini=%.3f): PCA wins = %s\n", pattern_name, gini_val, res$pca_wins))
+    cat(sprintf("  Pattern '%s': PCA wins = %s\n", pattern_name, res$pca_wins))
 }
 
 write.csv(exp2_results, "simulations/results/exp2_cstar_distribution.csv", row.names = FALSE)
@@ -134,7 +133,7 @@ exp3_results <- data.frame(
     loss_base = numeric(), loss_diim = numeric(), loss_pca = numeric(),
     reduction_diim = numeric(), reduction_pca = numeric(),
     pca_wins = logical(), diim_sectors = character(),
-    overlap = integer(), q0_gini = numeric(), stringsAsFactors = FALSE
+    overlap = integer(), stringsAsFactors = FALSE
 )
 
 for (q0_name in names(q0_patterns)) {
@@ -143,7 +142,6 @@ for (q0_name in names(q0_patterns)) {
         current_c_star <- c_star_base * c_star_multiplier
         res <- compare_methods(current_q0, A_star, current_c_star, x,
             lockdown_duration = 55, total_duration = 751, pca_sectors = pca_key_sectors)
-        q0_gini_val <- gini(current_q0)
 
         exp3_results <- rbind(exp3_results, data.frame(
             q0_pattern = q0_name, c_star_multiplier = c_star_multiplier,
@@ -151,7 +149,7 @@ for (q0_name in names(q0_patterns)) {
             loss_pca = res$loss_pca, reduction_diim = res$reduction_diim,
             reduction_pca = res$reduction_pca, pca_wins = res$pca_wins,
             diim_sectors = res$diim_sectors, overlap = res$overlap,
-            q0_gini = q0_gini_val, stringsAsFactors = FALSE))
+            stringsAsFactors = FALSE))
 
         cat(sprintf("  q0='%s', c_star_mult=%.1f: PCA wins = %s\n",
             q0_name, c_star_multiplier, res$pca_wins))
@@ -202,9 +200,9 @@ max_q0 <- max(q0_base) * 1.5
 
 exp5_results <- data.frame(
     sim_id = integer(), c_star_mean = numeric(), c_star_sd = numeric(),
-    c_star_max = numeric(), c_star_gini = numeric(), c_star_sum = numeric(),
+    c_star_max = numeric(), c_star_sum = numeric(),
     q0_mean = numeric(), q0_sd = numeric(), q0_max = numeric(),
-    q0_gini = numeric(), q0_sum = numeric(), cstar_q0_cor = numeric(),
+    q0_sum = numeric(), cstar_q0_cor = numeric(),
     c_star_pca_share = numeric(), q0_pca_share = numeric(),
     lockdown_duration = integer(), loss_base = numeric(),
     loss_diim = numeric(), loss_pca = numeric(),
@@ -221,17 +219,15 @@ for (i in 1:n_mc) {
         lockdown_duration = random_lockdown_duration, total_duration = 751, pca_sectors = pca_key_sectors)
 
     # Summary statistics as predictors for logistic regression
-    c_star_gini_val <- gini(random_c_star)
-    q0_gini_val <- gini(random_q0)
     cstar_q0_cor <- if (sd(random_c_star) > 0 && sd(random_q0) > 0) cor(random_c_star, random_q0) else 0
     c_star_pca_share <- sum(random_c_star[pca_key_sectors]) / sum(random_c_star)
     q0_pca_share <- sum(random_q0[pca_key_sectors]) / sum(random_q0)
 
     exp5_results <- rbind(exp5_results, data.frame(
         sim_id = i, c_star_mean = mean(random_c_star), c_star_sd = sd(random_c_star),
-        c_star_max = max(random_c_star), c_star_gini = c_star_gini_val, c_star_sum = sum(random_c_star),
+        c_star_max = max(random_c_star), c_star_sum = sum(random_c_star),
         q0_mean = mean(random_q0), q0_sd = sd(random_q0), q0_max = max(random_q0),
-        q0_gini = q0_gini_val, q0_sum = sum(random_q0),
+        q0_sum = sum(random_q0),
         cstar_q0_cor = cstar_q0_cor, c_star_pca_share = c_star_pca_share,
         q0_pca_share = q0_pca_share, lockdown_duration = random_lockdown_duration,
         loss_base = res$loss_base, loss_diim = res$loss_diim,
@@ -251,8 +247,8 @@ cat(sprintf("Saved exp5_monte_carlo.csv (%d rows)\n", nrow(exp5_results)))
 exp5_results$pca_wins_int <- as.integer(exp5_results$pca_wins)
 
 logit_model <- glm(
-    pca_wins_int ~ c_star_mean + c_star_sd + c_star_gini +
-        q0_mean + q0_sd + q0_gini +
+    pca_wins_int ~ c_star_mean + c_star_sd +
+        q0_mean + q0_sd +
         cstar_q0_cor + c_star_pca_share + q0_pca_share +
         lockdown_duration + overlap,
     data = exp5_results, family = binomial
