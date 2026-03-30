@@ -19,63 +19,9 @@ method_prefixes <- c(
     "FL x xi"       = "FLxi"
 )
 
-# --- Load or generate Monte Carlo data ---
-if (file.exists(mc_file)) {
-    cat("Loading existing MC data from", mc_file, "\n")
-    mc_data <- read.csv(mc_file, stringsAsFactors = FALSE)
-} else {
-    cat("No existing MC data found. Running 500-trial MC at k=5...\n")
-
-    run_quick_mc <- function(scenario_name, data_loader, lockdown_duration, total_duration,
-                             days_in_year, n_mc = 500, k = 5) {
-        data <- data_loader()
-        A <- data$A; x <- data$x; c_star <- data$c_star; A_star <- data$A_star
-        q0_base <- data$q0; q0_base[q0_base == 0] <- 1e-8
-        num_sectors <- length(q0_base)
-        simplified_rankings <- compute_simplified_rankings(A, A_star, x)
-
-        set.seed(42)
-        results <- list()
-
-        for (trial in 1:n_mc) {
-            noise <- exp(rnorm(num_sectors, mean = 0, sd = 0.5))
-            random_q0 <- pmin(pmax(q0_base * noise, 1e-6), 1)
-
-            base_model <- DIIM(random_q0, A_star, c_star, x, lockdown_duration, total_duration,
-                               days_in_year = days_in_year)
-            base_loss <- base_model$total_economic_loss
-            if (base_loss < 1e-6) next
-
-            max_el <- apply(base_model$EL_evolution, 1, max)
-            diim_topk <- order(max_el, decreasing = TRUE)[1:k]
-            diim_model <- DIIM(random_q0, A_star, c_star, x, lockdown_duration, total_duration,
-                               key_sectors = diim_topk, days_in_year = days_in_year)
-            diim_reduction <- base_loss - diim_model$total_economic_loss
-            if (diim_reduction < 1e-10) next
-
-            row <- data.frame(trial = trial, scenario = scenario_name, k = k,
-                              base_loss = base_loss, diim_reduction = diim_reduction,
-                              stringsAsFactors = FALSE)
-
-            for (method_name in names(simplified_rankings)) {
-                topk <- simplified_rankings[[method_name]][1:k]
-                m_model <- DIIM(random_q0, A_star, c_star, x, lockdown_duration, total_duration,
-                                key_sectors = topk, days_in_year = days_in_year)
-                m_reduction <- base_loss - m_model$total_economic_loss
-                prefix <- method_prefixes[method_name]
-                row[[paste0(prefix, "_reduction")]] <- m_reduction
-                row[[paste0(prefix, "_ratio")]] <- m_reduction / diim_reduction
-            }
-            results[[length(results) + 1]] <- row
-            if (trial %% 100 == 0) cat(sprintf("  %s: %d/%d\n", scenario_name, trial, n_mc))
-        }
-        return(bind_rows(results))
-    }
-
-    covid_mc <- run_quick_mc("COVID-19", download_data, 55, 751, 366)
-    manpower_mc <- run_quick_mc("Manpower", download_manpower_data, 55, 751, 365)
-    mc_data <- bind_rows(covid_mc, manpower_mc)
-}
+# --- Load Monte Carlo data ---
+cat("Loading MC data from", mc_file, "\n")
+mc_data <- read.csv(mc_file, stringsAsFactors = FALSE)
 
 # --- Generate scatter plots ---
 cat("Generating scatter plots...\n")
