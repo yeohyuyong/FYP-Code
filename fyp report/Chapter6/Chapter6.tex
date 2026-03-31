@@ -1,6 +1,6 @@
-\chapter{Monte Carlo Robustness Analysis}
+\chapter{Monte Carlo Simulation Study}
 
-The previous chapter showed that simplified methods can approach DIIM at specific $q(0)$ points but not universally. This chapter uses Monte Carlo simulation to systematically evaluate the robustness of simplified methods across a range of realistic disruption profiles and intervention scales.
+The previous chapter showed that simplified methods can approach DIIM at specific $q(0)$ points but not universally. This chapter uses Monte Carlo simulation to systematically evaluate the performance of simplified methods across a range of realistic disruption profiles and intervention scales.
 
 \section{Framework}
 
@@ -122,14 +122,14 @@ FL $\times\, x_i$       & 34.9\% & 45.5\% & 98.3\% & 99.9\% & 100.0\% \\
 \end{table}
 
 
-\subsection{Three Regimes of $k$}
+\subsection{Three Ranges of $k$}
 
-The results show a non-monotonic pattern that can be decomposed into three regimes:
+The results show a non-monotonic pattern that can be decomposed into three ranges:
 
 \begin{enumerate}
     \item \textbf{Small $k$ ($k = 3$)}: All simplified methods agree on the top 3 sectors and produce identical performance, with $\bar{R}_m = 0.870$ (COVID-19) and $0.730$ (Manpower). The dominant economic sectors (Manufacturing, Wholesale \& Retail, Transportation \& Storage) are so large that every method selects them. Two-thirds of trials achieve $\geq$80\% of DIIM in COVID-19 (66.1\%), and about a third (34.9\%) in Manpower. At this scale, structural distinctions between methods are irrelevant.
 
-    \item \textbf{Medium $k$ ($k = 5$--$7$)}: The methods diverge, and structural information adds value. At $k = 5$ in COVID-19, PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output, a 27\% relative improvement, with a close rate of 64.1\% versus 5.7\%. The gap comes from PCA selecting sector~3 (Construction) over sector~7 (Information \& Communications). At $k = 7$, BL $\times\, x_i$ leads with $\bar{R}_m = 0.834$ and close rate 67.2\%, capturing sector~12 (Public Administration) via its backward linkage signal. This is the regime where the ``marginal'' sectors (positions 4--7) matter most, and each method ranks them differently.
+    \item \textbf{Medium $k$ ($k = 5$--$7$)}: The methods diverge, and structural information adds value. At $k = 5$ in COVID-19, PCA $\times\, x_i$ achieves $\bar{R}_m = 0.817$ versus $0.641$ for Total Output, a 27\% relative improvement, with a close rate of 64.1\% versus 5.7\%. The gap comes from PCA selecting sector~3 (Construction) over sector~7 (Information \& Communications). At $k = 7$, BL $\times\, x_i$ leads with $\bar{R}_m = 0.834$ and close rate 67.2\%, capturing sector~12 (Public Administration) via its backward linkage signal. This is the range where the ``marginal'' sectors (positions 4--7) matter most, and each method ranks them differently.
 
     \item \textbf{Large $k$ ($k = 10$--$12$)}: The methods converge again as the intervention covers most of the economy. At $k = 12$ (80\% of 15 sectors), close rates reach 100\% for both scenarios, with $\bar{R}_m$ of 0.92--0.97. When intervening on nearly all sectors, the only question is which 3 sectors to \emph{exclude}, and even suboptimal exclusions have limited impact.
 \end{enumerate}
@@ -190,14 +190,14 @@ For COVID-19, PCA $\times\, x_i$ points cluster near the $45^\circ$ line, while 
 
 \section{Intervention Magnitude Sensitivity}
 
-The main Monte Carlo analysis uses a uniform 10\% reduction in $q(0)$ for intervened sectors. To test whether the three-regimes finding depends on this choice, we repeat the analysis for intervention magnitudes of 5\%, 10\%, 20\%, and 30\%, each with 500 MC trials across $k \in \{3, 5, 7, 10, 12\}$ for both scenarios.
+The main Monte Carlo analysis uses a uniform 10\% reduction in $q(0)$ for intervened sectors. To test whether the three-ranges finding depends on this choice, we repeat the analysis for intervention magnitudes of 5\%, 10\%, 20\%, and 30\%, each with 500 MC trials across $k \in \{3, 5, 7, 10, 12\}$ for both scenarios.
 
 Figure~\ref{fig:sensitivity-heatmap} shows the best simplified method's mean performance ratio $\bar{R}_m$ at each (magnitude, $k$) combination.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{Chapter6/sensitivity_intervention_heatmap.png}
-    \caption{Heatmap of the best simplified method's mean ratio across intervention magnitudes and $k$ values. The three-regimes structure persists across all magnitudes tested.}
+    \caption{Heatmap of the best simplified method's mean ratio across intervention magnitudes and $k$ values. The three-ranges structure persists across all magnitudes tested.}
     \label{fig:sensitivity-heatmap}
 \end{figure}
 
@@ -208,7 +208,7 @@ Figure~\ref{fig:sensitivity-heatmap} shows the best simplified method's mean per
     \label{fig:sensitivity-k5}
 \end{figure}
 
-The heatmap confirms that the three-regimes structure persists across all four magnitudes. At $k = 5$, PCA $\times\, x_i$ achieves $\bar{R}_m \approx 0.82$ regardless of whether the intervention magnitude is 5\% or 30\%, while the non-PCA methods stay at $\bar{R}_m \approx 0.64$. The relative ranking of methods is driven by \emph{which} sectors are selected, not by the magnitude of assistance applied.
+The heatmap confirms that the three-ranges structure persists across all four magnitudes. At $k = 5$, PCA $\times\, x_i$ achieves $\bar{R}_m \approx 0.82$ regardless of whether the intervention magnitude is 5\% or 30\%, while the non-PCA methods stay at $\bar{R}_m \approx 0.64$. The relative ranking of methods is driven by \emph{which} sectors are selected, not by the magnitude of assistance applied.
 
 
 \section{PCA Robustness to Number of Principal Components}

@@ -1,13 +1,13 @@
 \chapter{Discussion}
 
-\section{The Three Regimes of Intervention Scale}
+\section{The Three Ranges of Intervention Scale}
 
-The main finding of the Monte Carlo analysis is that the relative performance of simplified methods is not constant; it depends on the number of sectors targeted for intervention. This ``three regimes'' pattern holds across both scenarios:
+The main finding of the Monte Carlo analysis is that the relative performance of simplified methods is not constant; it depends on the number of sectors targeted for intervention. This ``three ranges'' pattern holds across both scenarios:
 
 \begin{itemize}
     \item \textbf{Small $k$}: All methods agree on the dominant sectors, so structural distinctions are irrelevant. Performance is moderate (ratios of 0.73--0.87) because even agreement on the top sectors does not guarantee alignment with the DIIM's adaptive ranking.
 
-    \item \textbf{Medium $k$}: Methods diverge on the marginal sectors (positions 4--7), and structural information adds value. PCA $\times\, x_i$ gains 27\% over Total Output at $k = 5$ in COVID-19; BL $\times\, x_i$ leads at $k = 7$. This is the regime where the question ``which specific sectors?'' matters most.
+    \item \textbf{Medium $k$}: Methods diverge on the marginal sectors (positions 4--7), and structural information adds value. PCA $\times\, x_i$ gains 27\% over Total Output at $k = 5$ in COVID-19; BL $\times\, x_i$ leads at $k = 7$. This is the range where the question ``which specific sectors?'' matters most.
 
     \item \textbf{Large $k$}: The methods converge again as the intervention covers most of the economy. At $k = 12$, close rates reach 100\% and $\bar{R}_m$ ranges from 0.92 to 0.97, making simplified methods reliable substitutes for the full DIIM simulation.
 \end{itemize}
@@ -25,7 +25,7 @@ A related finding is that weighting structural methods by a sector's pre-disrupt
     \item \textbf{The Total Output benchmark}: The pure Total Output benchmark (ranking sectors solely by $x_i$, completely ignoring the IO network) performs identically to the best structurally-weighted methods at most values of~$k$. At $k = 3$, $k = 10$, and $k = 12$, Total Output matches or exceeds all structural methods. This suggests that for macro-level loss reduction, the initial scale of the intervention matters more than optimising for downstream cascading effects.
 \end{enumerate}
 
-The exception is the medium-$k$ regime, where structural signals can identify ``hidden'' key sectors. Sector~3 (Construction) in the COVID-19 scenario is the clearest example: despite ranking 6th in economic size, it has the highest PCA structural distance (0.789) and high initial inoperability ($q(0) = 0.156$). PCA $\times\, x_i$ captures this; Total Output does not.
+The exception is the medium-$k$ range, where structural signals can identify ``hidden'' key sectors. Sector~3 (Construction) in the COVID-19 scenario is the clearest example: despite ranking 6th in economic size, it has the highest PCA structural distance (0.789) and high initial inoperability ($q(0) = 0.156$). PCA $\times\, x_i$ captures this; Total Output does not.
 
 
 \section{When Do Structural Methods Add Value?}
@@ -72,9 +72,9 @@ For Singapore specifically, the analysis suggests that sectors with high foreign
 This study has several limitations:
 
 \begin{enumerate}
-    \item \textbf{Uniform intervention}: All methods are compared using a multiplicative reduction in $q(0)$ for top-$k$ sectors. While the sensitivity analysis (Section~6.7) confirms that the three-regimes finding and method rankings are robust across magnitudes of 5--30\%, the intervention is still applied uniformly across selected sectors. In practice, feasible intervention may vary by sector.
+    \item \textbf{Uniform intervention}: All methods are compared using a multiplicative reduction in $q(0)$ for top-$k$ sectors. While the sensitivity analysis (Section~6.7) confirms that the three-ranges finding and method rankings are stable across magnitudes of 5--30\%, the intervention is still applied uniformly across selected sectors. In practice, feasible intervention may vary by sector.
 
-    \item \textbf{PCA hyperparameter sensitivity}: The PCA robustness analysis (Section~6.8) reveals that the optimal number of principal components is scenario-dependent ($n_{\textit{pcs}} = 2$--$3$ for COVID-19, $n_{\textit{pcs}} = 1$ for Manpower). This means the PCA $\times\, x_i$ method cannot be applied as a fully automatic procedure and requires some judgement or cross-validation to select $n_{\textit{pcs}}$.
+    \item \textbf{PCA hyperparameter sensitivity}: The PCA sensitivity analysis (Section~6.8) reveals that the optimal number of principal components is scenario-dependent ($n_{\textit{pcs}} = 2$--$3$ for COVID-19, $n_{\textit{pcs}} = 1$ for Manpower). This means the PCA $\times\, x_i$ method cannot be applied as a fully automatic procedure and requires some judgement or cross-validation to select $n_{\textit{pcs}}$.
 
     \item \textbf{Sector aggregation}: Both scenarios use 15-sector aggregations. At finer disaggregation, structural signals may become more discriminating and the advantage of structural methods over Total Output could increase.
 
