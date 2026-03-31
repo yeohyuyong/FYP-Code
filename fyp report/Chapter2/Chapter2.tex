@@ -7,41 +7,41 @@ This chapter presents the analytical framework. Section~\ref{sec:diim-derivation
 
 \subsection{Inoperability}
 
-This paper uses the DIIM to assess the impact of economic disruptions on sectoral inoperability and economic losses in Singapore. The DIIM is derived from the Leontief input-output model and captures how shocks propagate through inter-sector linkages. Inoperability is defined as:
+This paper uses the DIIM to assess the impact of economic disruptions on sectoral inoperability and economic losses in Singapore. The DIIM is derived from the Leontief input-output model and captures how shocks propagate through inter-sector linkages. Inoperability measures how far a sector's output has fallen from its planned level:
 
 \begin{equation}
     \label{eq:inoperability-definition}
     \text{Inoperability} = \frac{\text{As Planned Production} - \text{Degraded Production}}{\text{As Planned Production}}
 \end{equation}
 
-Where ``As Planned Production'' represents the output level of a sector under normal production, and ``Degraded Production'' represents the output level after a disruption. ``Inoperability'' takes values between 0 and 1, with higher values indicating greater production loss. A value of 1 means the shocked sector has completely lost its production capacity, while a value of 0 means the sector is producing at a normal level.
+Where ``As Planned Production'' is the output level under normal conditions, and ``Degraded Production'' is the output level after a disruption. Inoperability ranges from 0 to 1. A value of 0 means the sector is operating normally, while a value of 1 means production has stopped entirely.
 
 \subsection{From Leontief to IIM}
 
-Using the concept of inoperability defined above, the IIM model can be derived from the Leontief input-output model \cite{Leontief1936}, as shown in Equation~\eqref{eq:leontief-model}.
+The IIM can be derived from the Leontief input-output model \cite{Leontief1936}, shown in Equation~\eqref{eq:leontief-model}.
 
 \begin{equation}
     x = A x + c
     \label{eq:leontief-model}
 \end{equation}
 
-Where $x$ is the total output vector; $A$ is the technical coefficient matrix; $c$ is the final demand vector. If we define the output levels and the final demand vector of some shocked sectors as $\tilde{x}$ and $\tilde{c}$ respectively, then we can construct the input-output relationship between sectors after the shock.
+Where $x$ is the total output vector; $A$ is the technical coefficient matrix; $c$ is the final demand vector. After a disruption, the output levels and final demand shift to $\tilde{x}$ and $\tilde{c}$ respectively.
 
-Subtracting Equation~\eqref{eq:leontief-model} from the shocked-economy formulation:
+Subtracting Equation~\eqref{eq:leontief-model} from the disrupted-economy variables:
 
 \begin{equation}
     x - \tilde{x} = A (x - \tilde{x}) + (c - \tilde{c})
     \label{eq:leontief-difference}
 \end{equation}
 
-Defining $\hat{x}$ as a diagonalized matrix of the output vector and left multiplying $\hat{x}^{-1}$ on both sides of Equation~\eqref{eq:leontief-difference}:
+To normalise each sector's output loss by its planned output, both sides of Equation~\eqref{eq:leontief-difference} are left-multiplied by $\hat{x}^{-1}$, where $\hat{x}$ is the diagonal matrix of the output vector:
 
 \begin{equation}
     \hat{x}^{-1}(x - \tilde{x}) = \hat{x}^{-1}A(x - \tilde{x}) + \hat{x}^{-1}(c - \tilde{c})
     \label{eq:normalized-difference}
 \end{equation}
 
-Let $q = \hat{x}^{-1}\left(x - \tilde{x}\right), \quad A^{*} = \hat{x}^{-1} A \hat{x}, \quad c^{*} = \hat{x}^{-1}\left(c - \tilde{c}\right)$; then Equation~\eqref{eq:iim-model} can be derived, which is the IIM model.
+Let $q = \hat{x}^{-1}\left(x - \tilde{x}\right)$, $A^{*} = \hat{x}^{-1} A \hat{x}$, and $c^{*} = \hat{x}^{-1}\left(c - \tilde{c}\right)$. Substituting these into Equation~\eqref{eq:normalized-difference} gives the IIM:
 
 \begin{equation}
     q = A^{*} q + c^{*}
@@ -104,35 +104,35 @@ The details of each matrix in the IIM model are shown in Equations~\eqref{eq:q-d
 
 \subsection{The DIIM}
 
-The IIM model can be extended to the DIIM model by introducing a time variable and an elasticity coefficient matrix describing the recovery capacity of sectors \cite{SantosHaimes2004}. The discrete form of the DIIM model is:
+The static IIM can be extended to the DIIM by adding a time variable $t$ and a recovery matrix $K$ that describes how quickly each sector bounces back after a shock \cite{SantosHaimes2004}. In discrete form, the DIIM is:
 
 \begin{equation}
     q(t+1) = q(t) + K \big[ A^{*} q(t) + c^{*}(t) - q(t) \big]
     \label{eq:diim-discrete}
 \end{equation}
 
-Where $K$ is the elasticity coefficient matrix describing how quickly sectors recover after a shock. Since each sector's recovery depends only on its own production and not on linkages with other sectors, $K$ is a diagonal matrix with positive diagonal elements. Larger values indicate faster recovery. $t$ is the discrete time variable and $q(t)$ is the sectoral inoperability vector at time~$t$. Approximating Equation~\eqref{eq:diim-discrete} in differential form:
+Where $K$ is a diagonal matrix with positive entries, since each sector's recovery is assumed to depend only on itself, not on its linkages with other sectors. A larger diagonal entry means the sector recovers faster. $t$ is the discrete time variable and $q(t)$ is the sectoral inoperability vector at time~$t$. Another form of Equation~\eqref{eq:diim-discrete} is:
 
 \begin{equation}
     \label{eq:diim-continuous}
     \dot{q}(t) = K \bigl[ A^{*} q(t) + c^{*}(t) - q(t) \bigr]
 \end{equation}
 
-Solving Equation~\eqref{eq:diim-continuous} yields the inoperability as a function of time:
+Solving Equation~\eqref{eq:diim-continuous} gives the inoperability over time:
 
 \begin{equation}
     q(t) = e^{-K(I-A^{*})t} q(0) + \int_{0}^{t} K e^{-K(I-A^{*})(t-z)} c^{*}(z)\, dz
     \label{eq:diim-solution-general}
 \end{equation}
 
-When there is no demand shock ($c^{*}=0$), Equation~\eqref{eq:diim-solution-general} simplifies to:
+When there is no demand shock ($c^{*}=0$), this simplifies to:
 
 \begin{equation}
     q(t) = e^{-K (I - A^{*}) t} q(0)
     \label{eq:diim-solution-homogeneous}
 \end{equation}
 
-Here $q(0)$ is the initial inoperability vector after the shock. The inoperability decays at rate $e^{-K(I - A^{*})t}$.
+Where $q(0)$ is the initial inoperability vector right after the shock hits. Over time, the inoperability decays at a rate that depends on both how fast sectors recover ($K$) and how strongly sectors are linked ($A^{*}$).
 
 \subsection{Initial Inoperability}
 
@@ -149,32 +149,32 @@ The second factor, $\text{LAPI}_i / \text{Sector Output}_i$, captures how depend
 
 \subsection{Elasticity Coefficient}
 
-According to Equation~\eqref{eq:diim-solution-homogeneous}, the inoperability of sector~$i$ at time~$t$ is:
+From Equation~\eqref{eq:diim-solution-homogeneous}, the inoperability of a single sector~$i$ over time follows:
 
 \begin{equation}
     q_i(t) = q_i(0) \, e^{-k_i \left( 1 - a_{ii}^{*} \right) t}
     \label{eq:qi-exponential-decay}
 \end{equation}
 
-From Equation~\eqref{eq:qi-exponential-decay}, we can solve for~$k_i$:
+Rearranging Equation~\eqref{eq:qi-exponential-decay} to solve for~$k_i$:
 
 \begin{equation}
     k_i = \frac{\ln\left[q_i(0)/q_i(T)\right]}{T_i\left(1 - a_{ii}^{*}\right)}
     \label{eq:ki-definition}
 \end{equation}
 
-Where $q_i(0)$ is the initial inoperability of sector~$i$; $q_i(T)$ is the inoperability of sector~$i$ at time~$T$; $a_{ii}^{*}$ is the element on the diagonal of matrix~$A^{*}$, representing the self-dependence of sector~$i$.
+Where $q_i(0)$ is the initial inoperability of sector~$i$; $q_i(T)$ is the inoperability at time~$T$; $a_{ii}^{*}$ is the diagonal entry of $A^{*}$, which captures how much sector~$i$ depends on its own output.
 
 \subsection{Economic Loss}
 
-The cumulative economic loss for sector~$i$ is:
+The economic loss for sector~$i$ over the recovery period is:
 
 \begin{equation}
     EL_i = x_i \int_{t=0}^{t=T} q_i(t) \, dt
     \label{eq:economic-loss}
 \end{equation}
 
-Where $x_i$ is the planned output of sector~$i$ under normal production.
+Where $x_i$ is the planned output of sector~$i$ under normal conditions.
 
 
 \section{Key Sector Identification Methods}
@@ -185,38 +185,28 @@ A key sector is defined as one where targeted intervention, modelled as a 10\% r
 \subsection{Intervention and Loss Reduction Evaluation}
 \label{sec:intervention-procedure}
 
-Each method produces a ranking of sectors. To evaluate a method's effectiveness, we select its top-$k$ ranked sectors and simulate a targeted intervention: the initial inoperability of each selected sector is reduced by 10\%. The DIIM is then re-run with this modified $q(0)$ to obtain the post-intervention total economic loss. The difference between the baseline loss (no intervention) and the post-intervention loss gives the economic loss reduction achieved by that method's top-$k$ selection. This procedure is applied identically to the DIIM benchmark and to every simplified method, so that all methods are compared on the same basis.
+Each key sector identification method produces a ranking of sectors. To evaluate a method's effectiveness, we select its top-$k$ ranked sectors and simulate a targeted intervention: the initial inoperability of each selected sector is reduced by 10\%. The DIIM is then re-run with this modified $q(0)$ to obtain the post-intervention total economic loss. The difference between the baseline loss (no intervention) and the post-intervention loss gives the economic loss reduction achieved by that method's top-$k$ selection. This procedure is applied identically to the DIIM benchmark and to every simplified method, so that all methods are compared equally.
 
 The formal procedure is given in Algorithm~\ref{alg:loss-reduction}.
 
 \begin{algorithm}[H]
 \caption{Intervention and Loss Reduction Evaluation}\label{alg:loss-reduction}
-\KwIn{Initial inoperability $q(0)$, interdependency matrix $A^*$, demand perturbation $c^*$, total output vector $x$, number of key sectors $k$, sector ranking method $m$}
-\KwOut{Percentage loss reduction $\%\Delta EL_m$ for method $m$}
+\KwIn{$q(0)$, $A^*$, $c^*$, $x$, number of key sectors $k$, set of ranking methods $M$}
+\KwOut{$\%\Delta EL_m$ for every method $m \in M$}
 \BlankLine
-\tcp{Step 1: Compute baseline economic loss (no intervention)}
-$\text{model}_{\text{base}} \leftarrow \text{\textsc{DIIM}}\bigl(q(0),\, A^*,\, c^*,\, x\bigr)$\;
-$EL_{\text{base}} \leftarrow \text{TotalEconomicLoss}\bigl(\text{model}_{\text{base}}\bigr)$\;
+Run DIIM with $q(0)$ to obtain baseline loss $EL_{\text{base}}$\;
 \BlankLine
-\tcp{Step 2: Rank sectors using method $m$ and select top-$k$}
-$\text{ranking} \leftarrow \text{\textsc{RankSectors}}(m)$\;
-$S_k \leftarrow \text{ranking}[1:k]$ \tcp*{top-$k$ sector indices}
-\BlankLine
-\tcp{Step 3: Apply intervention (reduce $q(0)$ by 10\% for selected sectors)}
-$q'(0) \leftarrow q(0)$\;
-\For{each sector $i \in S_k$}{
-  $q'_i(0) \leftarrow 0.9 \times q_i(0)$\;
+\ForEach{method $m \in M$}{
+  Rank sectors using method $m$; select top-$k$ set $S_k$\;
+  $q'(0) \leftarrow q(0)$\;
+  \ForEach{sector $i \in S_k$}{
+    $q'_i(0) \leftarrow 0.9 \times q_i(0)$\;
+  }
+  Re-run DIIM with $q'(0)$ to obtain $EL_{\text{int}}$\;
+  $\%\Delta EL_m \leftarrow \dfrac{EL_{\text{base}} - EL_{\text{int}}}{EL_{\text{base}}} \times 100$\;
 }
 \BlankLine
-\tcp{Step 4: Re-run DIIM with the modified initial inoperability}
-$\text{model}_{\text{int}} \leftarrow \text{\textsc{DIIM}}\bigl(q'(0),\, A^*,\, c^*,\, x\bigr)$\;
-$EL_{\text{int}} \leftarrow \text{TotalEconomicLoss}\bigl(\text{model}_{\text{int}}\bigr)$\;
-\BlankLine
-\tcp{Step 5: Compute loss reduction}
-$\Delta EL_m \leftarrow EL_{\text{base}} - EL_{\text{int}}$\;
-$\%\Delta EL_m \leftarrow \dfrac{\Delta EL_m}{EL_{\text{base}}} \times 100$\;
-\BlankLine
-\Return $\%\Delta EL_m$\;
+\Return $\%\Delta EL_m$ for all $m \in M$\;
 \end{algorithm}
 
 In words: the DIIM is first run with the original $q(0)$ to establish the baseline loss. A ranking method $m$ then produces an ordered list of sectors, and the top $k$ are selected. Their initial inoperability is reduced by 10\%, representing a targeted intervention that partially restores production capacity at time zero. The DIIM is re-run with this modified $q'(0)$ to obtain the post-intervention loss. The loss reduction is the difference between baseline and post-intervention losses. This procedure is repeated for every method with identical $q(0)$, $k$, and intervention magnitude, so differences in loss reduction reflect only the quality of each method's ranking.
@@ -227,7 +217,7 @@ The DIIM identifies key sectors by running the full simulation without intervent
 
 \subsection{Total Output ($x_i$)}
 
-Sectors are ranked by their total planned output $x_i$. This method ignores the network structure entirely and assumes that intervening in the largest sectors will yield the greatest loss reduction.
+Sectors are ranked by their total planned output $x_i$ which is readily available in the input-output table. This method ignores the interdependency structure entirely and assumes that intervening in the largest sectors will yield the greatest loss reduction.
 
 \subsection{PCA $\times\, x_i$}
 
@@ -238,14 +228,14 @@ Rather than using $A$ directly, this method constructs the integrated input-outp
     \label{eq:integrated-io-matrix}
 \end{equation}
 
-where $L = (I - A)^{-1}$ is the Leontief inverse. $H$ captures both direct and indirect effects through the production network. PCA is applied to~$H$, and each sector's structural distance is computed as its Euclidean distance from the origin in the principal component space:
+where $L = (I - A)^{-1}$ is the Leontief inverse. $H$ captures both direct and indirect effects through the production network. PCA is applied to~$H$, and each sector's distance is computed as its Euclidean distance from the origin in the principal component space:
 
 \begin{equation}
     d_i^{\text{PCA}} = \sqrt{ \sum_{k=1}^{n\_pcs} v_{ik}^2 }
     \label{eq:pca-distance}
 \end{equation}
 
-where $v_{ik}$ is the loading of sector~$i$ on principal component $k$. This distance is then weighted by the sector's total output $x_i$ to account for economic size:
+where $v_{ik}$ is the loading of sector~$i$ on principal component $k$. This distance is then weighted by the sector's total output $x_i$:
 
 \begin{equation}
     \text{Score}_i^{\text{PCA}} = d_i^{\text{PCA}} \times x_i
@@ -303,6 +293,6 @@ To compare a simplified method against DIIM, we define the \emph{performance rat
     \label{eq:performance-ratio}
 \end{equation}
 
-where $\Delta EL_m$ is the total economic loss reduction achieved by intervening in the top-$k$ sectors identified by simplified method~$m$, and $\Delta EL_{\text{DIIM}}$ is the reduction achieved by the DIIM's top-$k$ sectors. If $R_m \geq 0.95$, the simplified method is considered ``close enough'' to substitute for DIIM.
+where $\Delta EL_m$ is the total economic loss reduction achieved by intervening in the top-$k$ sectors identified by simplified method~$m$, and $\Delta EL_{\text{DIIM}}$ is the reduction achieved by the DIIM benchmark's top-$k$ sectors. If $R_m \geq 0.80$, the simplified method is considered ``close enough'' to substitute for DIIM.
 
 \newpage
