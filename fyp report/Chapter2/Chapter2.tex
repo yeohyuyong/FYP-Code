@@ -182,7 +182,7 @@ Where $x_i$ is the planned output of sector~$i$ under normal conditions.
 
 A key sector is defined as one where targeted intervention, modelled as a 10\% reduction in initial inoperability $q(0)$, produces the largest reduction in total economic loss. The evaluation procedure is described first, then the benchmark and five simplified alternatives.
 
-\subsection{Intervention and Loss Reduction Evaluation}
+\subsection{Evaluating Loss Reduction for Various Methods}
 \label{sec:intervention-procedure}
 
 Each key sector identification method produces a ranking of sectors. To evaluate a method's effectiveness, we select its top-$k$ ranked sectors and simulate a targeted intervention: the initial inoperability of each selected sector is reduced by 10\%. The DIIM is then re-run with this modified $q(0)$ to obtain the post-intervention total economic loss. The difference between the baseline loss (no intervention) and the post-intervention loss gives the economic loss reduction achieved by that method's top-$k$ selection. This procedure is applied identically to the DIIM benchmark and to every simplified method, so that all methods are compared equally.
@@ -190,7 +190,7 @@ Each key sector identification method produces a ranking of sectors. To evaluate
 The formal procedure is given in Algorithm~\ref{alg:loss-reduction}.
 
 \begin{algorithm}[H]
-\caption{Intervention and Loss Reduction Evaluation}\label{alg:loss-reduction}
+\caption{Evaluating Loss Reduction for Various Methods}\label{alg:loss-reduction}
 \KwIn{$q(0)$, $A^*$, $c^*$, $x$, number of key sectors $k$, set of ranking methods $M$}
 \KwOut{$\%\Delta EL_m$ for every method $m \in M$}
 \BlankLine

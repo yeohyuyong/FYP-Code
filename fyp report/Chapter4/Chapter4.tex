@@ -4,7 +4,7 @@ This chapter applies the DIIM framework to a manpower disruption scenario motiva
 
 \section{Background: Singapore's Foreign Worker Dependence}
 
-Singapore's economy relies on approximately 1.4~million foreign workers, roughly one-third of the total labour force \cite{MOM2023ForeignWorkforce}. These workers are concentrated in construction, manufacturing, marine shipyard, process industries, and domestic services. This reliance on foreign labour, while supporting economic growth, creates a structural vulnerability to events that could trigger rapid workforce departures.
+Singapore's economy relies on approximately 1.4~million foreign workers, roughly one-third of the total labour force \cite{MOM2023ForeignWorkforce}. These workers are concentrated in construction, manufacturing, marine shipyard, process industries, and domestic services. This reliance on foreign labour, while supporting economic growth, creates a vulnerability to events that could trigger rapid workforce departures.
 
 Grey zone conflicts, coercive actions that fall below the threshold of conventional warfare, represent a plausible threat scenario \cite{MINDEF2020Factsheet}. Economic sanctions, cyber attacks on critical infrastructure, disinformation campaigns, or military posturing could erode confidence among foreign workers and their home governments, prompting rapid departures.
 
@@ -15,36 +15,28 @@ Unlike the COVID-19 scenario, where disruption arose from both workforce unavail
     \item \textbf{No external demand shock} ($c^* = 0$): The disruption is purely structural. Consumer and government demand for goods and services is assumed to persist at pre-disruption levels; sectors simply cannot fulfil that demand due to workforce shortages.
 \end{itemize}
 
-This distinction follows from the DIIM's separation of supply-side and demand-side disruption channels. In the model, $q(0)$ captures the initial loss of production capacity (supply-side), while $c^*$ captures a reduction in final demand (demand-side). Because workforce departures degrade \emph{production capacity} without reducing end-user demand, the manpower scenario maps entirely to $q(0)$, with $c^* = 0$.
-
-With $c^* = 0$, the DIIM solution simplifies to $q(t) = e^{-K(I-A^{*})t}\, q(0)$ (Equation~\eqref{eq:diim-solution-homogeneous}), meaning the disruption dynamics are governed entirely by the structure of the economy ($A^{*}$) and the initial shock ($q(0)$).
+With $c^* = 0$, the DIIM solution simplifies to $q(t) = e^{-K(I-A^{*})t}\, q(0)$ (Equation~\eqref{eq:diim-solution-homogeneous}), meaning the disruption is governed entirely by the structure of the economy ($A^{*}$) and the initial shock ($q(0)$).
 
 
 \section{Data and Model Parameters}
 
 \subsection{Input-Output Table}
 
-This scenario uses the 2022 Singapore IO table, aggregated to the same 15~broad sectors as the COVID-19 scenario. This common classification allows direct comparison between the two case studies.
+This scenario uses the 2022 Singapore IO table, aggregated to the same 15~broad sectors as the COVID-19 scenario. This allows direct comparison between the two case studies.
 
 \subsection{Initial Inoperability}
 
-Initial inoperability is computed using the same method as Equation~\eqref{eq:initial-inoperability}, with workforce unavailability data reflecting the proportion of foreign workers in each sector. Sectors with high foreign worker concentrations (e.g., construction, process industries) have correspondingly higher initial inoperability.
+Initial inoperability is computed using the same method as Equation~\eqref{eq:initial-inoperability}, with workforce unavailability data reflecting the proportion of foreign workers in each sector. Sectors with high foreign worker concentrations (e.g., construction, admin & support) have correspondingly higher initial inoperability.
 
 \subsection{Model Parameters}
 
-The shock duration parameter is set to 55~days for consistency with the COVID-19 scenario, though because $c^* = 0$ here, the shock duration has no effect on the simulation: the $c^*$ term that would be removed after the shock period is already zero throughout. The total simulation horizon is 751~days with a final inoperability of 1\%, representing near-full recovery through workforce replacement, retraining, or automation. This horizon matches the COVID-19 scenario for comparability; in practice, recovery may be shorter or longer depending on the ease of workforce replacement. The COVID-19 scenario uses 366~days per year (2020 being a leap year), while the manpower scenario uses 365~days per year (2022).
-
+Since we are modelling the manpower disruption with no shock duration, $c^* = 0$. The simulation runs for 751~days with a final inoperability of 1\% of the initial shock ($q(0)$), the same used in the COVID-19 scenario. The COVID-19 scenario uses 366~days per year (2020 being a leap year), while the manpower scenario uses 365~days per year (2022).
 
 \section{Results}
 
 \subsection{Inoperability Evolution}
 
-Figure~\ref{fig:manpower-inoperability} shows the simulated inoperability trajectories for the 15~sectors. Compared to the COVID-19 scenario, the manpower disruption exhibits:
-
-\begin{itemize}
-    \item Greater dispersion in initial inoperability across sectors, reflecting the uneven distribution of foreign workers.
-    \item Cascading effects driven entirely by the production network, as disruptions in labour-intensive sectors propagate to downstream industries without any demand shock.
-\end{itemize}
+Figure~\ref{fig:manpower-inoperability} shows the simulated inoperability trajectories for the 15~sectors.
 
 \begin{figure}[H]
     \centering
@@ -65,29 +57,4 @@ Figure~\ref{fig:manpower-economic-loss} shows the cumulative economic loss evolu
     \label{fig:manpower-economic-loss}
 \end{figure}
 
-
-\section{Comparison with COVID-19}
-
-Table~\ref{tab:scenario-comparison} summarises the key structural differences between the two scenarios.
-
-\begin{table}[tbp]
-\centering
-\begin{tabular}{@{}lcc@{}}
-\toprule
-\textbf{Parameter} & \textbf{COVID-19} & \textbf{Manpower} \\
-\midrule
-Number of sectors & 15 & 15 \\
-IO table year & 2019 & 2022 \\
-Demand shock $c^*$ & $>0$ & $= 0$ \\
-Shock type & Demand + supply & Pure supply \\
-Shock duration & 55 days & 55 days$^{\dagger}$ \\
-Total horizon & 751 days & 751 days \\
-Days per year & 366 & 365 \\
-\bottomrule
-\end{tabular}
-\caption{Comparison of COVID-19 and manpower disruption scenario parameters. $^{\dagger}$Shock duration has no effect when $c^* = 0$.}
-\label{tab:scenario-comparison}
-\end{table}
-
-Although both scenarios use the same 15-sector classification, the manpower scenario is structurally distinct: the absence of a demand shock ($c^* = 0$) means that disruption propagation is driven by the production network alone. The 2022~IO table also captures post-pandemic structural shifts in the economy. These differences affect the effectiveness of simplified key sector identification methods, as the following chapters show.
 \newpage

@@ -26,7 +26,7 @@ num_days    <- ncol(inoperability_evolution)
 sector_labels <- c(
   "Agriculture & Utilities", "Manufacturing", "Construction",
   "Wholesale & Retail", "Transportation & Storage", "Accommodation & Food",
-  "Info & Communications", "Financial & Insurance", "Real Estate",
+  "Info & Communications", "Financial Services", "Real Estate",
   "Professional Services", "Admin & Support", "Public Admin & Education",
   "Health & Social", "Arts & Recreation", "Other Community Services"
 )
